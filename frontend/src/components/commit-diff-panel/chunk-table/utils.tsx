@@ -75,7 +75,7 @@ function balanceLeftAndRightColumn(left: Line[], right: Line[]): [Line[], Line[]
   return [left, right];
 }
 
-function highlightLine(diffPart: JsDiff.IDiffResult, shouldBeHighlighted: boolean, color: string, index: number): JSX.Element {
+function highlightLine(diffPart: JsDiff.Change, shouldBeHighlighted: boolean, color: string, index: number): JSX.Element {
   if (shouldBeHighlighted) {
     return (
       <span style={{ backgroundColor: color }} key={index}>

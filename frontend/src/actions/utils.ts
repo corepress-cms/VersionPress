@@ -1,5 +1,4 @@
 import * as request from 'superagent';
-import * as Promise from 'core-js/es6/promise';
 import * as WpApi from '../services/WpApi';
 
 export function getErrorMessage(res: request.Response, err: any) {

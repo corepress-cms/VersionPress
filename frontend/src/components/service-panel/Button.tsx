@@ -11,7 +11,7 @@ const Button: React.StatelessComponent<ButtonProps> = ({ onClick }) => (
     className='ServicePanelButton'
     onClick={onClick}
   >
-    <span className='icon vp-icon-cog' />
+    <span className='dashicons dashicons-admin-generic' />
   </button>
 );
 

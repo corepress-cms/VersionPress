@@ -49,7 +49,7 @@ export function revertDialog(title: React.ReactNode, okHandler: () => void) {
 
   const options = {
     isLoading: true,
-    cancelHandler: () => { req.abort(); },
+    cancelHandler: () => {  },
   };
   confirmDialog(title, '', options);
 }

@@ -1,5 +1,3 @@
-import 'core-js';
-
 import * as React from 'react';
 import { render } from 'react-dom';
 import { HashRouter, Route } from 'react-router-dom';

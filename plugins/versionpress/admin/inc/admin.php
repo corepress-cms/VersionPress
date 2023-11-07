@@ -35,7 +35,7 @@ if (!empty($error)) {
 }
 ?>
 
-<button id="vp-service-panel-button"><span class="icon vp-icon-cog"></span></button>
+<button id="vp-service-panel-button"><span class="dashicons dashicons-admin-generic"></span></button>
 <h2 id="vp-page-header">VersionPress</h2>
 
 <div id="vp-service-panel" class="ServicePanel vp-welcome-panel">

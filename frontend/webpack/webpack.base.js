@@ -8,22 +8,15 @@ const baseDir = process.cwd();
 const postCssLoader = {
     loader: 'postcss-loader',
     options: {
-        plugins: function () {
-            return [autoprefixer({
-                browsers: [
-                    '>1%',
-                    'last 4 versions',
-                    'Firefox ESR',
-                    'not ie < 9', // React doesn't support IE8 anyway
-                ],
-            })];
-        },
+      postcssOptions: {
+        plugins: [autoprefixer({})],
+      }
     },
 };
 
 module.exports = (isDevelopment, options) => ({
     mode: options.mode,
-    optimization: options.optimization,
+    optimization: {...options.optimization, moduleIds: 'named'},
     entry: options.entry,
     output: {
       hashFunction: 'sha256',
@@ -32,13 +25,15 @@ module.exports = (isDevelopment, options) => ({
         publicPath: options.output && options.output.publicPath || '/static/',
     },
     cache: isDevelopment,
-    devtool: isDevelopment ? 'source-map' : '',
+    devtool: 'source-map',
     plugins: [
         new MiniCssExtractPlugin({
             filename: '[name].css'
         }),
-        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/), // http://stackoverflow.com/a/25426019/1243495
-        new webpack.NamedModulesPlugin(),
+        new webpack.IgnorePlugin({
+          resourceRegExp: /^\.\/locale$/,
+          contextRegExp: /moment$/
+        }),
     ].concat(isDevelopment
         ?  [
             new webpack.HotModuleReplacementPlugin(),
@@ -90,10 +85,25 @@ module.exports = (isDevelopment, options) => ({
             {
                 test: /\.less$/,
                 use: [
-                    isDevelopment ? 'style-loader?sourceMap' : MiniCssExtractPlugin.loader,
-                    'css-loader?sourceMap',
+                    isDevelopment ? {
+                      loader: 'style-loader',
+                      options: {
+                          sourceMap: true,
+                      },
+                    } : MiniCssExtractPlugin.loader,
+                    {
+                      loader: 'css-loader',
+                      options: {
+                          sourceMap: true,
+                      },
+                    },
                     postCssLoader,
-                    'less-loader?sourceMap',
+                    {
+                        loader: 'less-loader',
+                        options: {
+                            sourceMap: true,
+                        },
+                    },
                 ],
             },
         ].concat(options.module && options.module.rules || []),
