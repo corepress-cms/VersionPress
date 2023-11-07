@@ -36,29 +36,29 @@ function _vp_show_progress_message($progressMessage, $forceDisplay = false)
 ?>
 
 <style>
-    .vp-index .welcome-panel {
+    .vp-index .vp-welcome-panel {
         padding-bottom: 23px;
         margin-top: 20px;
     }
 
-    .vp-index .welcome-panel p {
+    .vp-index .vp-welcome-panel p {
         color: inherit;
     }
 
-    .vp-index .welcome-panel .about-description {
+    .vp-index .vp-welcome-panel .about-description {
         margin: 23px 0 10px;
     }
 
-    .vp-index .welcome-panel ul {
+    .vp-index .vp-welcome-panel ul {
         list-style: none;
         padding-left: 40px;
     }
 
-    .vp-index .welcome-panel ul li {
+    .vp-index .vp-welcome-panel ul li {
         position: relative;
     }
 
-    .vp-index .welcome-panel ul .icon {
+    .vp-index .vp-welcome-panel ul .icon {
         position: absolute;
         left: -25px;
         top: 6px;
@@ -74,9 +74,9 @@ function _vp_show_progress_message($progressMessage, $forceDisplay = false)
     }
 </style>
 
-<div class="welcome-panel">
+<div class="vp-welcome-panel">
 
-    <div class="welcome-panel-content">
+    <div class="vp-welcome-panel-content">
 
         <h3>VersionPress Activation</h3>
 

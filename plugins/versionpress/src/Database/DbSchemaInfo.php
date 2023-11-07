@@ -59,7 +59,7 @@ class DbSchemaInfo
         $this->entityInfoRegistry = [];
 
         foreach ($schemaFiles as $schemaFile) {
-            $pluginSchema = Yaml::parse($schemaFile);
+            $pluginSchema = Yaml::parseFile($schemaFile);
             $pluginSchema = $this->useSchemaForCurrentVersion($pluginSchema);
 
             $this->schema = array_merge_recursive($this->schema, $pluginSchema);

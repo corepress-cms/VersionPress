@@ -61,7 +61,7 @@ export function openPortal(children: any) {
 }
 
 export function closePortal() {
-  if (portalNode && portalNode.parentNode && close) {
+  if (portalNode && portalNode.parentNode) {
     DOM.unmountComponentAtNode(portalNode.parentNode as Element);
     portalNode.parentNode.removeChild(portalNode);
     portalNode = null;

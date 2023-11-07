@@ -617,7 +617,7 @@ class WpAutomation
 
         $childEnv = array_merge($childEnv, (array)$env);
 
-        $process = new Process($command, $executionPath, $childEnv);
+        $process = Process::fromShellCommandline($command, $executionPath, $childEnv);
         $process->run();
 
         if (!$process->isSuccessful()) {
@@ -758,7 +758,7 @@ class WpAutomation
      */
     private function createPedestalBasedSite()
     {
-        $process = new Process('composer create-project -s dev versionpress/pedestal .', $this->siteConfig->path);
+        $process = Process::fromShellCommandline('composer create-project -s dev versionpress/pedestal .', $this->siteConfig->path);
         $process->run();
 
         $this->updateConfigConstant('DB_NAME', $this->siteConfig->dbName);

@@ -8,7 +8,7 @@ namespace VersionPress\Initialization;
  * We have them in this class because of refactoring.
  *
  * !!! IMPORTANT !!!
- * Do NOT use any use statements in this file! They are not copied to the wp-db.php.
+ * Do NOT use any use statements in this file! They are not copied to the class-wpdb.php.
  *
  * @property null last_error
  * @property null last_query
@@ -194,7 +194,7 @@ class ReplacerMethods
      */
     public static function vp_restore_original()
     {
-        $wpdbClassPath = ABSPATH . WPINC . '/wp-db.php';
+        $wpdbClassPath = ABSPATH . WPINC . '/class-wpdb.php';
         $wpdbOriginalPath = $wpdbClassPath . '.original';
         if (file_exists($wpdbOriginalPath)) {
             copy($wpdbOriginalPath, $wpdbClassPath);

@@ -30,6 +30,8 @@ class RequirementsChecker
         'hello-dolly' => 'hello-dolly/hello.php',
         '_hello-dolly' => 'hello.php',
         'versionpress' => 'versionpress/versionpress.php',
+        'backwards-compat' => 'backwards-compat/backwards-compat.php',
+        'file-editor' => 'file-editor/file-editor.php',
     ];
 
     public static $incompatiblePlugins = [
@@ -133,10 +135,10 @@ class RequirementsChecker
             $this->requirements[] = [
                 'name' => 'wpdb hook',
                 'level' => 'critical',
-                'fulfilled' => is_writable(ABSPATH . WPINC . '/wp-db.php'),
+                'fulfilled' => is_writable(ABSPATH . WPINC . '/class-wpdb.php'),
                 // @codingStandardsIgnoreLine
                 'help' => 'For VersionPress to do its magic, it needs to change the `wpdb` class and put some code there. ' .
-                    'To do so it needs write access to the `wp-includes/wp-db.php` file. Please update the permissions.'
+                    'To do so it needs write access to the `wp-includes/class-wpdb.php` file. Please update the permissions.'
             ];
 
             $this->requirements[] = [
@@ -218,7 +220,7 @@ class RequirementsChecker
     private function tryRunProcess()
     {
         try {
-            $process = new Process("echo test");
+            $process = Process::fromShellCommandline("echo test");
             $process->run();
             return true;
         } catch (Exception $e) {
@@ -258,7 +260,7 @@ class RequirementsChecker
             FileSystem::remove($filePath);
 
             // Trying to create file from process (issue #522)
-            $process = new Process(sprintf("echo test > %s", ProcessUtils::escapeshellarg($filePath)));
+            $process = Process::fromShellCommandline(sprintf("echo test > %s", ProcessUtils::escapeshellarg($filePath)));
             $process->run();
             $writable &= is_file($filePath);
 

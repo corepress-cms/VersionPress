@@ -38,7 +38,7 @@ if (!empty($error)) {
 <button id="vp-service-panel-button"><span class="icon vp-icon-cog"></span></button>
 <h2 id="vp-page-header">VersionPress</h2>
 
-<div id="vp-service-panel" class="ServicePanel welcome-panel">
+<div id="vp-service-panel" class="ServicePanel vp-welcome-panel">
     <p class='warning'>
         Currently, VersionPress is a <a href="http://docs.versionpress.net/en/getting-started/about-eap">
             <strong>Developer Preview</strong></a>.<br />
@@ -70,11 +70,11 @@ $showWelcomePanel = get_user_meta(get_current_user_id(), VersionPressOptions::US
 if ($showWelcomePanel === "") {
     ?>
 
-    <div id="welcome-panel" class="welcome-panel">
+    <div id="vp-welcome-panel" class="vp-welcome-panel">
 
-        <a id="vp-welcome-panel-close-button" class="welcome-panel-close" href="">Dismiss</a>
+        <a id="vp-welcome-panel-close-button" class="vp-welcome-panel-close" href="">Dismiss</a>
 
-        <div class="welcome-panel-content">
+        <div class="vp-welcome-panel-content">
 
             <h3>Welcome!</h3>
 

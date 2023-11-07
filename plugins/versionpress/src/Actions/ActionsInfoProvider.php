@@ -37,8 +37,8 @@ class ActionsInfoProvider
             }
 
             $actions = $scopeDefinition['actions'];
-            $tags = @$scopeDefinition['tags'] ?: [];
-            $parentIdTag = @$scopeDefinition['parent-id-tag'];
+            $tags = isset($scopeDefinition['tags']) ? $scopeDefinition['tags'] : [];
+            $parentIdTag = isset($scopeDefinition['parent-id-tag']) ? $scopeDefinition['parent-id-tag'] : null;
 
             $this->actionsInfoMap[$scope] = new ActionsInfo($scope, $actions, $tags, $parentIdTag);
         }

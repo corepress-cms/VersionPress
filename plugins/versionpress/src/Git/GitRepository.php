@@ -520,7 +520,7 @@ class GitRepository
             putenv("DYLD_LIBRARY_PATH=");
         }
 
-        $process = new Process($cmd, $this->workingDirectoryRoot);
+        $process = Process::fromShellCommandline($cmd, $this->workingDirectoryRoot);
         if ($this->gitProcessTimeout !== null) {
             $process->setTimeout($this->gitProcessTimeout);
         }

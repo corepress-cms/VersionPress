@@ -30,9 +30,9 @@ jQuery(document).ready(function($) {
 
 </script>
 
-<div class="welcome-panel vp-activation-panel">
+<div class="vp-welcome-panel vp-activation-panel">
 
-    <div class="welcome-panel-content">
+    <div class="vp-welcome-panel-content">
 
         <h3>Welcome to VersionPress!</h3>
 

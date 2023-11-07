@@ -105,7 +105,7 @@ class MergeDriverTestUtils
      */
     public static function runGitCommand($cmd)
     {
-        $process = new Process($cmd, self::$repositoryDir);
+        $process = Process::fromShellCommandline($cmd, self::$repositoryDir);
         $process->run();
         return $process->getExitCode();
     }

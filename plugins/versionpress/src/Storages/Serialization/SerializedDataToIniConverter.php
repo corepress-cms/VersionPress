@@ -296,7 +296,7 @@ class SerializedDataToIniConverter
             return $this->convertArrayToSerializedString($relatedLines);
         }
 
-        if (class_exists($type)) {
+        if ($type !== null && class_exists($type)) {
             return $this->convertObjectToSerializedString($type, $relatedLines);
         }
 

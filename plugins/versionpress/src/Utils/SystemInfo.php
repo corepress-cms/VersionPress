@@ -44,7 +44,7 @@ class SystemInfo
 
         $info = [];
 
-        $process = new Process(ProcessUtils::escapeshellarg($gitBinary) . " --version");
+        $process = Process::fromShellCommandline(ProcessUtils::escapeshellarg($gitBinary) . " --version");
         $process->run();
 
         $info['git-binary-as-configured'] = $gitBinary;
@@ -69,7 +69,7 @@ class SystemInfo
         $gitPath = "unknown";
         if ($gitBinary == "git") {
             $osSpecificWhereCommand = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? "where" : "which";
-            $process = new Process("$osSpecificWhereCommand git");
+            $process = Process::fromShellCommandline("$osSpecificWhereCommand git");
             $process->run();
 
             if ($process->isSuccessful()) {
@@ -270,7 +270,7 @@ class SystemInfo
             $processInfo['php-can-delete'][$target] = !is_file($filePath);
 
             $filePath = $directory . '/' . '.vp-try-write-process';
-            $process = new Process(sprintf("echo test > %s", ProcessUtils::escapeshellarg($filePath)));
+            $process = Process::fromShellCommandline(sprintf("echo test > %s", ProcessUtils::escapeshellarg($filePath)));
             $process->run();
             $processInfo['process-can-write'][$target] = is_file($filePath);
             try {

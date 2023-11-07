@@ -1,7 +1,7 @@
 jQuery(document).ready(function($) {
 
     var $welcomePanelCloseButton = $('#vp-welcome-panel-close-button');
-    var $welcomePanel = $('#welcome-panel');
+    var $welcomePanel = $('#vp-welcome-panel');
     var $servicePanelButton = $('#vp-service-panel-button');
     var $servicePanel = $('#vp-service-panel');
 

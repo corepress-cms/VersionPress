@@ -536,8 +536,8 @@ add_action('vp_versionpress_changed', function ($action, $version) {
     if ($action === 'deactivate') {
         $files = [
             ["type" => "path", "path" => VP_VPDB_DIR . "/*"],
-            ["type" => "path", "path" => ABSPATH . WPINC . "/wp-db.php"],
-            ["type" => "path", "path" => ABSPATH . WPINC . "/wp-db.php.original"],
+            ["type" => "path", "path" => ABSPATH . WPINC . "/class-wpdb.php"],
+            ["type" => "path", "path" => ABSPATH . WPINC . "/class-wpdb.php.original"],
             ["type" => "path", "path" => ABSPATH . "/.gitattributes"],
         ];
     } else {

@@ -59,7 +59,7 @@ class VPCommandUtils
             $env = null;
         }
 
-        $process = new Process($command, $cwd, $env);
+        $process = Process::fromShellCommandline($command, $cwd, $env);
         $process->run();
         return $process;
     }

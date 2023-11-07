@@ -60,7 +60,7 @@ class VPComposerCommand extends WP_CLI_Command
     {
         $currentComposerLock = file_get_contents(VP_PROJECT_ROOT . '/composer.lock');
 
-        $process = new Process(VP_GIT_BINARY . ' show HEAD:composer.lock', VP_PROJECT_ROOT);
+        $process = Process::fromShellCommandline(VP_GIT_BINARY . ' show HEAD:composer.lock', VP_PROJECT_ROOT);
         $process->run();
 
         $previousComposerLock = $process->getOutput();

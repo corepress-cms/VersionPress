@@ -95,7 +95,7 @@ class ActivationDeactivationTest // extends SeleniumTestCase // disabled in Dock
      */
     public function successfulActivationRedirectsToMainVersionPressTableAndAltersWpdbClass()
     {
-        $wpdbFile = self::$wpAutomation->getAbspath() . '/wp-includes/wp-db.php';
+        $wpdbFile = self::$wpAutomation->getAbspath() . '/wp-includes/class-wpdb.php';
         $wpdbOriginalFile = $wpdbFile . '.original';
         $this->assertFileNotExists($wpdbOriginalFile);
         $hashBeforeInit = md5_file($wpdbFile);

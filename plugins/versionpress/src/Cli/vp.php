@@ -289,7 +289,7 @@ class VPCommand extends WP_CLI_Command
             WP_CLI::success("Database tables created");
         }
 
-        // Restores "wp-db.php", "wp-db.php.original" and ".active" - enables VP
+        // Restores "class-wpdb.php", "class-wpdb.php.original" and ".active" - enables VP
         $resetCmd = 'git reset --hard';
 
         $process = VPCommandUtils::exec($resetCmd);
@@ -651,7 +651,7 @@ class VPCommand extends WP_CLI_Command
         }
 
         if (isset($assoc_args['continue'])) {
-            $process = new Process('git diff --name-only --diff-filter=U', VP_PROJECT_ROOT);
+            $process = Process::fromShellCommandline('git diff --name-only --diff-filter=U', VP_PROJECT_ROOT);
             $process->run();
 
             if ($process->getConsoleOutput() !== '') {

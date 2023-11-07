@@ -23,7 +23,7 @@ class WpdbReplacer
 
     public static function replaceMethods()
     {
-        $wpdbClassPath = ABSPATH . WPINC . '/wp-db.php';
+        $wpdbClassPath = ABSPATH . WPINC . '/class-wpdb.php';
         $wpdbSource = file_get_contents($wpdbClassPath);
 
         if (self::isReplaced()) {
@@ -50,15 +50,15 @@ class WpdbReplacer
 
     public static function isReplaced()
     {
-        $firstLine = fgets(fopen(ABSPATH . WPINC . '/wp-db.php', 'r'));
+        $firstLine = fgets(fopen(ABSPATH . WPINC . '/class-wpdb.php', 'r'));
         return Strings::contains($firstLine, self::$vpFirstLineComment);
     }
 
     public static function restoreOriginal()
     {
-        $original = ABSPATH . WPINC . '/wp-db.php.original';
+        $original = ABSPATH . WPINC . '/class-wpdb.php.original';
         if (file_exists($original)) {
-            rename($original, ABSPATH . WPINC . '/wp-db.php');
+            rename($original, ABSPATH . WPINC . '/class-wpdb.php');
         }
     }
 

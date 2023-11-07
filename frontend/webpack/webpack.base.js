@@ -1,4 +1,3 @@
-const CheckerPlugin = require('awesome-typescript-loader').CheckerPlugin;
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
 const webpack = require('webpack');
@@ -27,6 +26,7 @@ module.exports = (isDevelopment, options) => ({
     optimization: options.optimization,
     entry: options.entry,
     output: {
+      hashFunction: 'sha256',
         filename: '[name].js',
         path: path.join(baseDir, 'build'),
         publicPath: options.output && options.output.publicPath || '/static/',
@@ -34,7 +34,6 @@ module.exports = (isDevelopment, options) => ({
     cache: isDevelopment,
     devtool: isDevelopment ? 'source-map' : '',
     plugins: [
-        new CheckerPlugin(),
         new MiniCssExtractPlugin({
             filename: '[name].css'
         }),
@@ -62,9 +61,9 @@ module.exports = (isDevelopment, options) => ({
                                   plugins: ['react-hot-loader/babel'],
                               },
                           },
-                          'awesome-typescript-loader',
+                          'ts-loader',
                     ]
-                    : ['awesome-typescript-loader'],
+                    : ['ts-loader'],
             },
             {
                 test: /\.woff2?$|\.ttf$|\.eot$/,
