@@ -33,7 +33,7 @@ shell.exec('composer install -d plugins/versionpress --ignore-platform-reqs', { 
 
 //------------------------------------
 utils.printTaskHeading('Installing dependencies in frontend');
-shell.exec('npm i', { cwd: `${repoRoot}/frontend` });
+shell.exec('pnpm i', { cwd: `${repoRoot}/frontend` });
 
 //------------------------------------
 utils.printTaskHeading('Creating config.local.ts');
@@ -41,7 +41,7 @@ shell.cp('-n', `${repoRoot}/frontend/src/config/config.local.sample.ts`, `${repo
 
 //------------------------------------
 utils.printTaskHeading('Building and copying frontend to the plugin');
-shell.exec('npm run build', { cwd: `${repoRoot}/frontend` });
+shell.exec('pnpm run build', { cwd: `${repoRoot}/frontend` });
 shell.cp('-r', `${repoRoot}/frontend/build/.`, `${repoRoot}/plugins/versionpress/admin/public/gui`);
 
 utils.printTaskHeading('init-dev done');

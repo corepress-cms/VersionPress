@@ -15,7 +15,7 @@ import { repoRoot } from './script-utils';
 
   //------------------------------------
   utils.printTaskHeading('Build frontend');
-  shell.exec('npm run build', { cwd: `${repoRoot}/frontend` });
+  shell.exec('pnpm run build', { cwd: `${repoRoot}/frontend` });
   shell.cp('-r', `${repoRoot}/frontend/build/.`, `${repoRoot}/plugins/versionpress/admin/public/gui`);
 
   //------------------------------------
