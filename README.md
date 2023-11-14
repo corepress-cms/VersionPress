@@ -2,10 +2,6 @@
 
 ---
 
-💤 Please note that VersionPress is not actively developed, see [#1481](https://github.com/versionpress/versionpress/issues/1481).
-
----
-
 Combining the best of both worlds, VersionPress is a user-friendly versioning solution for WordPress powered by Git. You can:
 
 - See history of your site
