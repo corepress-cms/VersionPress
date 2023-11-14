@@ -9,7 +9,7 @@ interface OverviewProps {
   isLoading: boolean;
 }
 
-const Overview: React.StatelessComponent<OverviewProps> = ({ commit, className, isLoading }) => (
+const Overview: React.FunctionComponent<OverviewProps> = ({ commit, className, isLoading }) => (
   <tr className={className}>
     <td colSpan={4} />
     <td colSpan={2}>

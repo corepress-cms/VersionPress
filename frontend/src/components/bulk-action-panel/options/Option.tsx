@@ -7,7 +7,7 @@ interface OptionProps {
   option: BulkActionPanelOption;
 }
 
-const Option: React.StatelessComponent<OptionProps> = ({ option }) => (
+const Option: React.FunctionComponent<OptionProps> = ({ option }) => (
   <option value={option.value}>
     {option.title}
   </option>

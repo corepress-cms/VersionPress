@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-const UndoDisabledDialog: React.StatelessComponent<{}> = () => (
+const UndoDisabledDialog: React.FunctionComponent<{}> = () => (
   <div>
     <p className='undo-warning'>
       <span className='dashicons dashicons-warning' />

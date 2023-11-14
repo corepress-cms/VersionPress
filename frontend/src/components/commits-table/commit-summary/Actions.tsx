@@ -11,7 +11,7 @@ interface ActionsProps {
   onRollbackClick(): void;
 }
 
-const Actions: React.StatelessComponent<ActionsProps> = (props) => {
+const Actions: React.FunctionComponent<ActionsProps> = (props) => {
   const {
     commit,
     enableActions,

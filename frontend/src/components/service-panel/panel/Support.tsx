@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import config from '../../../config/config';
 
-const Support: React.StatelessComponent<{}> = () => (
+const Support: React.FunctionComponent<{}> = () => (
   <div>
     <h3>Community and support</h3>
     <ul>

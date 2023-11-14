@@ -11,7 +11,7 @@ interface MessageProps {
   onDetailsLevelChange(detailsLevel: DetailsLevel): void;
 }
 
-const Message: React.StatelessComponent<MessageProps> = ({ commit, detailsLevel, onDetailsLevelChange }) => (
+const Message: React.FunctionComponent<MessageProps> = ({ commit, detailsLevel, onDetailsLevelChange }) => (
   <td className='column-message'>
     {commit.isMerge &&
       <MergeIcon />

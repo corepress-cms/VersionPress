@@ -5,7 +5,7 @@ interface BodyProps {
   children?: React.ReactNode;
 }
 
-const Body: React.StatelessComponent<BodyProps> = ({ children }) => (
+const Body: React.FunctionComponent<BodyProps> = ({ children }) => (
   <div className='Modal-body'>
     {children}
   </div>

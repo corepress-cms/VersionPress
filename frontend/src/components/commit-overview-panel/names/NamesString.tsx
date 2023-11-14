@@ -12,7 +12,7 @@ interface NamesStringProps {
   countOfDuplicates: CountOfDuplicateChanges;
 }
 
-const NamesString: React.StatelessComponent<NamesStringProps> = ({ filteredChanges, countOfDuplicates }) => {
+const NamesString: React.FunctionComponent<NamesStringProps> = ({ filteredChanges, countOfDuplicates }) => {
   const names = renderNames(filteredChanges, countOfDuplicates);
 
   return (

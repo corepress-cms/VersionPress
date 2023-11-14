@@ -10,7 +10,7 @@ interface DetailProps {
   offset: number;
 }
 
-const Detail: React.StatelessComponent<DetailProps> = ({ environment, left, space, offset }) => (
+const Detail: React.FunctionComponent<DetailProps> = ({ environment, left, space, offset }) => (
   <div
     className='environment-detail'
     style={{

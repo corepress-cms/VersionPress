@@ -8,7 +8,7 @@ interface ChunkTableRowProps {
   rightLineType: string;
 }
 
-const ChunkTableRow: React.StatelessComponent<ChunkTableRowProps> = (props) => {
+const ChunkTableRow: React.FunctionComponent<ChunkTableRowProps> = (props) => {
   const {
     leftLineContent,
     leftLineType,

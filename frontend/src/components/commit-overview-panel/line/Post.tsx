@@ -6,7 +6,7 @@ import { observer } from 'mobx-react';
 import OverviewLine from './OverviewLine';
 import { LineProps } from './Line';
 
-const Post: React.StatelessComponent<LineProps> = (props) => {
+const Post: React.FunctionComponent<LineProps> = (props) => {
   const {
     changes,
     expandedLists,

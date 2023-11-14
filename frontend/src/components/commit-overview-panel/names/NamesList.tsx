@@ -14,7 +14,7 @@ interface NamesListProps {
 
 const displayedListLength = 3;
 
-const NamesList: React.StatelessComponent<NamesListProps> = (props) => {
+const NamesList: React.FunctionComponent<NamesListProps> = (props) => {
   const {
     filteredChanges,
     countOfDuplicates,

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-const MergeIcon: React.StatelessComponent<{}> = () => (
+const MergeIcon: React.FunctionComponent<{}> = () => (
   <span
     className='merge-icon'
     title='Merge commit'

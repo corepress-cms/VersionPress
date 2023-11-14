@@ -2,14 +2,16 @@
   "compilerOptions": {
     "module": "commonjs",
     "sourceMap": true,
-    "target": "es5",
+    "target": "es2020",
     "jsx": "react",
-    "lib": ["es2016", "dom"],
+    "lib": ["es2020", "dom"],
     "experimentalDecorators": true,
     "strict": true,
     "strictFunctionTypes": false,
     "strictPropertyInitialization": false,
-    "typeRoots" : ["./node_modules/@types/"]
+    "typeRoots" : ["./node_modules/@types/"],
+    // TODO: Move to native ESM
+    "esModuleInterop": true
   },
   "include": [
     "src/**/*.ts",

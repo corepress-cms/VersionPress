@@ -7,7 +7,7 @@ interface ItemHeaderProps {
   item: GroupedItem;
 }
 
-const ItemHeader: React.StatelessComponent<ItemHeaderProps> = ({ item }) => {
+const ItemHeader: React.FunctionComponent<ItemHeaderProps> = ({ item }) => {
   const sectionTitle = item.section;
 
   if (!sectionTitle) {

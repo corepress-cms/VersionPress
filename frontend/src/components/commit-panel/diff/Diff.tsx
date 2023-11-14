@@ -7,7 +7,7 @@ interface DiffProps {
   diff: string;
 }
 
-const Diff: React.StatelessComponent<DiffProps> = ({ diff }) => (
+const Diff: React.FunctionComponent<DiffProps> = ({ diff }) => (
   <CommitDiffPanel diff={diff} />
 );
 

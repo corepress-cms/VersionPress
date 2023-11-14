@@ -10,7 +10,7 @@ interface DiffProps {
   diff: Diff;
 }
 
-const Diff: React.StatelessComponent<DiffProps> = ({ diff }) => (
+const Diff: React.FunctionComponent<DiffProps> = ({ diff }) => (
   <div className='CommitDiffPanel'>
     <h4 className='heading'>
       {(diff.from === '/dev/null' ? diff.to : diff.from).substr(2)}

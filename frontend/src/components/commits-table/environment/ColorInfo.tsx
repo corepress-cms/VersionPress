@@ -8,7 +8,7 @@ interface ColorInfoProps {
   onToggleShowVisualisation(): void;
 }
 
-const ColorInfo: React.StatelessComponent<ColorInfoProps> = ({ environment, onToggleShowVisualisation }) => (
+const ColorInfo: React.FunctionComponent<ColorInfoProps> = ({ environment, onToggleShowVisualisation }) => (
   <div
     className='environment-info'
     style={{ backgroundColor: getGitBranchColor(environment) }}

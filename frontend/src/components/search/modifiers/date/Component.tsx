@@ -1,10 +1,11 @@
 import * as React from 'react';
-import DayPicker from 'react-day-picker';
-import * as moment from 'moment';
+import { DayPicker } from 'react-day-picker';
+import { isSameDay, add, sub } from "date-fns";
+import { parse } from './adapter';
 
 import ModifierComponent from '../ModifierComponent';
 
-import 'react-day-picker/lib/style.css';
+import 'react-day-picker/dist/style.css';
 
 export default class DateComponent extends ModifierComponent<{}> {
 
@@ -15,7 +16,7 @@ export default class DateComponent extends ModifierComponent<{}> {
     const cursorLocationType = this.getCursorLocationType();
 
     if (adapter.isValueValid(date) && date && cursorLocationType) {
-      const newDate = moment(date).add(1, cursorLocationType);
+      const newDate = add(parse(date), {[cursorLocationType]: 1});
       onChangeTokenModel(activeTokenIndex, newDate, false);
     }
   }
@@ -27,7 +28,7 @@ export default class DateComponent extends ModifierComponent<{}> {
     const cursorLocationType = this.getCursorLocationType();
 
     if (adapter.isValueValid(date) && date && cursorLocationType) {
-      const newDate = moment(date).subtract(1, cursorLocationType);
+      const newDate = sub(parse(date), {[cursorLocationType]: 1});
       onChangeTokenModel(activeTokenIndex, newDate, false);
     }
   }
@@ -46,7 +47,7 @@ export default class DateComponent extends ModifierComponent<{}> {
 
   onDayClick = (e: any, day: any) => {
     const { activeTokenIndex, onChangeTokenModel } = this.props;
-    onChangeTokenModel(activeTokenIndex, moment(day), true);
+    onChangeTokenModel(activeTokenIndex, parse(day), true);
   }
 
   getCursorLocationType = () => {
@@ -78,9 +79,9 @@ export default class DateComponent extends ModifierComponent<{}> {
       <div onMouseDown={e => e.preventDefault()} className='Search-hintMenu-container'>
         {isValid
           ? <DayPicker
-              initialMonth={selectedDay}
+              defaultMonth={selectedDay}
               onDayClick={this.onDayClick}
-              selectedDays={day => DayPicker.DateUtils.isSameDay(selectedDay, day)}
+              selected={day => isSameDay(selectedDay, day)}
             />
           : <DayPicker
               onDayClick={this.onDayClick}

@@ -15,7 +15,7 @@ interface ChunkTableProps {
   chunk: Chunk;
 }
 
-const ChunkTable: React.StatelessComponent<ChunkTableProps> = ({ chunk }) => {
+const ChunkTable: React.FunctionComponent<ChunkTableProps> = ({ chunk }) => {
   const [left, right] = divideToLeftAndRightColumn(chunk);
 
   return (

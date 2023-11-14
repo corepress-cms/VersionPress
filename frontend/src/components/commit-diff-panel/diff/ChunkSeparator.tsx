@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-const ChunkSeparator: React.StatelessComponent<{}> = () => (
+const ChunkSeparator: React.FunctionComponent<{}> = () => (
   <table className='chunk-separator'>
     <tbody>
       <tr className='line'>

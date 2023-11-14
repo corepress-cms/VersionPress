@@ -8,7 +8,7 @@ interface NameProps {
   countOfDuplicates: any;
 }
 
-const Name: React.StatelessComponent<NameProps> = ({ change, countOfDuplicates }) => {
+const Name: React.FunctionComponent<NameProps> = ({ change, countOfDuplicates }) => {
   const { type, action, name } = change;
 
   const count = countOfDuplicates[type][action][name];

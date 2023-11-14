@@ -10,7 +10,7 @@ interface HintProps {
   adapter: Adapter;
 }
 
-const Hint: React.StatelessComponent<HintProps> = ({ token, adapter }) => {
+const Hint: React.FunctionComponent<HintProps> = ({ token, adapter }) => {
   const value = trim(token.value, true);
 
   const hint = value.length

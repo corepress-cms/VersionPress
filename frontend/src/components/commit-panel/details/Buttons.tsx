@@ -8,7 +8,7 @@ interface ButtonsProps {
   onDetailsLevelChange(detailsLevel: DetailsLevel): void;
 }
 
-const Buttons: React.StatelessComponent<ButtonsProps> = ({ detailsLevel, onDetailsLevelChange }) => {
+const Buttons: React.FunctionComponent<ButtonsProps> = ({ detailsLevel, onDetailsLevelChange }) => {
   return (
     <div className='CommitPanel-details-buttons'>
       <button

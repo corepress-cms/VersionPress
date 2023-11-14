@@ -10,7 +10,7 @@ interface HeaderProps {
   onCloseClick(): void;
 }
 
-const Header: React.StatelessComponent<HeaderProps> = ({ title, showCloseIcon, onCloseClick }) => (
+const Header: React.FunctionComponent<HeaderProps> = ({ title, showCloseIcon, onCloseClick }) => (
   <div className='Modal-header'>
     <Title title={title} />
     {showCloseIcon &&

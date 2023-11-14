@@ -6,7 +6,7 @@ interface QueryInputProps {
   onChange(query: string): void;
 }
 
-const QueryInput: React.StatelessComponent<QueryInputProps> = ({ query, onChange }) => (
+const QueryInput: React.FunctionComponent<QueryInputProps> = ({ query, onChange }) => (
   <input
     type='search'
     className='Filter-query'

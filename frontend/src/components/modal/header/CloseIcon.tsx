@@ -4,7 +4,7 @@ interface CloseIconProps {
   onClick(): void;
 }
 
-const CloseIcon: React.StatelessComponent<CloseIconProps> = ({ onClick }) => (
+const CloseIcon: React.FunctionComponent<CloseIconProps> = ({ onClick }) => (
   <a
     href='#'
     className='Modal-close'

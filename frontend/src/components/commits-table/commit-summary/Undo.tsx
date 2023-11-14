@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as classNames from 'classnames';
+import classNames from 'classnames';
 import { observer } from 'mobx-react';
 
 interface UndoProps {
@@ -8,7 +8,7 @@ interface UndoProps {
   onClick(): void;
 }
 
-const Undo: React.StatelessComponent<UndoProps> = ({ commit, enableActions, onClick }) => {
+const Undo: React.FunctionComponent<UndoProps> = ({ commit, enableActions, onClick }) => {
   const undoClassName = classNames({
     'vp-table-undo': true,
     'disabled': commit.isMerge || !enableActions,

@@ -17,7 +17,7 @@ export interface PopupProps {
   onChangeTokenModel(tokenIndex: number, model: any, shouldMoveCursor: boolean): void;
 }
 
-const Popup: React.StatelessComponent<PopupProps> = (props) => {
+const Popup: React.FunctionComponent<PopupProps> = (props) => {
   const { nodeRef, token } = props;
   const childProps: PopupProps = Object.assign({}, props, { ref: nodeRef });
 

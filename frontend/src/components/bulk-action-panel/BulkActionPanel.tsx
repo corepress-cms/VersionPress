@@ -21,8 +21,7 @@ interface BulkActionPanelState {
   options: BulkActionPanelOption[];
 }
 
-@observer
-export default class BulkActionPanel extends React.Component<BulkActionPanelProps, BulkActionPanelState> {
+class BulkActionPanel extends React.Component<BulkActionPanelProps, BulkActionPanelState> {
 
   state = {
     options: [
@@ -90,3 +89,5 @@ export default class BulkActionPanel extends React.Component<BulkActionPanelProp
   }
 
 }
+
+export default observer(BulkActionPanel);

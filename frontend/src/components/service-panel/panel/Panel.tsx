@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as classNames from 'classnames';
+import classNames from 'classnames';
 import { observer } from 'mobx-react';
 
 import Support from './Support';
@@ -9,7 +9,7 @@ interface PanelProps {
   isVisible: boolean;
 }
 
-const Panel: React.StatelessComponent<PanelProps> = ({ isVisible }) => {
+const Panel: React.FunctionComponent<PanelProps> = ({ isVisible }) => {
   const wrapperClassName = classNames({
     'ServicePanel-wrapper': true,
     'ServicePanel-wrapper--hide': !isVisible,

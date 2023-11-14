@@ -1,8 +1,8 @@
 /// <reference path='../interfaces/Visualisation.d.ts' />
 /// <reference path='../components/common/Commits.d.ts' />
 
-import { action, computed, observable } from 'mobx';
-import * as _ from 'lodash';
+import { action, computed, observable, makeObservable } from 'mobx';
+import differenceBy from 'lodash/differenceBy';
 
 import appStore from './appStore';
 import { indexOf } from '../utils/CommitUtils';
@@ -12,31 +12,47 @@ import CommitRow from '../entities/CommitRow';
 import navigationStore from './navigationStore';
 
 class CommitsTableStore {
-
-  @observable commitRows: CommitRow[] = [];
-  @observable pages: number[] = [];
-  @observable showVisualisation: boolean = localStorage
+  commitRows: CommitRow[] = [];
+  pages: number[] = [];
+  showVisualisation: boolean = localStorage
     ? !!localStorage.getItem('showVisualization')
     : false;
 
-  @computed get commits() {
+  constructor() {
+    makeObservable(this, {
+      commitRows: observable,
+      pages: observable,
+      showVisualisation: observable,
+      commits: computed,
+      selectableCommits: computed,
+      areAllCommitsSelected: computed,
+      branches: computed,
+      toggleShowVisualisation: action,
+      setCommitRows: action,
+      setPages: action,
+      setSelectedCommits: action,
+      reset: action
+    });
+  }
+
+  get commits() {
     return this.commitRows.map(row => row.commit);
   }
 
-  @computed get selectableCommits() {
+  get selectableCommits() {
     return this.commits.filter((commit: Commit) => commit.canUndo);
   }
 
-  @computed get areAllCommitsSelected() {
+  get areAllCommitsSelected() {
     return this.commits.length > 0 &&
-      !_.differenceBy(this.selectableCommits, appStore.selectedCommits, ((value: Commit) => value.hash)).length;
+      !differenceBy(this.selectableCommits, appStore.selectedCommits, ((value: Commit) => value.hash)).length;
   }
 
-  @computed get branches() {
+  get branches() {
     let branches: number[] = [];
 
     this.commitRows.forEach(commitRow => {
-      const { branch } = commitRow.visualisation;
+      const { branch } = commitRow.visualisation!;
       if (branches.indexOf(branch) === -1) {
         branches.push(branch);
       }
@@ -45,7 +61,7 @@ class CommitsTableStore {
     return branches.length;
   }
 
-  @action toggleShowVisualisation = (showVisualisation?: boolean) => {
+  toggleShowVisualisation = (showVisualisation?: boolean) => {
     if (typeof showVisualisation !== 'boolean' && navigationStore.activeQuery !== '') {
       return;
     }
@@ -56,9 +72,9 @@ class CommitsTableStore {
     if (localStorage) {
       localStorage.setItem('showVisualization', this.showVisualisation ? 'true' : '');
     }
-  }
+  };
 
-  @action setCommitRows = (commitRows: CommitRow[]) => {
+  setCommitRows = (commitRows: CommitRow[]) => {
     this.commitRows = commitRows;
 
     let graphStructure: CommitGraph[] = [];
@@ -97,23 +113,22 @@ class CommitsTableStore {
         environments[visualization[i].environment] = true;
       }
     });
-  }
+  };
 
-  @action setPages = (pages: number[]) => {
+  setPages = (pages: number[]) => {
     this.pages = pages;
-  }
+  };
 
-  @action setSelectedCommits = (selectedCommits: Commit[]) => {
+  setSelectedCommits = (selectedCommits: Commit[]) => {
     this.commitRows.forEach(commitRow => {
       commitRow.isSelected = indexOf(selectedCommits, commitRow.commit) !== -1;
     });
-  }
+  };
 
-  @action reset = () => {
+  reset = () => {
     this.commitRows = [];
     this.pages = [];
-  }
-
+  };
 }
 
 const commitsTableStore = new CommitsTableStore();

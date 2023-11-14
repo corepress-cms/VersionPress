@@ -14,9 +14,7 @@ interface NavigationProps {
   navigationStore?: NavigationStore;
 }
 
-@inject('appStore', 'navigationStore')
-@observer
-export default class Navigation extends React.Component<NavigationProps, {}> {
+class Navigation extends React.Component<NavigationProps, {}> {
 
   onFilterQueryChange = (query: string) => {
     const { navigationStore } = this.props;
@@ -58,3 +56,5 @@ export default class Navigation extends React.Component<NavigationProps, {}> {
   }
 
 }
+
+export default inject('appStore', 'navigationStore')(observer(Navigation));

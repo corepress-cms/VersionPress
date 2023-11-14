@@ -5,7 +5,7 @@ interface DetailsProps {
   text: string;
 }
 
-const Details: React.StatelessComponent<DetailsProps> = ({ text }) => (
+const Details: React.FunctionComponent<DetailsProps> = ({ text }) => (
   <p className='FlashMessage-details'>
     {text}
   </p>

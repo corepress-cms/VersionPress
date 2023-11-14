@@ -8,7 +8,7 @@ interface TokenProps {
   adapter: Adapter;
 }
 
-const Token: React.StatelessComponent<TokenProps> = ({ token, adapter }) => {
+const Token: React.FunctionComponent<TokenProps> = ({ token, adapter }) => {
   if (isExcluded(token)) {
     if (adapter.isValueValid(token.value)) {
       return (

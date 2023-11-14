@@ -4,7 +4,7 @@ interface NoteProps {
   children?: React.ReactNode;
 }
 
-const Note: React.StatelessComponent<NoteProps> = ({ children }) => (
+const Note: React.FunctionComponent<NoteProps> = ({ children }) => (
   <tbody>
     <tr className='note'>
       <td colSpan={6}>

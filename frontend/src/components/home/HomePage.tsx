@@ -2,8 +2,9 @@
 /// <reference path='../../interfaces/State.d.ts' />
 
 import * as React from 'react';
+import { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
-import { RouteComponentProps } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import CommitPanel from '../commit-panel/CommitPanel';
 import CommitsTable from '../commits-table/CommitsTable';
@@ -20,61 +21,58 @@ import { LoadingStore } from '../../stores/loadingStore';
 
 import './HomePage.less';
 
-interface HomePageProps extends RouteComponentProps<{page?: string }> {
+interface HomePageProps {
   appStore?: AppStore;
   loadingStore?: LoadingStore;
 }
 
-@inject('appStore', 'loadingStore')
-@observer
-export default class HomePage extends React.Component<HomePageProps, {}> {
+let HomePage: React.FunctionComponent<HomePageProps> = (props: HomePageProps) => {
+  const params = useParams();
 
-  componentDidMount() {
-    const { appStore, match } = this.props;
-
-    if (match.params.page) {
-      appStore!.setPage(match.params.page);
+  useEffect(() => {
+    const { appStore } = props;
+    if (params.page) {
+      appStore!.setPage(params.page);
     }
 
     fetchWelcomePanel();
     fetchCommits();
     fetchSearchConfig();
-  }
+  }, [params.page]);
 
-  componentWillReceiveProps(nextProps: HomePageProps) {
-    const page = nextProps.match.params.page || 0;
+  useEffect(() => {
+    const page = params.page || 0;
 
     fetchCommits(page);
-  }
+  }, [params.page]);
 
-  render() {
-    const { appStore, loadingStore } = this.props;
-    const {
-      displayWelcomePanel,
-      displayUpdateNotice,
-      isDirtyWorkingDirectory,
-    } = appStore!;
-    const { progress } = loadingStore!;
+  const { appStore, loadingStore } = props;
+  const {
+    displayWelcomePanel,
+    displayUpdateNotice,
+    isDirtyWorkingDirectory,
+  } = appStore!;
+  const { progress } = loadingStore!;
 
-    return (
-      <div>
-        <ProgressBar progress={progress} />
-        <ServicePanel>
-          <VpTitle />
-        </ServicePanel>
-        {isDirtyWorkingDirectory &&
-          <CommitPanel />
-        }
-        {displayWelcomePanel &&
-          <WelcomePanel onHide={hideWelcomePanel} />
-        }
-        {displayUpdateNotice &&
-          <UpdateNotice onClick={fetchCommits} />
-        }
-        <Navigation />
-        <CommitsTable />
-      </div>
-    );
-  }
-
+  return (
+    <div>
+      <ProgressBar progress={progress} />
+      <ServicePanel>
+        <VpTitle />
+      </ServicePanel>
+      {isDirtyWorkingDirectory &&
+        <CommitPanel />
+      }
+      {displayWelcomePanel &&
+        <WelcomePanel onHide={hideWelcomePanel} />
+      }
+      {displayUpdateNotice &&
+        <UpdateNotice onClick={fetchCommits} />
+      }
+      <Navigation />
+      <CommitsTable />
+    </div>
+  );
 }
+
+export default inject('appStore', 'loadingStore')(observer(HomePage));

@@ -15,8 +15,7 @@ interface CommitState {
   commitMessage?: string;
 }
 
-@observer
-export default class Commit extends React.Component<CommitProps, CommitState> {
+class Commit extends React.Component<CommitProps, CommitState> {
 
   state = {
     isFormVisible: false,
@@ -76,3 +75,5 @@ export default class Commit extends React.Component<CommitProps, CommitState> {
   }
 
 }
+
+export default observer(Commit);

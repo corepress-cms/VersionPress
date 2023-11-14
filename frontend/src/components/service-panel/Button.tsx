@@ -6,7 +6,7 @@ interface ButtonProps {
   onClick(): void;
 }
 
-const Button: React.StatelessComponent<ButtonProps> = ({ onClick }) => (
+const Button: React.FunctionComponent<ButtonProps> = ({ onClick }) => (
   <button
     className='ServicePanelButton'
     onClick={onClick}

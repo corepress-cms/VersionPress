@@ -15,8 +15,7 @@ interface ModalProps {
   onClose?(): void;
 }
 
-@observer
-export default class Modal extends React.Component<ModalProps, {}> {
+class Modal extends React.Component<ModalProps, {}> {
 
   static defaultProps = {
     enableBackgroundClickToClose: true,
@@ -83,3 +82,5 @@ export default class Modal extends React.Component<ModalProps, {}> {
   }
 
 }
+
+export default observer(Modal);

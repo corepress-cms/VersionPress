@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as classNames from 'classnames';
+import classNames from 'classnames';
 import { observer } from 'mobx-react';
 
 interface ShowDetailsProps {
@@ -7,7 +7,7 @@ interface ShowDetailsProps {
   onClick(): void;
 }
 
-const ShowDetails: React.StatelessComponent<ShowDetailsProps> = ({ isActive, onClick }) => {
+const ShowDetails: React.FunctionComponent<ShowDetailsProps> = ({ isActive, onClick }) => {
   const showDetailsClassName = classNames({
     'FlashMessage-detailsLink-displayed': isActive,
     'FlashMessage-detailsLink-hidden': !isActive,

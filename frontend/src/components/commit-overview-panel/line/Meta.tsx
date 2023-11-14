@@ -11,7 +11,7 @@ interface MetaProps extends LineProps {
   groupByTag: string;
 }
 
-const Meta: React.StatelessComponent<MetaProps> = (props) => {
+const Meta: React.FunctionComponent<MetaProps> = (props) => {
   const {
     changes,
     parentEntity,

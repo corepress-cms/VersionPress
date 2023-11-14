@@ -20,7 +20,7 @@ interface InputProps {
   onChange?(e: React.FormEvent<HTMLInputElement>): void;
 }
 
-const Input: React.StatelessComponent<InputProps> = (props) => {
+const Input: React.FunctionComponent<InputProps> = (props) => {
   const {
     nodeRef,
     maxLength = 250,

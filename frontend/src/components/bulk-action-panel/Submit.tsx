@@ -6,7 +6,7 @@ interface SubmitProps {
   onSubmit(): void;
 }
 
-const Submit: React.StatelessComponent<SubmitProps> = ({ isDisabled, onSubmit }) => (
+const Submit: React.FunctionComponent<SubmitProps> = ({ isDisabled, onSubmit }) => (
   <input
     type='submit'
     id='BulkActionPanel-doaction'

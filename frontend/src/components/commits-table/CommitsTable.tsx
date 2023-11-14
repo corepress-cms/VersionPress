@@ -1,8 +1,9 @@
 /// <reference path='../common/Commits.d.ts' />
 
 import * as React from 'react';
-import * as classNames from 'classnames';
-import * as moment from 'moment';
+import classNames from 'classnames';
+import {format} from 'date-fns';
+import { parse } from '../search/modifiers/date/adapter';
 import { inject, observer } from 'mobx-react';
 
 import { undoCommits, rollbackToCommit, selectCommits } from '../../actions';
@@ -28,9 +29,7 @@ interface CommitsTableProps {
   loadingStore?: LoadingStore;
 }
 
-@inject('appStore', 'commitsTableStore', 'navigationStore', 'loadingStore')
-@observer
-export default class CommitsTable extends React.Component<CommitsTableProps, {}> {
+class CommitsTable extends React.Component<CommitsTableProps, {}> {
 
   onSelectAllChange = (isChecked: boolean) => {
     const { commitsTableStore } = this.props;
@@ -48,7 +47,7 @@ export default class CommitsTable extends React.Component<CommitsTableProps, {}>
 
   onRollback = (hash: string, date: string) => {
     const title = (
-      <span>Roll back to <em>{moment(date).format('LLL')}</em>?</span>
+      <span>Roll back to <em>{format(parse(date), 'LLL')}</em>?</span>
     );
 
     revertDialog(title, () => rollbackToCommit(hash));
@@ -133,3 +132,5 @@ export default class CommitsTable extends React.Component<CommitsTableProps, {}>
   }
 
 }
+
+export default inject('appStore', 'commitsTableStore', 'navigationStore', 'loadingStore')(observer(CommitsTable));

@@ -1,6 +1,6 @@
 /// <reference path='../components/common/Commits.d.ts' />
 
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, makeObservable } from 'mobx';
 import { History } from 'history';
 
 import { checkUpdate } from '../actions';
@@ -8,52 +8,64 @@ import { parsePageNumber } from '../actions/utils';
 
 class AppStore {
 
-  @observable page: number = 0;
-  @observable selectedCommits: Commit[] = [];
-  @observable lastSelectedCommit: Commit | null = null;
-  @observable displayWelcomePanel: boolean = false;
-  @observable displayUpdateNotice: boolean = false;
-  @observable isDirtyWorkingDirectory: boolean = false;
+  page: number = 0;
+  selectedCommits: Commit[] = [];
+  lastSelectedCommit: Commit | null = null;
+  displayWelcomePanel: boolean = false;
+  displayUpdateNotice: boolean = false;
+  isDirtyWorkingDirectory: boolean = false;
 
-  @observable appHistory: History;
+  appHistory: History;
 
   refreshInterval: number;
 
   constructor() {
+    makeObservable(this, {
+      page: observable,
+      selectedCommits: observable,
+      lastSelectedCommit: observable,
+      displayWelcomePanel: observable,
+      displayUpdateNotice: observable,
+      isDirtyWorkingDirectory: observable,
+      enableActions: computed,
+      setPage: action,
+      setDisplayUpdateNotice: action,
+      setDisplayWelcomePanel: action,
+      setDirtyWorkingDirectory: action,
+      setLastSelectedCommit: action,
+      setSelectedCommits: action
+    });
+
     this.refreshInterval = window.setInterval(() => checkUpdate(), 10 * 1000);
   }
 
-  @computed get enableActions() {
+  get enableActions() {
     return !this.isDirtyWorkingDirectory;
   }
 
-  @action setAppHistory(appHistory: History) {
-    this.appHistory = appHistory;
-  }
-
-  @action setPage = (page: number | string) => {
+  setPage = (page: number | string) => {
     this.page = parsePageNumber(page);
-  }
+  };
 
-  @action setDisplayUpdateNotice = (displayUpdateNotice: boolean) => {
+  setDisplayUpdateNotice = (displayUpdateNotice: boolean) => {
     this.displayUpdateNotice = displayUpdateNotice;
-  }
+  };
 
-  @action setDisplayWelcomePanel = (displayWelcomePanel: boolean) => {
+  setDisplayWelcomePanel = (displayWelcomePanel: boolean) => {
     this.displayWelcomePanel = displayWelcomePanel;
-  }
+  };
 
-  @action setDirtyWorkingDirectory = (isDirtyWorkingDirectory: boolean) => {
+  setDirtyWorkingDirectory = (isDirtyWorkingDirectory: boolean) => {
     this.isDirtyWorkingDirectory = isDirtyWorkingDirectory;
-  }
+  };
 
-  @action setLastSelectedCommit = (lastSelectedCommit: Commit | null) => {
+  setLastSelectedCommit = (lastSelectedCommit: Commit | null) => {
     this.lastSelectedCommit = lastSelectedCommit;
-  }
+  };
 
-  @action setSelectedCommits = (selectedCommits: Commit[]) => {
+  setSelectedCommits = (selectedCommits: Commit[]) => {
     this.selectedCommits = selectedCommits;
-  }
+  };
 
 }
 

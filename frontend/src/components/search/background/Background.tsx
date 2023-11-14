@@ -16,7 +16,7 @@ interface BackgroundProps {
   getAdapter(token: Token): Adapter;
 }
 
-const Background: React.StatelessComponent<BackgroundProps> = (props) => {
+const Background: React.FunctionComponent<BackgroundProps> = (props) => {
   const {
     nodeRef,
     tokens,

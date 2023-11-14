@@ -1,41 +1,54 @@
 /// <reference path='../services/VpApi.d.ts' />
 
-import { action, observable } from 'mobx';
+import { action, observable, makeObservable } from 'mobx';
 
 import DetailsLevel from '../enums/DetailsLevel';
 
 class CommitPanelStore {
+  detailsLevel: DetailsLevel = DetailsLevel.None;
+  diff?: string = undefined;
+  gitStatus?: VpApi.GetGitStatusResponse = undefined;
+  error?: string = undefined;
+  isLoading: boolean = false;
 
-  @observable detailsLevel: DetailsLevel = DetailsLevel.None;
-  @observable diff: string;
-  @observable gitStatus: VpApi.GetGitStatusResponse;
-  @observable error: string;
-  @observable isLoading: boolean = false;
+  constructor() {
+    makeObservable(this, {
+      detailsLevel: observable,
+      diff: observable,
+      gitStatus: observable,
+      error: observable,
+      isLoading: observable,
+      setDetailsLevel: action,
+      setError: action,
+      setLoading: action,
+      setGitStatus: action,
+      setDiff: action
+    });
+  }
 
   get hash() {
     return '';
   }
 
-  @action setDetailsLevel = (detailsLevel: DetailsLevel) => {
+  setDetailsLevel = (detailsLevel: DetailsLevel) => {
     this.detailsLevel = detailsLevel;
-  }
+  };
 
-  @action setError = (error: string) => {
+  setError = (error: string) => {
     this.error = error;
-  }
+  };
 
-  @action setLoading = (isLoading: boolean) => {
+  setLoading = (isLoading: boolean) => {
     this.isLoading = isLoading;
-  }
+  };
 
-  @action setGitStatus(gitStatus: VpApi.GetGitStatusResponse) {
+  setGitStatus(gitStatus: VpApi.GetGitStatusResponse) {
     this.gitStatus = gitStatus;
   }
 
-  @action setDiff(diff: string) {
+  setDiff(diff: string) {
     this.diff = diff;
   }
-
 }
 
 const commitPanelStore = new CommitPanelStore();

@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import * as classNames from 'classnames';
+import classNames from 'classnames';
 
 import FullDiff from './FullDiff';
 import Overview from './Overview';
@@ -15,7 +15,7 @@ interface CommitDetailsProps {
   isLoading?: boolean;
 }
 
-const CommitDetails: React.StatelessComponent<CommitDetailsProps> = (props) => {
+const CommitDetails: React.FunctionComponent<CommitDetailsProps> = (props) => {
   const {
     commit,
     detailsLevel,

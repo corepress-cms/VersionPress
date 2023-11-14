@@ -9,7 +9,7 @@ interface ItemListItemProps {
   onSelectItem(index: number): void;
 }
 
-const ItemListItem: React.StatelessComponent<ItemListItemProps> = (props) => {
+const ItemListItem: React.FunctionComponent<ItemListItemProps> = (props) => {
   const { item, currentIndex, onSelectItem } = props;
   const className = currentIndex === item.index ? 'is-current' : '';
 

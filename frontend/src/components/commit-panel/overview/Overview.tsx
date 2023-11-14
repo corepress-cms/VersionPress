@@ -12,8 +12,7 @@ interface OverviewState {
   isExpanded: boolean;
 }
 
-@observer
-export default class Overview extends React.Component<OverviewProps, OverviewState> {
+class Overview extends React.Component<OverviewProps, OverviewState> {
 
   private static displayedListLength: number = 5;
 
@@ -58,3 +57,5 @@ export default class Overview extends React.Component<OverviewProps, OverviewSta
   }
 
 }
+
+export default observer(Overview);

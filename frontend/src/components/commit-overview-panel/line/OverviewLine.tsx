@@ -17,7 +17,7 @@ interface OverviewLineProps {
   onShowMoreClick(listKey: string): void;
 }
 
-const OverviewLine: React.StatelessComponent<OverviewLineProps> = (props) => {
+const OverviewLine: React.FunctionComponent<OverviewLineProps> = (props) => {
   const {
     expandedLists,
     changes,

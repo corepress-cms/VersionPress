@@ -1,11 +1,11 @@
 /// <reference path='../../Search.d.ts' />
 /// <reference path='../Adapter.d.ts' />
 
-import * as moment from 'moment';
+import { format, parse as _parse } from 'date-fns';
 
 import { getMatch } from '../../utils/';
 
-const DATE_FORMAT = 'YYYY-MM-DD';
+export const DATE_FORMAT = 'yyyy-MM-dd';
 const DATE_FORMAT_REGEXP = /^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/;
 
 class DateAdapter implements Adapter {
@@ -23,19 +23,27 @@ class DateAdapter implements Adapter {
   }
 
   getDefaultHint = () => {
-    return moment().format(DATE_FORMAT);
+    return format(Date.now(), DATE_FORMAT);
   }
 
   getHints = (token: Token) => {
     if (token) {
-      const possibleValues = [moment().format(DATE_FORMAT)];
+      const possibleValues = [format(Date.now(), DATE_FORMAT)];
       return getMatch(token.value, possibleValues);
     }
     return [];
   }
 
   isValueValid = (value: string) => {
-    return DATE_FORMAT_REGEXP.test(value) && moment(value, DATE_FORMAT).isValid();
+    if (!DATE_FORMAT_REGEXP.test(value)) {
+      return false;
+    }
+    try {
+      parse(value);
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   serialize = (date: any) => {
@@ -44,11 +52,11 @@ class DateAdapter implements Adapter {
     }
     if (typeof date === 'string') {
       if (this.isValueValid(date)) {
-        return moment(date).format(DATE_FORMAT);
+        return format(parse(date), DATE_FORMAT);
       }
       return date;
     }
-    return (date as moment.Moment).format(DATE_FORMAT);
+    return format(date, DATE_FORMAT);
   }
 
   deserialize = (value: string) => {
@@ -58,3 +66,15 @@ class DateAdapter implements Adapter {
 }
 
 export default DateAdapter;
+
+export const parse = (value: string) => {
+  try {
+    let date = _parse(value, DATE_FORMAT, new Date());
+    if (isNaN(date.getTime())) {
+      throw new Error('Invalid date');
+    }
+    return date;
+  } catch {
+    return Date.parse(value);
+  }
+}

@@ -7,7 +7,7 @@ interface VersionPressProps {
   action: string;
 }
 
-const VersionPress: React.StatelessComponent<VersionPressProps> = ({ action }) => (
+const VersionPress: React.FunctionComponent<VersionPressProps> = ({ action }) => (
   <span>
     {StringUtils.capitalize(StringUtils.verbToPastTense(action))}
     {' '}

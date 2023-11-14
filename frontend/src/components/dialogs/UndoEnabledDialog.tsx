@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-const UndoEnabledDialog: React.StatelessComponent<{}> = () => (
+const UndoEnabledDialog: React.FunctionComponent<{}> = () => (
   <div>
     <p>
       For Developer Preview releases, please have a backup. {' '}

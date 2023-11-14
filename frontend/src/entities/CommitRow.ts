@@ -1,45 +1,60 @@
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, makeObservable } from 'mobx';
 
 import DetailsLevel from '../enums/DetailsLevel';
 
 class CommitRow {
 
-  @observable commit: Commit;
-  @observable isSelected: boolean = false;
-  @observable detailsLevel: DetailsLevel = DetailsLevel.None;
-  @observable diff: string;
-  @observable error: string;
-  @observable isLoading: boolean = false;
-  @observable visualisation: Visualisation;
+  commit: Commit;
+  isSelected: boolean = false;
+  detailsLevel: DetailsLevel = DetailsLevel.None;
+  diff: string = "";
+  error: string = "";
+  isLoading: boolean = false;
+  visualisation: Visualisation | null = null;
 
   constructor(commit: Commit, isSelected: boolean = false) {
     this.commit = commit;
     this.isSelected = isSelected;
+    makeObservable(this, {
+      commit: observable,
+      isSelected: observable,
+      detailsLevel: observable,
+      diff: observable,
+      error: observable,
+      isLoading: observable,
+      visualisation: observable,
+      hash: computed,
+      setDetailsLevel: action,
+      setError: action,
+      setLoading: action,
+      setDiff: action,
+      setVisualisation: action
+    });
   }
 
-  @computed get hash() {
+  get hash() {
     return this.commit.hash;
   }
 
-  @action setDetailsLevel = (detailsLevel: DetailsLevel) => {
+  setDetailsLevel = (detailsLevel: DetailsLevel) => {
     this.detailsLevel = detailsLevel;
-  }
+  };
 
-  @action setError = (error: string) => {
+  setError = (error: string) => {
     this.error = error;
-  }
+  };
 
-  @action setLoading = (isLoading: boolean) => {
+  setLoading = (isLoading: boolean) => {
     this.isLoading = isLoading;
-  }
+  };
 
-  @action setDiff = (diff: string) => {
+  setDiff = (diff: string) => {
     this.diff = diff;
-  }
+  };
 
-  @action setVisualisation = (visualisation: Visualisation) => {
+  setVisualisation = (visualisation: Visualisation) => {
     this.visualisation = visualisation;
-  }
+  };
 
 }
 

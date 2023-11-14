@@ -16,7 +16,7 @@ const getActionVerb = (actionShortcut: string) => {
   }
 };
 
-const Item: React.StatelessComponent<ItemProps> = ({ actionShortcut, info }) => {
+const Item: React.FunctionComponent<ItemProps> = ({ actionShortcut, info }) => {
   return (
     <li>
       <strong>{getActionVerb(actionShortcut)}</strong>

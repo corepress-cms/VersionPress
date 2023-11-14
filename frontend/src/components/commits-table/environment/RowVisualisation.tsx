@@ -13,7 +13,7 @@ interface RowVisualisationProps {
   onToggleShowVisualisation(): void;
 }
 
-const RowVisualisation: React.StatelessComponent<RowVisualisationProps> = (props) => {
+const RowVisualisation: React.FunctionComponent<RowVisualisationProps> = (props) => {
   const {
     width,
     height,

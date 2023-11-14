@@ -14,8 +14,7 @@ interface FlashMessageState {
   showDetails: boolean;
 }
 
-@observer
-export default class FlashMessage extends React.Component<FlashMessageProps, FlashMessageState> {
+class FlashMessage extends React.Component<FlashMessageProps, FlashMessageState> {
 
   state = {
     showDetails: false,
@@ -54,3 +53,5 @@ export default class FlashMessage extends React.Component<FlashMessageProps, Fla
   }
 
 }
+
+export default observer(FlashMessage);

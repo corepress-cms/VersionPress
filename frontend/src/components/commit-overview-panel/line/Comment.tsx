@@ -8,7 +8,7 @@ import * as StringUtils from '../../../utils/StringUtils';
 
 import { LineProps } from './Line';
 
-const Comment: React.StatelessComponent<LineProps> = ({ changes }) => {
+const Comment: React.FunctionComponent<LineProps> = ({ changes }) => {
   const action = changes[0].action;
   const postTitle = changes[0].tags['VP-Comment-PostTitle'];
 

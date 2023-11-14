@@ -1,7 +1,7 @@
 /// <reference path='../../common/Commits.d.ts' />
 
 import * as React from 'react';
-import * as classNames from 'classnames';
+import classNames from 'classnames';
 import { observer } from 'mobx-react';
 
 import Actions from './Actions';
@@ -29,8 +29,7 @@ interface CommitSummaryProps {
   onToggleShowVisualisation(): void;
 }
 
-@observer
-export default class CommitSummary extends React.Component<CommitSummaryProps, {}> {
+class CommitSummary extends React.Component<CommitSummaryProps, {}> {
 
   onRowClick = (e: React.MouseEvent<HTMLTableRowElement>) => {
     e.preventDefault();
@@ -140,3 +139,5 @@ export default class CommitSummary extends React.Component<CommitSummaryProps, {
   }
 
 }
+
+export default observer(CommitSummary);

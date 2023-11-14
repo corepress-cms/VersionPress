@@ -18,7 +18,7 @@ export interface LineProps {
   onShowMoreClick(listKey: string): void;
 }
 
-const Line: React.StatelessComponent<LineProps> = (props) => {
+const Line: React.FunctionComponent<LineProps> = (props) => {
   const { changes } = props;
   const { type, action, name } = changes[0];
 

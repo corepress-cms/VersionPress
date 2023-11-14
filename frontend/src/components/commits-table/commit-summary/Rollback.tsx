@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as classNames from 'classnames';
+import classNames from 'classnames';
 import { observer } from 'mobx-react';
 
 interface RollbackProps {
@@ -7,7 +7,7 @@ interface RollbackProps {
   onClick(): void;
 }
 
-const Rollback: React.StatelessComponent<RollbackProps> = ({ enableActions, onClick }) => {
+const Rollback: React.FunctionComponent<RollbackProps> = ({ enableActions, onClick }) => {
   const rollbackClassName = classNames({
     'vp-table-rollback': true,
     'disabled': !enableActions,

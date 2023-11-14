@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-const VpTitle: React.StatelessComponent<{}> = () => (
+const VpTitle: React.FunctionComponent<{}> = () => (
   <h1 className='vp-header'>
     VersionPress
   </h1>

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as classNames from 'classnames';
+import classNames from 'classnames';
 import { observer } from 'mobx-react';
 
 import ColorInfo from './ColorInfo';
@@ -18,8 +18,7 @@ const SPACE = 15;
 const STROKE_WIDTH = 2;
 const DOT_RADIUS = 4;
 
-@observer
-export default class Environment extends React.Component<EnvironmentProps, {}> {
+class Environment extends React.Component<EnvironmentProps, {}> {
 
   tableCellNode: HTMLTableCellElement | null = null;
 
@@ -78,3 +77,5 @@ export default class Environment extends React.Component<EnvironmentProps, {}> {
   }
 
 }
+
+export default observer(Environment);

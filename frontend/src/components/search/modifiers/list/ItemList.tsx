@@ -10,7 +10,7 @@ interface ItemListProps {
   onSelectItem(index: number): void;
 }
 
-const ItemList: React.StatelessComponent<ItemListProps> = ({ currentIndex, list, onSelectItem }) => (
+const ItemList: React.FunctionComponent<ItemListProps> = ({ currentIndex, list, onSelectItem }) => (
   <ul className='Search-inputList'>
     {list.map(item => (
       <ItemListItem

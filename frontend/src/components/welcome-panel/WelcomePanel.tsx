@@ -6,7 +6,7 @@ interface WelcomePanelProps {
   onHide(): void;
 }
 
-const WelcomePanel: React.StatelessComponent<WelcomePanelProps> = ({ onHide }) => (
+const WelcomePanel: React.FunctionComponent<WelcomePanelProps> = ({ onHide }) => (
   <div className='WelcomePanel vp-welcome-panel'>
     <a
       className='vp-welcome-panel-close'

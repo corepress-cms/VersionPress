@@ -5,7 +5,7 @@ interface ButtonsProps {
   onDiscardClick(): void;
 }
 
-const Buttons: React.StatelessComponent<ButtonsProps> = ({ onCommitClick, onDiscardClick }) => (
+const Buttons: React.FunctionComponent<ButtonsProps> = ({ onCommitClick, onDiscardClick }) => (
   <div className='CommitPanel-commit'>
     <a
       className='button button-primary CommitPanel-commit-button'

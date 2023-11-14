@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-const UndoMergeDialog: React.StatelessComponent<{}> = () => (
+const UndoMergeDialog: React.FunctionComponent<{}> = () => (
   <div>
     <p>
       Merge commit is a special type of commit that cannot be undone. {' '}

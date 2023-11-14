@@ -8,7 +8,7 @@ interface CheckboxProps {
   onClick(shiftKey: boolean): void;
 }
 
-const Checkbox: React.StatelessComponent<CheckboxProps> = (props) => {
+const Checkbox: React.FunctionComponent<CheckboxProps> = (props) => {
   const {
     isVisible,
     isChecked,

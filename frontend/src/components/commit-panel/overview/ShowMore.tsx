@@ -6,7 +6,7 @@ interface ShowMoreProps {
   onClick(): void;
 }
 
-const ShowMore: React.StatelessComponent<ShowMoreProps> = ({ displayNumber, onClick }) => (
+const ShowMore: React.FunctionComponent<ShowMoreProps> = ({ displayNumber, onClick }) => (
   <li>
     <a onClick={e => { e.preventDefault(); onClick(); }}>
       show {displayNumber} more...

@@ -12,7 +12,7 @@ interface CommitDiffPanelProps {
   diff: string;
 }
 
-const CommitDiffPanel: React.StatelessComponent<CommitDiffPanelProps> = ({ diff }) => (
+const CommitDiffPanel: React.FunctionComponent<CommitDiffPanelProps> = ({ diff }) => (
   <div>
     {diff !== null &&
       DiffParser.parse(diff).map((diff: Diff, i) => (

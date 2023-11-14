@@ -9,7 +9,7 @@ interface ProgressBarProps {
   progress: number;
 }
 
-const ProgressBar: React.StatelessComponent<ProgressBarProps> = ({ progress }) => {
+const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({ progress }) => {
   const isVisible = progress < 100;
 
   const barStyles = {

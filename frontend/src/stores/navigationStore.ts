@@ -1,30 +1,39 @@
 /// <reference path='../components/common/Commits.d.ts' />
 
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, makeObservable } from 'mobx';
 
 import appStore from './appStore';
 
 class NavigationStore {
+  activeQuery: string = '';
+  query: string = '';
 
-  @observable activeQuery: string = '';
-  @observable query: string = '';
+  constructor() {
+    makeObservable(this, {
+      activeQuery: observable,
+      query: observable,
+      changesCount: computed,
+      hashes: computed,
+      changeFilterQuery: action,
+      changeActiveQuery: action
+    });
+  }
 
-  @computed get changesCount() {
+  get changesCount() {
     return appStore.selectedCommits.length;
   }
 
-  @computed get hashes() {
+  get hashes() {
     return appStore.selectedCommits.map((commit: Commit) => commit.hash);
   }
 
-  @action changeFilterQuery = (query: string) => {
+  changeFilterQuery = (query: string) => {
     this.query = query;
-  }
+  };
 
-  @action changeActiveQuery = (activeQuery: string) => {
+  changeActiveQuery = (activeQuery: string) => {
     this.activeQuery = activeQuery;
-  }
-
+  };
 }
 
 const navigationStore = new NavigationStore();

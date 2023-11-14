@@ -8,7 +8,7 @@ interface DetailsLevelButtonsProps {
   onDetailsLevelChange(detailsLevel: DetailsLevel): void;
 }
 
-const DetailsLevelButtons: React.StatelessComponent<DetailsLevelButtonsProps> = ({ detailsLevel, onDetailsLevelChange }) => (
+const DetailsLevelButtons: React.FunctionComponent<DetailsLevelButtonsProps> = ({ detailsLevel, onDetailsLevelChange }) => (
   <div className='detail-buttons'>
     <button
       className='button'

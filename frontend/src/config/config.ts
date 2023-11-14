@@ -1,6 +1,6 @@
 /// <reference path='./VersionPressConfig.d.ts' />
 
-import * as _ from 'lodash';
+import merge from 'lodash/merge';
 import localConfig from './config.local';
 import window from './window';
 
@@ -23,6 +23,6 @@ const vpApiConfig = {
   api: window.VP_API_Config || {},
 };
 
-let config = <VersionPressConfig> _.merge(defaultConfig, localConfig, vpApiConfig);
+let config = <VersionPressConfig> merge(defaultConfig, localConfig, vpApiConfig);
 
 export default config;

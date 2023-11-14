@@ -16,9 +16,7 @@ interface FilterProps {
   onFilter(): void;
 }
 
-@inject('searchStore')
-@observer
-export default class Filter extends React.Component<FilterProps, {}> {
+class Filter extends React.Component<FilterProps, {}> {
 
   render() {
     const { query, searchStore, onQueryChange, onFilter } = this.props;
@@ -42,3 +40,5 @@ export default class Filter extends React.Component<FilterProps, {}> {
   }
 
 }
+
+export default inject('searchStore')(observer(Filter));

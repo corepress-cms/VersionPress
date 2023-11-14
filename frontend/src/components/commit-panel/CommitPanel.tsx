@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as classNames from 'classnames';
+import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 
 import Commit from './commit/Commit';
@@ -16,9 +16,7 @@ interface CommitPanelProps {
   commitPanelStore?: CommitPanelStore;
 }
 
-@inject('commitPanelStore')
-@observer
-export default class CommitPanel extends React.Component<CommitPanelProps, {}> {
+class CommitPanel extends React.Component<CommitPanelProps, {}> {
 
   onDetailsLevelChange = (detailsLevel: DetailsLevel) => {
     const { commitPanelStore } = this.props;
@@ -58,9 +56,9 @@ export default class CommitPanel extends React.Component<CommitPanelProps, {}> {
         </div>
         <Details
           detailsLevel={detailsLevel}
-          diff={diff}
-          gitStatus={gitStatus}
-          error={error}
+          diff={diff!}
+          gitStatus={gitStatus!}
+          error={error!}
           isLoading={isLoading}
           onDetailsLevelChange={this.onDetailsLevelChange}
         />
@@ -69,3 +67,5 @@ export default class CommitPanel extends React.Component<CommitPanelProps, {}> {
   }
 
 }
+
+export default inject('commitPanelStore')(observer(CommitPanel));

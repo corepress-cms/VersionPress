@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-const Submit: React.StatelessComponent<{}> = () => (
+const Submit: React.FunctionComponent<{}> = () => (
   <input
     type='submit'
     className='button Filter-submit'

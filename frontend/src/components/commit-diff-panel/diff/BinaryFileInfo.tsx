@@ -7,7 +7,7 @@ interface BinaryFileInfoProps {
   diff: Diff;
 }
 
-const BinaryFileInfo: React.StatelessComponent<BinaryFileInfoProps> = ({ diff }) => (
+const BinaryFileInfo: React.FunctionComponent<BinaryFileInfoProps> = ({ diff }) => (
   <div className='binary-file-info'>
     {diff.from === '/dev/null'
       ? 'Added empty file'

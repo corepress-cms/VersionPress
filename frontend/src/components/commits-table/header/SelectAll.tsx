@@ -8,7 +8,7 @@ interface SelectAllProps {
   onChange(isChecked: boolean): void;
 }
 
-const SelectAll: React.StatelessComponent<SelectAllProps> = (props) => {
+const SelectAll: React.FunctionComponent<SelectAllProps> = (props) => {
   const {
     isSelected,
     selectableCommitsCount,

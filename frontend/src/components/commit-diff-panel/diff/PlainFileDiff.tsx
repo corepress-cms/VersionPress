@@ -11,7 +11,7 @@ interface PlainFileDiffProps {
   diff: Diff;
 }
 
-const PlainFileDiff: React.StatelessComponent<PlainFileDiffProps> = ({ diff }) => {
+const PlainFileDiff: React.FunctionComponent<PlainFileDiffProps> = ({ diff }) => {
   const { chunks } = diff;
 
   if (chunks.length === 0) {

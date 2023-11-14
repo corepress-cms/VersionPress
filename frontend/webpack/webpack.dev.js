@@ -5,7 +5,6 @@ module.exports = (env) => {
         mode: 'development',
         entry: {
             app: [
-                'react-hot-loader/patch',
                 path.join(process.cwd(), './src/main.tsx'),
                 `webpack-dev-server/client?http://localhost:${env.port}`,
                 'webpack/hot/only-dev-server',

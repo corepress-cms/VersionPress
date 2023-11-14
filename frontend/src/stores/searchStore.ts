@@ -1,15 +1,20 @@
 /// <reference path='../components/search/Search.d.ts' />
 
-import { action, observable } from 'mobx';
+import { action, observable, makeObservable } from 'mobx';
 
 class SearchStore {
+  config: SearchConfig = {};
 
-  @observable config: SearchConfig;
-
-  @action setConfig = (config: SearchConfig) => {
+  setConfig = (config: SearchConfig) => {
     this.config = config;
-  }
+  };
 
+  constructor() {
+    makeObservable(this, {
+      config: observable,
+      setConfig: action
+    });
+  }
 }
 
 const searchStore = new SearchStore();

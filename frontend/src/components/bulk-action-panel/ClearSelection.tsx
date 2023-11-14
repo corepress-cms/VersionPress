@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import * as classNames from 'classnames';
+import classNames from 'classnames';
 
 interface ClearSelectionProps {
   changesCount: number;
   onClearSelection(): void;
 }
 
-const ClearSelection: React.StatelessComponent<ClearSelectionProps> = ({ changesCount, onClearSelection }) => {
+const ClearSelection: React.FunctionComponent<ClearSelectionProps> = ({ changesCount, onClearSelection }) => {
   const noteClassName = classNames({
     'BulkActionPanel-note': true,
     'hide': changesCount === 0,

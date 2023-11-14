@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import * as classNames from 'classnames';
+import classNames from 'classnames';
 
 import * as portal from '../portal/portal';
 
@@ -17,8 +17,7 @@ export interface ConfirmDialogProps {
   onCancelButtonClick?(): void | boolean;
 }
 
-@observer
-export default class ConfirmDialog extends React.Component<ConfirmDialogProps, {}> {
+class ConfirmDialog extends React.Component<ConfirmDialogProps, {}> {
 
   static defaultProps = {
     okButtonText: 'OK',
@@ -79,3 +78,5 @@ export default class ConfirmDialog extends React.Component<ConfirmDialogProps, {
   }
 
 }
+
+export default observer(ConfirmDialog);

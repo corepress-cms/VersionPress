@@ -1,10 +1,10 @@
 import chalk from 'chalk';
 import gql from 'graphql-tag';
 import * as github from './utils/github';
-import _ = require('lodash');
 import * as execa from 'execa';
 import * as arg from 'arg';
 import matchAll = require('string.prototype.matchall');
+import { map, property, filter, uniq, compact, flattenDeep } from "lodash";
 
 const args = arg({
   '--help': Boolean,
@@ -241,7 +241,7 @@ async function getMergeCommitsAndRelatedGithubIssues(range: GitRange): Promise<M
     const prFromGithub = prQueryResponse.data.repository['pr' + pr.prNumber];
     pr.title = prFromGithub.title;
     pr.url = prFromGithub.url;
-    pr.labels = _.map(prFromGithub.labels.nodes, _.property('name'));
+    pr.labels = map(prFromGithub.labels.nodes, property('name'));
 
     // https://regex101.com/r/YII6P2/2
     const matches = matchAll(
@@ -251,14 +251,14 @@ async function getMergeCommitsAndRelatedGithubIssues(range: GitRange): Promise<M
     pr.relatedIssues = Array.from(matches).map(m => m[1]);
   });
 
-  result.noteworthyPrs = _.filter(result.pullRequests, pr => pr.labels.includes('noteworthy'));
+  result.noteworthyPrs = filter(result.pullRequests, pr => pr.labels.includes('noteworthy'));
 
   // Now find noteworthy issues from pull requests and their related issues. We'll query GitHub and
   // find out which issues are labeled "noteworthy".
 
-  const issueNumbers = _.uniq(
-    _.compact(
-      _.map(_.flattenDeep<string>(_.map(result.pullRequests, pr => pr.relatedIssues)), issue => {
+  const issueNumbers = uniq(
+    compact(
+      map(flattenDeep<string>(map(result.pullRequests, pr => pr.relatedIssues)), issue => {
         const match = issue.match(/^#(\d+)$/);
         return match ? parseInt(match[1], 10) : null;
       })
@@ -292,9 +292,9 @@ async function getMergeCommitsAndRelatedGithubIssues(range: GitRange): Promise<M
 
   const issueQueryResponse = await github.query<IssueGqlResponse>({ query: issueQuery, errorPolicy: 'all' });
 
-  result.noteworthyIssues = _.filter(
-    _.compact(
-      _.map(issueNumbers, issue => {
+  result.noteworthyIssues = filter(
+    compact(
+      map(issueNumbers, issue => {
         const issueFromGithub = issueQueryResponse.data.repository['issue' + issue];
         if (!issueFromGithub) {
           return null;
@@ -303,7 +303,7 @@ async function getMergeCommitsAndRelatedGithubIssues(range: GitRange): Promise<M
           issueNumber: `${issue}`,
           title: issueFromGithub.title,
           url: issueFromGithub.url,
-          labels: _.map(issueFromGithub.labels.nodes, _.property('name')),
+          labels: map(issueFromGithub.labels.nodes, property('name')),
         };
       })
     ),

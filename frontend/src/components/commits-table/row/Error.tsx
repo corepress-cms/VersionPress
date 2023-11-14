@@ -5,7 +5,7 @@ interface ErrorProps {
   message: string;
 }
 
-const Error: React.StatelessComponent<ErrorProps> = ({ message }) => (
+const Error: React.FunctionComponent<ErrorProps> = ({ message }) => (
   <tr className='details-row error'>
     <td colSpan={6}>{message}</td>
   </tr>

@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import * as JsDiff from 'diff';
-import { repeat } from 'lodash';
+import repeat from 'lodash/repeat';
 
 export function divideToLeftAndRightColumn (chunk: Chunk): [Line[], Line[]] {
   const { lines } = chunk;

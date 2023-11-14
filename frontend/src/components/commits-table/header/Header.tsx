@@ -14,7 +14,7 @@ interface HeaderProps {
   onToggleShowVisualisation(): void;
 }
 
-const Header: React.StatelessComponent<HeaderProps> = (props) => {
+const Header: React.FunctionComponent<HeaderProps> = (props) => {
   const {
     areAllCommitsSelected,
     selectableCommitsCount,

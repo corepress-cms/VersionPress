@@ -8,7 +8,7 @@ interface FullDiffProps {
   className: string;
 }
 
-const FullDiff: React.StatelessComponent<FullDiffProps> = ({ diff, className }) => (
+const FullDiff: React.FunctionComponent<FullDiffProps> = ({ diff, className }) => (
   <tr className={className}>
     <td colSpan={6}>
       <div className='details'>

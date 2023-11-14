@@ -5,7 +5,7 @@ interface TitleProps {
   title?: React.ReactNode;
 }
 
-const Title: React.StatelessComponent<TitleProps> = ({ title }) => (
+const Title: React.FunctionComponent<TitleProps> = ({ title }) => (
   <h3 className='Modal-title'>
     {title}
   </h3>

@@ -12,7 +12,7 @@ interface ItemProps {
   onSelectItem(index: number): void;
 }
 
-const Item: React.StatelessComponent<ItemProps> = (props) => {
+const Item: React.FunctionComponent<ItemProps> = (props) => {
   const { currentIndex, item, onSelectItem } = props;
 
   return (

@@ -5,7 +5,7 @@ interface AuthorProps {
   author: Author;
 }
 
-const Author: React.StatelessComponent<AuthorProps> = ({ author }) => (
+const Author: React.FunctionComponent<AuthorProps> = ({ author }) => (
   <td className='column-author'>
     <img
       className='avatar'

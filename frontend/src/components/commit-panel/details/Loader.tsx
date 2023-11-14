@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-const Loader: React.StatelessComponent<{}> = () => (
+const Loader: React.FunctionComponent<{}> = () => (
   <div className='CommitPanel-details-loader'></div>
 );
 

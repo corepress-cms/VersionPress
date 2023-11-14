@@ -6,7 +6,7 @@ import { observer } from 'mobx-react';
 import Meta from './Meta';
 import { LineProps } from './Line';
 
-const PostMeta: React.StatelessComponent<LineProps> = (props) => (
+const PostMeta: React.FunctionComponent<LineProps> = (props) => (
   <Meta
     parentEntity='post'
     groupByTag='VP-Post-Title'

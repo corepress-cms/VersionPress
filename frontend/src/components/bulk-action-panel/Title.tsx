@@ -4,7 +4,7 @@ interface TitleProps {
   htmlFor: string;
 }
 
-const Title: React.StatelessComponent<TitleProps> = ({ htmlFor }) => (
+const Title: React.FunctionComponent<TitleProps> = ({ htmlFor }) => (
   <label
     htmlFor={htmlFor}
     className='screen-reader-text'

@@ -1,5 +1,5 @@
 /// <reference path='../Search.d.ts' />
-import * as moment from 'moment';
+import { format } from 'date-fns';
 
 export function prepareConfig(config: SearchConfig): SearchConfig {
   const modifiers: SearchConfigItemContent[] = getAllModifiers(config);
@@ -21,7 +21,7 @@ function getAllModifiers(config: SearchConfig): SearchConfigItemContent[] {
     const section = configItem.type === 'date' ? 'time' : 'modifiers';
     modifiers.push({
       value: key,
-      label: configItem.type === 'date' ? moment().format('YYYY-MM-DD') : configItem.defaultHint!,
+      label: configItem.type === 'date' ? format(new Date(), 'yyyy-MM-dd') : configItem.defaultHint!,
       modifier: true,
       section,
     });

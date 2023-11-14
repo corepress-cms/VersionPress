@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import * as classNames from 'classnames';
+import classNames from 'classnames';
 
 import Buttons from './Buttons';
 import Diff from '../diff/Diff';
@@ -18,7 +18,7 @@ interface DetailsProps {
   onDetailsLevelChange(detailsLevel: DetailsLevel): void;
 }
 
-const Details: React.StatelessComponent<DetailsProps> = (props) => {
+const Details: React.FunctionComponent<DetailsProps> = (props) => {
   const {
     detailsLevel,
     diff,

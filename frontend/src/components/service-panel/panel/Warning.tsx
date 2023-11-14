@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-const Warning: React.StatelessComponent<{}> = () => (
+const Warning: React.FunctionComponent<{}> = () => (
   <p className='ServicePanel-warning'>
     Currently, VersionPress is a {' '}
     <a href='http://docs.versionpress.net/en/getting-started/about-eap'>

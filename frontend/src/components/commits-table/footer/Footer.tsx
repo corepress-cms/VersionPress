@@ -1,38 +1,40 @@
 import * as React from 'react';
-import * as classNames from 'classnames';
+import classNames from 'classnames';
 import { observer } from 'mobx-react';
-import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import config from '../../../config/config';
 
 const routes = config.routes;
 
-interface FooterProps extends RouteComponentProps<{ page?: string }> {
+interface FooterProps {
   pages: number[];
 }
 
-const Footer: React.StatelessComponent<FooterProps> = ({
-  pages, match: { params: { page: routePage } },
-}) => (
-  <tfoot>
-    <tr>
-      <td className='vp-table-pagination' colSpan={6}>
-        {pages.map((page: number) => {
-          return page === 1
-            ? <Link
-                className={classNames({ active: !routePage || `${page}` === routePage })}
-                to={routes.home}
-                key={page}
-              >{page}</Link>
-            : <Link
-                className={classNames({ active: `${page}` === routePage })}
-                to={`/${routes.page}/${page}`}
-                key={page}
-              >{page}</Link>;
-        })}
-      </td>
-    </tr>
-  </tfoot>
-);
+const Footer: React.FunctionComponent<FooterProps> = ({
+  pages,
+}) => {
+  const params = useParams();
+  return (
+    <tfoot>
+      <tr>
+        <td className='vp-table-pagination' colSpan={6}>
+          {pages.map((page: number) => {
+            return page === 1
+              ? <Link
+                  className={classNames({ active: !params.page || `${page}` === params.page })}
+                  to={routes.home}
+                  key={page}
+                >{page}</Link>
+              : <Link
+                  className={classNames({ active: `${page}` === params.page })}
+                  to={`/${routes.page}/${page}`}
+                  key={page}
+                >{page}</Link>;
+          })}
+        </td>
+      </tr>
+    </tfoot>
+)};
 
-export default withRouter(observer(Footer));
+export default observer(Footer);

@@ -7,7 +7,7 @@ interface BinaryFileDiffProps {
   diff: Diff;
 }
 
-const BinaryFileDiff: React.StatelessComponent<BinaryFileDiffProps> = ({ diff }) => (
+const BinaryFileDiff: React.FunctionComponent<BinaryFileDiffProps> = ({ diff }) => (
   <div className='binary-file-info'>
     {getMessage(diff)}
   </div>

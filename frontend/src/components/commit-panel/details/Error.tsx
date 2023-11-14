@@ -5,7 +5,7 @@ interface ErrorProps {
   error: string;
 }
 
-const Error: React.StatelessComponent<ErrorProps> = ({ error }) => (
+const Error: React.FunctionComponent<ErrorProps> = ({ error }) => (
   <div className='CommitPanel-error'>
     <p>{error}</p>
   </div>

@@ -21,8 +21,7 @@ interface RowProps {
   onToggleShowVisualisation(): void;
 }
 
-@observer
-export default class Row extends React.Component<RowProps, {}> {
+class Row extends React.Component<RowProps, {}> {
 
   onDetailsLevelChange = (detailsLevel: DetailsLevel) => {
     const { commitRow } = this.props;
@@ -49,7 +48,7 @@ export default class Row extends React.Component<RowProps, {}> {
           isSelected={isSelected}
           detailsLevel={detailsLevel}
           showVisualisation={showVisualisation}
-          visualisation={visualisation}
+          visualisation={visualisation!}
           onUndo={onUndo}
           onRollback={onRollback}
           onCommitsSelect={onCommitsSelect}
@@ -70,3 +69,5 @@ export default class Row extends React.Component<RowProps, {}> {
   }
 
 }
+
+export default observer(Row);

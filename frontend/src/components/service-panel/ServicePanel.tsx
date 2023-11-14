@@ -14,9 +14,7 @@ interface ServicePanelProps {
   servicePanelStore?: ServicePanelStore;
 }
 
-@inject('servicePanelStore')
-@observer
-export default class ServicePanel extends React.Component<ServicePanelProps, {}> {
+class ServicePanel extends React.Component<ServicePanelProps, {}> {
 
   onButtonClick = () => {
     const { servicePanelStore } = this.props;
@@ -40,3 +38,5 @@ export default class ServicePanel extends React.Component<ServicePanelProps, {}>
   }
 
 }
+
+export default inject('servicePanelStore')(observer(ServicePanel));

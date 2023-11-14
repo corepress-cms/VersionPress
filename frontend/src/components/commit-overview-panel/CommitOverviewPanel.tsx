@@ -18,8 +18,7 @@ interface CommitOverviewPanelState {
   expandedLists: string[];
 }
 
-@observer
-export default class CommitOverviewPanel extends React.Component<CommitOverviewPanelProps, CommitOverviewPanelState> {
+class CommitOverviewPanel extends React.Component<CommitOverviewPanelProps, CommitOverviewPanelState> {
 
   state = {
     expandedLists: [],
@@ -67,3 +66,5 @@ export default class CommitOverviewPanel extends React.Component<CommitOverviewP
   }
 
 }
+
+export default observer(CommitOverviewPanel);

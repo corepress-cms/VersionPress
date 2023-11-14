@@ -1,20 +1,27 @@
 /// <reference path='../interfaces/State.d.ts' />
 
-import { action, observable } from 'mobx';
+import { action, observable, makeObservable } from 'mobx';
 
 class ServicePanelStore {
+  message: InfoMessage | null = null;
+  isVisible: boolean = false;
 
-  @observable message: InfoMessage | null = null;
-  @observable isVisible: boolean = false;
-
-  @action setMessage = (message: InfoMessage | null) => {
+  setMessage = (message: InfoMessage | null) => {
     this.message = message;
-  }
+  };
 
-  @action toggleVisibility = (isVisible?: boolean) => {
+  toggleVisibility = (isVisible?: boolean) => {
     this.isVisible = typeof isVisible === 'boolean' ? isVisible : !this.isVisible;
-  }
+  };
 
+  constructor() {
+    makeObservable(this, {
+      message: observable,
+      isVisible: observable,
+      setMessage: action,
+      toggleVisibility: action
+    });
+  }
 }
 
 const servicePanelStore = new ServicePanelStore();

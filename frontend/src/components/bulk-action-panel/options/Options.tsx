@@ -11,8 +11,7 @@ interface OptionsProps {
   onChange(newValue: string): void;
 }
 
-@observer
-export default class Options extends React.Component<OptionsProps, {}> {
+class Options extends React.Component<OptionsProps, {}> {
 
   onChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     this.props.onChange(e.target.value);
@@ -38,3 +37,5 @@ export default class Options extends React.Component<OptionsProps, {}> {
   }
 
 }
+
+export default observer(Options);

@@ -8,7 +8,7 @@ interface FormProps {
   onCancelCommitClick(): void;
 }
 
-const Form: React.StatelessComponent<FormProps> = (props) => {
+const Form: React.FunctionComponent<FormProps> = (props) => {
   const {
     commitMessage,
     onCommitMessageChange,

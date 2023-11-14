@@ -53,7 +53,6 @@ module.exports = (isDevelopment, options) => ({
                               loader: 'babel-loader',
                               options: {
                                   babelrc: true,
-                                  plugins: ['react-hot-loader/babel'],
                               },
                           },
                           'ts-loader',
@@ -87,9 +86,6 @@ module.exports = (isDevelopment, options) => ({
                 use: [
                     isDevelopment ? {
                       loader: 'style-loader',
-                      options: {
-                          sourceMap: true,
-                      },
                     } : MiniCssExtractPlugin.loader,
                     {
                       loader: 'css-loader',
