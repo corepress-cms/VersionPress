@@ -8,6 +8,7 @@
   "packageManager": "pnpm@12.3.4",
   "scripts": {
     "prepare": "husky",
+    "build": "pnpm run build:admin && wp-env run wordpress --env-cwd=wp-content/plugins/versionpress php bin/build-release.php \"$(git describe --tags --always)\" && mkdir -p dist && mv plugins/versionpress/dist/*.zip dist/",
     "build:admin": "pnpm --filter versionpress-admin-ui run build",
     "changelog": "node -r ./scripts/node_modules/ts-node/register scripts/changelog.ts",
     "env": "wp-env",

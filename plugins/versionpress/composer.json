@@ -22,6 +22,8 @@
   },
   "require": {
     "php": ">=8.5",
+    "ext-ctype": "*",
+    "ext-mbstring": "*",
     "michelf/php-markdown": "^2.0",
     "phpmyadmin/sql-parser": "^5.11",
     "symfony/filesystem": "^8.1",
@@ -47,6 +49,11 @@
     "wp-coding-standards/wpcs": "^3.4",
     "yoast/phpunit-polyfills": "^4.0"
   },
+  "replace": {
+    "symfony/polyfill-ctype": "*",
+    "symfony/polyfill-mbstring": "*",
+    "symfony/polyfill-php80": "*"
+  },
   "autoload": {
     "psr-4": {
       "VersionPress\\": "src/"
@@ -63,6 +70,24 @@
     "exclude-from-classmap": [
       "tests/SynchronizerTests/Utils/WpdbCopy.php"
     ]
+  },
+  "extra": {
+    "strauss": {
+      "target_directory": "vendor-prefixed",
+      "namespace_prefix": "VersionPress\\Vendor\\",
+      "classmap_prefix": "VersionPress_Vendor_",
+      "constant_prefix": "VP_VENDOR_",
+      "packages": [
+        "michelf/php-markdown",
+        "phpmyadmin/sql-parser",
+        "symfony/deprecation-contracts",
+        "symfony/filesystem",
+        "symfony/process",
+        "symfony/yaml"
+      ],
+      "update_call_sites": false,
+      "delete_vendor_packages": false
+    }
   },
   "scripts": {
     "lint": "phpcs",

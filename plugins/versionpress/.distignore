@@ -1,0 +1,15 @@
+# Paths (relative to the plugin directory) left out of the release ZIP; see bin/build-release.php.
+/.distignore
+/.gitignore
+/.phpunit.cache
+/bin
+/dist
+/tests
+/vendor
+/vendor-prefixed
+/composer.lock
+/phpcs.xml.dist
+/phpstan.neon.dist
+/phpstan-baseline.neon
+/rector.php
+/src/Database/wpdb-api-to-phpdoc.php

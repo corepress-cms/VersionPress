@@ -1,4 +1,6 @@
-# Build output of the admin UI (admin-ui/)
+# Build output: the admin UI (admin-ui/) and release builds (bin/build-release.php)
 /admin/public/build
+/dist
+/vendor-prefixed
 
 .phpunit.cache

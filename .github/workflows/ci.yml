@@ -89,3 +89,32 @@ jobs:
 
       - name: Lint Markdown
         run: pnpm run lint:markdown
+
+  release-build:
+    name: Release ZIP
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install workspace dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Start wp-env
+        run: pnpm run start
+
+      - name: Build
+        run: pnpm run build
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: versionpress-zip
+          path: dist/*.zip

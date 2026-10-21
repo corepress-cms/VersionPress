@@ -103,7 +103,7 @@ See [Testing](testing.md).
 
 ## Production build
 
-Run `pnpm run build`; it will produce a file like `dist/versionpress-3.0.2.zip`. The build currently needs Composer installed locally; it will move into the environment as part of the release pipeline rework.
+Run `pnpm run build`; it will produce a file like `dist/versionpress-3.0.2.zip`. It builds the admin UI and then runs `plugins/versionpress/bin/build-release.php` inside the environment, which installs the production dependencies, prefixes their namespaces with [Strauss](https://github.com/BrianHenryIE/strauss) so they cannot clash with other plugins, and leaves out everything listed in `plugins/versionpress/.distignore`.
 
 The version number is based on the nearest Git tag and can also be something like `3.0.2-27-g0e1ce7f`, meaning that the closest tag is `3.0.2`, there have been 27 commits since then and the package was built from `0e1ce7f`. See [`git describe --tags`](https://git-scm.com/docs/git-describe#_examples) for more examples.
 
