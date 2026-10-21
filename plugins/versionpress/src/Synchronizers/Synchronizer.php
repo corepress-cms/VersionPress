@@ -479,6 +479,10 @@ class Synchronizer
 
     private function fixMnReferences()
     {
+        if (count($this->entityInfo->mnReferences) === 0) {
+            return true;
+        }
+
         $referencesToSave = $this->getExistingMnReferences();
         $vpIdsToLoad = $this->getAllVpIdsUsedInReferences($referencesToSave);
         $idMap = $this->getIdsForVpIds($vpIdsToLoad);
