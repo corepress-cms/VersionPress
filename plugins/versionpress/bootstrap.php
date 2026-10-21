@@ -74,8 +74,14 @@ if (defined('DOING_AJAX')) {
 }
 
 // Tracy is a dev dependency, so it is only available in development checkouts.
+// Logs go to the (web-protected) temp directory; the plugin directory is replaced on every update.
 if (defined('VP_DEBUG') && VP_DEBUG && class_exists(\Tracy\Debugger::class)) {
-    \Tracy\Debugger::enable(\Tracy\Debugger::DEVELOPMENT, VERSIONPRESS_PLUGIN_DIR . '/log');
+    $vpLogDir = VERSIONPRESS_TEMP_DIR . '/log';
+    if (!is_dir($vpLogDir)) {
+        mkdir($vpLogDir, 0750, true);
+    }
+    \Tracy\Debugger::enable(\Tracy\Debugger::DEVELOPMENT, $vpLogDir);
+    unset($vpLogDir);
 }
 
 global $versionPressContainer;

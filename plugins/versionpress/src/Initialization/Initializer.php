@@ -426,6 +426,8 @@ class Initializer
     private function createCacheDirectory()
     {
         FileSystem::mkdir(VERSIONPRESS_TEMP_DIR);
+        // Holds mutexes, postponed (serialized) change infos and debug logs.
+        SecurityUtils::protectDirectory(VERSIONPRESS_TEMP_DIR);
     }
 
     /**
