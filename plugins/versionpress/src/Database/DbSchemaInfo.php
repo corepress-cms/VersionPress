@@ -3,7 +3,6 @@
 namespace VersionPress\Database;
 
 use DateTime;
-use Nette\Utils\Strings;
 use Symfony\Component\Yaml\Yaml;
 use VersionPress\Utils\ArrayUtils;
 use VersionPress\Utils\ReferenceUtils;

@@ -2,7 +2,6 @@
 
 namespace VersionPress\Synchronizers;
 
-use Nette\Utils\Strings;
 use VersionPress\Database\Database;
 use VersionPress\Database\DbSchemaInfo;
 use VersionPress\Database\EntityInfo;
@@ -251,7 +250,7 @@ class Synchronizer
     {
         foreach ($entities as &$entity) {
             foreach ($entity as $field => $value) {
-                if (Strings::match($field, "/.*#[0-9a-f]+/i")) {
+                if (preg_match("/.*#[0-9a-f]+/i", $field)) {
                     unset($entity[$field]);
                 }
             }
@@ -356,7 +355,7 @@ class Synchronizer
             if ($key == $this->idColumnName) {
                 continue;
             }
-            if (Strings::startsWith($key, 'vp_')) {
+            if (str_starts_with($key, 'vp_')) {
                 continue;
             }
             $query .= " `$key` = " . (is_numeric($value) ? $value : '"' . $this->database->_escape($value) . '"') . ',';
@@ -374,7 +373,7 @@ class Synchronizer
 
         $columns = array_keys($entity);
         $columns = array_filter($columns, function ($column) {
-            return !Strings::startsWith($column, 'vp_');
+            return !str_starts_with($column, 'vp_');
         });
         $columnsString = join(', ', array_map(function ($column) {
             return "`$column`";

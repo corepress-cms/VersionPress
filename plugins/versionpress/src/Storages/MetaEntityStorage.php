@@ -2,7 +2,6 @@
 
 namespace VersionPress\Storages;
 
-use Nette\Utils\Strings;
 use VersionPress\Actions\ActionsInfo;
 use VersionPress\ChangeInfos\ChangeInfoFactory;
 use VersionPress\Database\EntityInfo;
@@ -111,7 +110,7 @@ class MetaEntityStorage extends Storage
 
         foreach ($parentEntities as $parent) {
             foreach ($parent as $field => $value) {
-                if (!Strings::contains($field, '#')) {
+                if (!str_contains($field, '#')) {
                     continue;
                 }
                 list ($key, $vpId) = explode('#', $field, 2);
@@ -222,7 +221,7 @@ class MetaEntityStorage extends Storage
     private function getJoinedKeyByVpId($parent, $vpId)
     {
         foreach ($parent as $field => $value) {
-            if (Strings::contains($field, $vpId)) {
+            if (str_contains($field, $vpId)) {
                 return $field;
             }
         }
@@ -240,7 +239,7 @@ class MetaEntityStorage extends Storage
     private function getJoinedKeyByName($parent, $name)
     {
         foreach ($parent as $field => $value) {
-            if (Strings::startsWith($field, "$name#")) {
+            if (str_starts_with($field, "$name#")) {
                 return $field;
             }
         }

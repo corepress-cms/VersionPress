@@ -2,7 +2,6 @@
 
 namespace VersionPress\Git;
 
-use Nette\Utils\Strings;
 use VersionPress\Utils\PathUtils;
 use VersionPress\Utils\StringUtils;
 
@@ -110,7 +109,7 @@ class MergeDriverInstaller
             // We'll only fix the path for Windows because on Linux and Mac OS, Bash driver is used most of time
             // and the tests are started from command line so PHP_BINARY is fine there too.
             $phpBinary = PHP_BINARY;
-            if (DIRECTORY_SEPARATOR == '\\' && !Strings::endsWith($phpBinary, 'php.exe')) {
+            if (DIRECTORY_SEPARATOR == '\\' && !str_ends_with($phpBinary, 'php.exe')) {
                 $phpBinary = realpath(ini_get('extension_dir') . '/..') . '/php.exe';
             }
 

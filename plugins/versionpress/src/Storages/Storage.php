@@ -2,7 +2,6 @@
 
 namespace VersionPress\Storages;
 
-use Nette\Utils\Strings;
 use VersionPress\ChangeInfos\ChangeInfo;
 use VersionPress\Database\EntityInfo;
 use VersionPress\Storages\Serialization\IniSerializer;
@@ -172,16 +171,16 @@ abstract class Storage
 
     protected function maybeReplacePrefixWithPlaceholder($key)
     {
-        if (Strings::startsWith($key, $this->dbPrefix)) {
-            return self::PREFIX_PLACEHOLDER . Strings::substring($key, Strings::length($this->dbPrefix));
+        if (str_starts_with($key, $this->dbPrefix)) {
+            return self::PREFIX_PLACEHOLDER . mb_substr($key, mb_strlen($this->dbPrefix));
         }
         return $key;
     }
 
     protected function maybeReplacePlaceholderWithPrefix($key)
     {
-        if (Strings::startsWith($key, self::PREFIX_PLACEHOLDER)) {
-            return $this->dbPrefix . Strings::substring($key, Strings::length(self::PREFIX_PLACEHOLDER));
+        if (str_starts_with($key, self::PREFIX_PLACEHOLDER)) {
+            return $this->dbPrefix . mb_substr($key, mb_strlen(self::PREFIX_PLACEHOLDER));
         }
         return $key;
     }

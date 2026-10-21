@@ -2,7 +2,6 @@
 
 namespace VersionPress\Database;
 
-use Nette\Utils\Strings;
 use VersionPress\Utils\QueryLanguageUtils;
 
 /**
@@ -192,8 +191,8 @@ class EntityInfo
 
         if (isset($schemaInfo['mn-references'])) {
             foreach ($schemaInfo['mn-references'] as $reference => $targetEntity) {
-                if (Strings::startsWith($reference, '~')) {
-                    $reference = Strings::substring($reference, 1);
+                if (str_starts_with($reference, '~')) {
+                    $reference = mb_substr($reference, 1);
                     $this->virtualReferences[$reference] = true;
                 }
                 $this->mnReferences[$reference] = $targetEntity;
@@ -296,7 +295,7 @@ class EntityInfo
         $references += array_values($this->valueReferences);
         $references += array_values($this->mnReferences);
         $references = array_filter($references, function ($entity) {
-            return !Strings::startsWith($entity, '@');
+            return !str_starts_with($entity, '@');
         });
 
         return array_values(array_unique($references));

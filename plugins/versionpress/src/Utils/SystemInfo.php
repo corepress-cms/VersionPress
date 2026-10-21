@@ -2,7 +2,6 @@
 
 namespace VersionPress\Utils;
 
-use Nette\Utils\Strings;
 use Symfony\Component\Filesystem\Exception\IOException;
 use VersionPress\VersionPress;
 
@@ -61,8 +60,7 @@ class SystemInfo
 
         $output = trim($process->getOutput());
 
-        $match = Strings::match($output, "~git version (\\d[\\d\\.]+\\d).*~");
-        $version = $match[1];
+        $version = preg_match("~git version (\\d[\\d\\.]+\\d).*~", $output, $match) ? $match[1] : null;
 
 
         $gitPath = "unknown";

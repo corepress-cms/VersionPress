@@ -2,7 +2,6 @@
 
 namespace VersionPress\Storages\Serialization;
 
-use Nette\Utils\Strings;
 use VersionPress\Utils\StringUtils;
 
 /**
@@ -311,7 +310,7 @@ class SerializedDataToIniConverter
             return 'r:' . $value . ';';
         }
 
-        if (Strings::startsWith($value, '"')) {
+        if (str_starts_with($value, '"')) {
             // plain serialized strings are in quotes because of `<<<serialized>>> "string"`
             $value = preg_replace('/^"(.*)"$/', '$1', $value);
         }
@@ -389,7 +388,7 @@ class SerializedDataToIniConverter
 
             $subkey = substr($relatedKey, $indexAfterFirstOpeningBracket, $keyLength);
 
-            if (!Strings::startsWith($subkey, '"')) {
+            if (!str_starts_with($subkey, '"')) {
                 $subkey += 0; // convert to number
             }
 
@@ -427,7 +426,7 @@ class SerializedDataToIniConverter
         $lengthOfCommonPart = strlen($commonKey);
 
         foreach ($maybeRelatedKeys as $key => $value) {
-            if (Strings::startsWith($key, $commonKey) && $key !== $commonKey) {
+            if (str_starts_with($key, $commonKey) && $key !== $commonKey) {
                 $rel[substr($key, $lengthOfCommonPart)] = $value;
             }
         }

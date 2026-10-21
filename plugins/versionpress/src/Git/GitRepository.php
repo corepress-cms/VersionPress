@@ -2,7 +2,6 @@
 
 namespace VersionPress\Git;
 
-use Nette\Utils\Strings;
 use VersionPress\Utils\FileSystem;
 use VersionPress\Utils\Process;
 use VersionPress\Utils\ProcessUtils;
@@ -324,7 +323,7 @@ class GitRepository
     public function willCommit()
     {
         $status = $this->runShellCommandWithStandardOutput("git status -s");
-        return Strings::match($status, "~^[AMD].*~") !== null;
+        return preg_match("~^[AMD].*~", $status) === 1;
     }
 
     /**
@@ -491,7 +490,7 @@ class GitRepository
     {
 
         // replace (optional) "git " with the configured git binary
-        $command = Strings::startsWith($command, "git ") ? substr($command, 4) : $command;
+        $command = str_starts_with($command, "git ") ? substr($command, 4) : $command;
         $command = ProcessUtils::escapeshellarg($this->gitBinary) . " " . $command;
 
         $escapedArgs = @array_map(['VersionPress\Utils\ProcessUtils', 'escapeshellarg'], $args);

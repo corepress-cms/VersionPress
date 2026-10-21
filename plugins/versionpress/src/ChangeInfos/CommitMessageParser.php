@@ -2,7 +2,6 @@
 
 namespace VersionPress\ChangeInfos;
 
-use Nette\Utils\Strings;
 use VersionPress\Actions\ActionsInfoProvider;
 use VersionPress\Database\DbSchemaInfo;
 use VersionPress\Git\CommitMessage;
@@ -70,7 +69,7 @@ class CommitMessageParser
 
     private static function containsVersion($lastBody)
     {
-        return Strings::startsWith($lastBody, ChangeInfoEnvelope::VP_VERSION_TAG);
+        return str_starts_with($lastBody, ChangeInfoEnvelope::VP_VERSION_TAG);
     }
 
     private static function extractTag($tag, $commitMessageBody)
@@ -81,6 +80,6 @@ class CommitMessageParser
 
     private static function isTrackedChangeInfo($body)
     {
-        return Strings::startsWith($body, TrackedChangeInfo::ACTION_TAG);
+        return str_starts_with($body, TrackedChangeInfo::ACTION_TAG);
     }
 }

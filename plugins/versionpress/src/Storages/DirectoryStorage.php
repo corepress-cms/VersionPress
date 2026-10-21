@@ -2,7 +2,6 @@
 
 namespace VersionPress\Storages;
 
-use Nette\Utils\Strings;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RecursiveRegexIterator;
@@ -145,7 +144,7 @@ class DirectoryStorage extends Storage
         $sanitizedEntityId = urlencode($this->maybeReplacePrefixWithPlaceholder($id));
         $sanitizedEntityId = str_replace('.', '%2E', $sanitizedEntityId);
 
-        $vpidPath = Strings::substring($sanitizedEntityId, 0, 2) . '/' . $sanitizedEntityId;
+        $vpidPath = mb_substr($sanitizedEntityId, 0, 2) . '/' . $sanitizedEntityId;
         return $this->directory . '/' . $vpidPath . '.ini';
     }
 

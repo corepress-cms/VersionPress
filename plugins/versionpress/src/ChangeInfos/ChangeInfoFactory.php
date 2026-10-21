@@ -2,7 +2,6 @@
 
 namespace VersionPress\ChangeInfos;
 
-use Nette\Utils\Strings;
 use VersionPress\Actions\ActionsInfo;
 use VersionPress\Actions\ActionsInfoProvider;
 use VersionPress\Database\DbSchemaInfo;

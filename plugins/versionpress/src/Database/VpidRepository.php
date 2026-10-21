@@ -2,7 +2,6 @@
 
 namespace VersionPress\Database;
 
-use Nette\Utils\Strings;
 use VersionPress\DI\VersionPressServices;
 use VersionPress\Utils\IdUtil;
 use VersionPress\Utils\ReferenceUtils;
@@ -116,7 +115,7 @@ class VpidRepository
                     $referencedId = $this->restoreIdsInString($entity[$referenceField]);
                 }
 
-                if (!Strings::contains($referencedId, self::UNKNOWN_VPID_MARK)) {
+                if (!str_contains($referencedId, self::UNKNOWN_VPID_MARK)) {
                     $entity[$referenceName] = $referencedId;
                     unset($entity[$referenceField]);
                 }

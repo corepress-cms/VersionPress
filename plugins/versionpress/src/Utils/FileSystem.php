@@ -3,7 +3,6 @@
 namespace VersionPress\Utils;
 
 use FilesystemIterator;
-use Nette\Utils\Strings;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Traversable;
@@ -66,7 +65,7 @@ class FileSystem
         );
 
         foreach ($iterator as $item) {
-            if ($item->isDir() && Strings::endsWith($iterator->key(), ".git")) {
+            if ($item->isDir() && str_ends_with($iterator->key(), ".git")) {
                 self::possiblyFixGitPermissions($iterator->key());
             }
         }

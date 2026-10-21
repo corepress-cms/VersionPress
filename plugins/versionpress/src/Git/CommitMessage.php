@@ -2,8 +2,6 @@
 
 namespace VersionPress\Git;
 
-use Nette\Utils\Strings;
-
 /**
  * Represents Git commit message (originally a string) as a structure with subject,
  * body and VP tags parsed from the body.
@@ -62,7 +60,7 @@ class CommitMessage
      */
     public function getUnprefixedSubject()
     {
-        if (Strings::startsWith($this->subject, VERSIONPRESS_COMMIT_MESSAGE_PREFIX)) {
+        if (str_starts_with($this->subject, VERSIONPRESS_COMMIT_MESSAGE_PREFIX)) {
             return substr($this->subject, strlen(VERSIONPRESS_COMMIT_MESSAGE_PREFIX), strlen($this->subject));
         }
         return $this->subject;
@@ -91,7 +89,7 @@ class CommitMessage
             $tagLines = array_filter(
                 array_map("trim", explode("\n", $this->getBody())),
                 function ($line) {
-                    return Strings::startsWith($line, "VP-") || Strings::startsWith($line, "X-VP-");
+                    return str_starts_with($line, "VP-") || str_starts_with($line, "X-VP-");
                 }
             );
             $tags = [];

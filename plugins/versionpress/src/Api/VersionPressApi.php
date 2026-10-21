@@ -4,7 +4,6 @@ namespace VersionPress\Api;
 
 require_once ABSPATH . 'wp-admin/includes/file.php';
 
-use Nette\Utils\Strings;
 use VersionPress\Actions\ActionsInfoProvider;
 use VersionPress\ChangeInfos\ChangeInfoEnvelope;
 use VersionPress\ChangeInfos\ChangeInfoFactory;
@@ -478,7 +477,7 @@ class VersionPressApi
         if (
             ArrayUtils::any($status, function ($fileStatus) {
                 $vpdbName = basename(VP_VPDB_DIR);
-                return Strings::contains($fileStatus[1], $vpdbName);
+                return str_contains($fileStatus[1], $vpdbName);
             })
         ) {
             $this->updateDatabase($status);
@@ -671,7 +670,7 @@ class VersionPressApi
                 $path = str_replace('\\', '/', realpath(VP_PROJECT_ROOT) . '/' . $changedFile['path']);
                 $vpdbPath = str_replace('\\', '/', realpath(VP_VPDB_DIR));
 
-                return !Strings::startsWith($path, $vpdbPath);
+                return !str_starts_with($path, $vpdbPath);
             });
         }
 

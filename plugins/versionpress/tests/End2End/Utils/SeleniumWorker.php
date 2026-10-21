@@ -3,7 +3,6 @@
 namespace VersionPress\Tests\End2End\Utils;
 
 use PHPUnit\Framework\Assert;
-use Nette\Utils\Strings;
 use PHPUnit_Extensions_Selenium2TestCase_SessionStrategy_Isolated;
 use PHPUnit_Extensions_Selenium2TestCase_SessionStrategy_Shared;
 use PHPUnit_Extensions_Selenium2TestCase_URL;
@@ -258,7 +257,7 @@ class SeleniumWorker implements ITestWorker
         try {
             $this->executeScript("tinyMCE.activeEditor.setContent('$text')");
         } catch (\PHPUnit_Extensions_Selenium2TestCase_WebDriverException $ex) {
-            if (!Strings::startsWith($ex->getMessage(), "TypeError: c is undefined")) {
+            if (!str_starts_with($ex->getMessage(), "TypeError: c is undefined")) {
                 throw $ex;
             }
         }

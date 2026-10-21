@@ -2,7 +2,6 @@
 
 namespace VersionPress\Storages\Serialization;
 
-use Nette\Utils\Strings;
 use VersionPress\Utils\StringUtils;
 
 /**
@@ -397,10 +396,10 @@ class IniSerializer
             if (is_array($value)) {
                 $result[$key] = self::restoreTypesOfValues($value);
             } else {
-                if (Strings::startsWith($value, self::$numberMarker)) {
+                if (str_starts_with($value, self::$numberMarker)) {
                     // strip the marker and convert to number
                     $result[$key] = str_replace(self::$numberMarker, '', $value) + 0;
-                } elseif (Strings::startsWith($value, self::$nullMarker)) {
+                } elseif (str_starts_with($value, self::$nullMarker)) {
                     $result[$key] = null;
                 } else {
                     $result[$key] = self::unescapeString($value);
@@ -448,7 +447,7 @@ class IniSerializer
             if (is_array($value)) {
                 $deserialized[$key] = self::restorePhpSerializedData($value);
             } else {
-                if (is_string($value) && Strings::startsWith($value, SerializedDataToIniConverter::SERIALIZED_MARKER)) {
+                if (is_string($value) && str_starts_with($value, SerializedDataToIniConverter::SERIALIZED_MARKER)) {
                     $keysToRestore[] = $key;
                 }
             }
@@ -456,7 +455,7 @@ class IniSerializer
 
         foreach ($keysToRestore as $key) {
             $relatedKeys = array_filter($deserialized, function ($maybeRelatedKey) use ($key) {
-                return Strings::startsWith($maybeRelatedKey, $key);
+                return str_starts_with($maybeRelatedKey, $key);
             }, ARRAY_FILTER_USE_KEY);
 
             $keysToUnset = $relatedKeys;

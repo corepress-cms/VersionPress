@@ -2,8 +2,6 @@
 
 namespace VersionPress\Initialization;
 
-use Nette\Utils\Strings;
-
 /**
  * Used for creating wp-config.common.php.
  *
@@ -41,7 +39,7 @@ class WpConfigSplitter
 
         foreach ($configLines as $lineNumber => $line) {
             if (preg_match($defineRegexPattern, $line)) {
-                if (Strings::contains($line, $wpConfigDir)) {
+                if (str_contains($line, $wpConfigDir)) {
                     $positionOfPath = strpos($line, $wpConfigDir) - 1;
                     $line = str_replace($wpConfigDir, '', $line);
                     $line = substr($line, 0, $positionOfPath) . '__DIR__ . ' . substr($line, $positionOfPath);
@@ -71,7 +69,7 @@ DOC;
 
         $configContent = file_get_contents($wpConfigPath);
 
-        if (!Strings::contains($configContent, $include)) {
+        if (!str_contains($configContent, $include)) {
             $configContent = str_replace('<?php', "<?php\n\n$include\n", $configContent);
             file_put_contents($wpConfigPath, $configContent);
         }

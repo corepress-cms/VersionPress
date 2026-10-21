@@ -4,7 +4,6 @@ namespace VersionPress\Tests\Utils;
 
 use PHPUnit\Framework\Assert;
 use Exception;
-use Nette\Utils\Strings;
 use VersionPress\Actions\ActionsInfoProvider;
 use VersionPress\ChangeInfos\BulkChangeInfo;
 use VersionPress\ChangeInfos\ChangeInfoEnvelope;
@@ -404,15 +403,15 @@ class CommitAsserter
             $path = str_replace("%$placeholder%", $value, $path);
         }
 
-        $containsVpId = Strings::contains($path, "%VPID%");
-        $containsVpTag = Strings::contains($path, "%VPID(");
+        $containsVpId = str_contains($path, "%VPID%");
+        $containsVpTag = str_contains($path, "%VPID(");
 
         if ($containsVpId || $containsVpTag) {
             $changeInfo = $this->getChangeInfo($this->getCommit($whichCommit));
 
             if ($containsVpId) {
                 $vpid = ChangeInfoUtils::getVpid($changeInfo);
-                $vpidPath = Strings::substring($vpid, 0, 2) . '/' . $vpid;
+                $vpidPath = mb_substr($vpid, 0, 2) . '/' . $vpid;
                 $path = str_replace("%VPID%", $vpidPath, $path);
             }
 
@@ -420,7 +419,7 @@ class CommitAsserter
                 $commitMessage = $changeInfo->getCommitMessage();
                 $path = preg_replace_callback('/(.*)%VPID\((.*)\)%(.*)/', function ($parts) use ($commitMessage) {
                     $vpid = $commitMessage->getVersionPressTag($parts[2]);
-                    $vpidPath = Strings::substring($vpid, 0, 2) . '/' . $vpid;
+                    $vpidPath = mb_substr($vpid, 0, 2) . '/' . $vpid;
 
                     return $parts[1] . $vpidPath . $parts[3];
                 }, $path);

@@ -2,7 +2,6 @@
 
 namespace VersionPress\ChangeInfos;
 
-use Nette\Utils\Strings;
 use VersionPress\Git\CommitMessage;
 use VersionPress\Utils\ArrayUtils;
 use VersionPress\VersionPress;
@@ -120,7 +119,7 @@ class ChangeInfoEnvelope implements ChangeInfo
 
     private static function containsVersion($lastBody)
     {
-        return Strings::startsWith($lastBody, self::VP_VERSION_TAG);
+        return str_starts_with($lastBody, self::VP_VERSION_TAG);
     }
 
     private static function extractTag($tag, $lastBody)

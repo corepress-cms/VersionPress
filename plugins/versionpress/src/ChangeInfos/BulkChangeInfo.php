@@ -2,8 +2,6 @@
 
 namespace VersionPress\ChangeInfos;
 
-use Nette\NotSupportedException;
-use Nette\Utils\Strings;
 use VersionPress\Utils\StringUtils;
 
 class BulkChangeInfo implements ChangeInfo
@@ -24,7 +22,7 @@ class BulkChangeInfo implements ChangeInfo
 
     public function getCommitMessage()
     {
-        throw new NotSupportedException("Commit message is created in ChangeInfoEnvelope from original objects");
+        throw new \BadMethodCallException("Commit message is created in ChangeInfoEnvelope from original objects");
     }
 
     /**
@@ -47,7 +45,7 @@ class BulkChangeInfo implements ChangeInfo
         } else {
             $defaultDescription = sprintf(
                 "%s %d %s",
-                Strings::capitalize(StringUtils::verbToPastTense($action)),
+                mb_convert_case(StringUtils::verbToPastTense($action), MB_CASE_TITLE),
                 $this->count,
                 StringUtils::pluralize($entityName)
             );

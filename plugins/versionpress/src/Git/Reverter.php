@@ -2,7 +2,6 @@
 
 namespace VersionPress\Git;
 
-use Nette\Utils\Strings;
 use VersionPress\ChangeInfos\CommitMessageParser;
 use VersionPress\ChangeInfos\EntityChangeInfo;
 use VersionPress\ChangeInfos\UntrackedChangeInfo;
@@ -157,8 +156,7 @@ class Reverter
         $posts = [];
 
         foreach ($modifiedFiles as $filename) {
-            $match = Strings::match($filename, '~/posts/.*/(.*)\.ini~');
-            if ($match) {
+            if (preg_match('~/posts/.*/(.*)\.ini~', $filename, $match)) {
                 $posts[] = $match[1];
             }
         }

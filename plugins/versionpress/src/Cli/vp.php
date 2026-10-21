@@ -8,7 +8,6 @@
 
 namespace VersionPress\Cli;
 
-use Nette\Utils\Strings;
 use Symfony\Component\Filesystem\Exception\IOException;
 use VersionPress\Actions\ActionsDefinitionRepository;
 use VersionPress\DI\VersionPressServices;
@@ -340,7 +339,7 @@ class VPCommand extends WP_CLI_Command
 
         $msg = $process->getConsoleOutput();
         $dbExistsMysqlErrorCode = '1007';
-        $dbExists = Strings::contains($msg, $dbExistsMysqlErrorCode);
+        $dbExists = str_contains($msg, $dbExistsMysqlErrorCode);
 
         if (!$dbExists) {
             WP_CLI::error("Failed creating database. Details:\n\n" . $msg);
@@ -453,7 +452,7 @@ class VPCommand extends WP_CLI_Command
         }
 
         $prefixChanged = false;
-        if (Strings::contains($cloneDbPrefix, '-')) {
+        if (str_contains($cloneDbPrefix, '-')) {
             $cloneDbPrefix = str_replace('-', '_', $cloneDbPrefix);
             $prefixChanged = true;
         }
@@ -466,7 +465,7 @@ class VPCommand extends WP_CLI_Command
         }
 
         $cloneUrl = isset($assoc_args['siteurl']) ? $assoc_args['siteurl'] : $suggestedUrl;
-        $urlChanged = !isset($assoc_args['siteurl']) && !Strings::contains($cloneUrl, $cloneDirName);
+        $urlChanged = !isset($assoc_args['siteurl']) && !str_contains($cloneUrl, $cloneDirName);
 
         if (is_dir($clonePath)) {
             // @codingStandardsIgnoreLine
@@ -607,7 +606,7 @@ class VPCommand extends WP_CLI_Command
      */
     private function suggestCloneUrl($originUrl, $originDirName, $cloneDirName)
     {
-        if (!Strings::contains($originUrl, $originDirName)) {
+        if (!str_contains($originUrl, $originDirName)) {
             return null;
         }
 

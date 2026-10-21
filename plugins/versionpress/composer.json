@@ -23,7 +23,6 @@
   "require": {
     "php": ">=8.5",
     "michelf/php-markdown": "^2.0",
-    "nette/utils": "^4.1",
     "phpmyadmin/sql-parser": "^5.11",
     "symfony/filesystem": "^8.1",
     "symfony/process": "^8.1",
@@ -34,6 +33,7 @@
     "fakerphp/faker": "^1.24",
     "mikey179/vfsstream": "^1.6.12",
     "mockery/mockery": "^1.6.12",
+    "nette/utils": "^4.1",
     "php-stubs/wordpress-stubs": "^7.1",
     "phpcompatibility/phpcompatibility-wp": "^2.1.8",
     "phpstan/extension-installer": "^1.4",

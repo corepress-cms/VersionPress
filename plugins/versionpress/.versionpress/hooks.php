@@ -1,6 +1,5 @@
 <?php
 
-use Nette\Utils\Strings;
 use VersionPress\Actions\ActionsDefinitionRepository;
 use VersionPress\Actions\PluginDefinitionDiscovery;
 use VersionPress\ChangeInfos\CommitMessageParser;
@@ -59,11 +58,11 @@ add_filter('vp_entity_should_be_saved_option', function ($shouldBeSaved, $data, 
     $taxonomies = array_keys((array)$wp_taxonomies);
 
     $taxonomyChildrenSuffix = '_children';
-    if (!Strings::endsWith($name, $taxonomyChildrenSuffix)) {
+    if (!str_ends_with($name, $taxonomyChildrenSuffix)) {
         return $shouldBeSaved;
     }
 
-    $maybeTaxonomyName = Strings::substring($name, 0, Strings::length($name) - Strings::length($taxonomyChildrenSuffix));
+    $maybeTaxonomyName = mb_substr($name, 0, mb_strlen($name) - mb_strlen($taxonomyChildrenSuffix));
 
     return !in_array($maybeTaxonomyName, $taxonomies);
 }, 10, 3);
@@ -315,7 +314,7 @@ add_filter('vp_entity_files_term_taxonomy', function ($files, $oldEntity, $newEn
 }, 10, 3);
 
 add_filter('vp_bulk_change_description_composer', function ($description, $action, $count) {
-    return sprintf("%s %d Composer packages", Strings::capitalize(StringUtils::verbToPastTense($action)), $count);
+    return sprintf("%s %d Composer packages", mb_convert_case(StringUtils::verbToPastTense($action), MB_CASE_TITLE), $count);
 }, 10, 3);
 
 

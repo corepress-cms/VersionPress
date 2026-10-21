@@ -3,7 +3,6 @@
 namespace VersionPress\Tests\Automation;
 
 use Exception;
-use Nette\Utils\Strings;
 use VersionPress\Tests\Utils\SiteConfig;
 use VersionPress\Utils\FileSystem;
 use VersionPress\Utils\Process;
@@ -355,7 +354,7 @@ class WpAutomation
         preg_match_all("/^[^A-Z]*([A-Z]+)[^a-z]+([a-z\-]+).*$/m", $status, $matches);
 
         foreach ($matches[1] as $lineNumber => $status) {
-            if (Strings::contains($status, 'A')) {
+            if (str_contains($status, 'A')) {
                 return $matches[2][$lineNumber];
             }
         }
@@ -676,7 +675,7 @@ class WpAutomation
      */
     private function possiblyRewriteWpCliCommand($command)
     {
-        if (!Strings::startsWith($command, "wp ")) {
+        if (!str_starts_with($command, "wp ")) {
             return $command;
         }
 

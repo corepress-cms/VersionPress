@@ -4,7 +4,6 @@ namespace VersionPress\Tests\End2End\Users;
 
 use PHPUnit\Framework\SkippedTestError;
 use Nette\Utils\Random;
-use Nette\Utils\Strings;
 use VersionPress\Tests\End2End\Utils\WpCliWorker;
 
 class UsersTestWpCliWorker extends WpCliWorker implements IUsersTestWorker
@@ -151,7 +150,7 @@ class UsersTestWpCliWorker extends WpCliWorker implements IUsersTestWorker
             return $user->user_login;
         }, $users);
         $usersForBulkTests = array_filter($userLogins, function ($login) {
-            return Strings::startsWith($login, 'bulk_');
+            return str_starts_with($login, 'bulk_');
         });
         $this->wpAutomation->runWpCliCommand('user', 'delete', array_merge($usersForBulkTests, ['yes' => null]));
     }

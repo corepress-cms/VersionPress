@@ -2,7 +2,6 @@
 
 namespace VersionPress\Utils;
 
-use Nette\Utils\Strings;
 use VersionPress\Actions\ActionsInfoProvider;
 
 class AutocompleteUtils
@@ -111,7 +110,7 @@ class AutocompleteUtils
      */
     private static function capitalize($string)
     {
-        $capitalizedString = Strings::firstUpper($string);
+        $capitalizedString = mb_ucfirst($string);
         return str_ireplace(
             ['wordpress', 'versionpress'],
             ['WordPress', 'VersionPress'],
