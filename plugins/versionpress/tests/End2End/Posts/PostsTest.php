@@ -2,123 +2,95 @@
 
 namespace VersionPress\Tests\End2End\Posts;
 
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\Attributes\Depends;
 use VersionPress\Tests\End2End\Utils\PostTypeTestCase;
 use VersionPress\Tests\Utils\DBAsserter;
 
 class PostsTest extends PostTypeTestCase
 {
 
-    /**
-     * @test
-     * @testdox New post creates 'post/create' action
-     */
+    #[Test]
+    #[TestDox("New post creates 'post/create' action")]
     public function addingPostCreatesPostCreateAction()
     {
         $this->runAddPostTest();
     }
 
-    /**
-     * @test
-     * @testdox Updating post creates 'post/update' action
-     *
-     * @depends addingPostCreatesPostCreateAction
-     */
+    #[Test]
+    #[Depends('addingPostCreatesPostCreateAction')]
+    #[TestDox("Updating post creates 'post/update' action")]
     public function updatingPostCreatesPostEditAction()
     {
         $this->runUpdatePostTest();
     }
 
-    /**
-     * @test
-     * @testdox Updating post via quick edit creates equivalent 'post/update' action
-     *
-     * @depends updatingPostCreatesPostEditAction
-     */
+    #[Test]
+    #[Depends('updatingPostCreatesPostEditAction')]
+    #[TestDox("Updating post via quick edit creates equivalent 'post/update' action")]
     public function updatingPostViaQuickEditWorksEquallyWell()
     {
         $this->runUpdatePostViaQuickEditTest();
     }
 
-    /**
-     * @test
-     * @testdox Trashing post creates 'post/trash' action
-     *
-     * @depends addingPostCreatesPostCreateAction
-     */
+    #[Test]
+    #[Depends('addingPostCreatesPostCreateAction')]
+    #[TestDox("Trashing post creates 'post/trash' action")]
     public function trashingPostCreatesPostTrashAction()
     {
         $this->runTrashPostTest();
     }
 
-    /**
-     * @test
-     * @testdox Undo creates 'post/untrash' action
-     *
-     * @depends trashingPostCreatesPostTrashAction
-     */
+    #[Test]
+    #[Depends('trashingPostCreatesPostTrashAction')]
+    #[TestDox("Undo creates 'post/untrash' action")]
     public function undoCreatesPostUntrashAction()
     {
         $this->runUndoTrashTest();
     }
 
-    /**
-     * @test
-     * @testdox Deleting post permanenly creates 'post/delete' action
-     *
-     * @depends undoCreatesPostUntrashAction
-     */
+    #[Test]
+    #[Depends('undoCreatesPostUntrashAction')]
+    #[TestDox("Deleting post permanenly creates 'post/delete' action")]
     public function deletePermanentlyCreatesPostDeleteAction()
     {
         $this->runDeletePostTest();
     }
 
-    /**
-     * @test
-     * @testdox Creating draft creates 'post/draft' action
-     *
-     * @depends deletePermanentlyCreatesPostDeleteAction
-     */
+    #[Test]
+    #[Depends('deletePermanentlyCreatesPostDeleteAction')]
+    #[TestDox("Creating draft creates 'post/draft' action")]
     public function creatingDraftCreatesPostDraftAction()
     {
         $this->runDraftTest();
     }
 
-    /**
-     * @test
-     * @testdox Previewing draft does not create a commit
-     *
-     * @depends creatingDraftCreatesPostDraftAction
-     */
+    #[Test]
+    #[Depends('creatingDraftCreatesPostDraftAction')]
+    #[TestDox('Previewing draft does not create a commit')]
     public function previewingDraftDoesNotCreateCommit()
     {
         $this->runPreviewDraftTest();
     }
 
-    /**
-     * @test
-     * @testdox Publishing draft creates 'post/publish' action
-     *
-     * @depends creatingDraftCreatesPostDraftAction
-     */
+    #[Test]
+    #[Depends('creatingDraftCreatesPostDraftAction')]
+    #[TestDox("Publishing draft creates 'post/publish' action")]
     public function publishingDraftCreatesPostPublishAction()
     {
         $this->runPublishDraftTest();
     }
 
-    /**
-     * @test
-     * @testdox Previewing unsaved post creates a draft
-     *
-     */
+    #[Test]
+    #[TestDox('Previewing unsaved post creates a draft')]
     public function previewingUnsavedPostCreatesDraft()
     {
         $this->runPreviewUnsavedPostTest();
     }
 
-    /**
-     * @test
-     * @testdox Creating tag in the editation form creates separate commit
-     */
+    #[Test]
+    #[TestDox('Creating tag in the editation form creates separate commit')]
     public function creatingTagInEditationFormCreatesSeparateCommit()
     {
         self::$worker->prepare_createTagInEditationForm();
@@ -135,30 +107,23 @@ class PostsTest extends PostTypeTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Setting featured image to an unsaved post does not commit
-     */
+    #[Test]
+    #[TestDox('Setting featured image to an unsaved post does not commit')]
     public function settingFeaturedImageToUnsavedPostDoesNotCommit()
     {
         $this->runSetFeaturedImageForUnsavedPostTest();
     }
 
-    /**
-     * @test
-     * @testdox Turning unsaved post with featured image into a draft saves the featured image
-     *
-     * @depends settingFeaturedImageToUnsavedPostDoesNotCommit
-     */
+    #[Test]
+    #[Depends('settingFeaturedImageToUnsavedPostDoesNotCommit')]
+    #[TestDox('Turning unsaved post with featured image into a draft saves the featured image')]
     public function turningUnsavedPostWithFeaturedImageIntoDraftSavesTheFeaturedImage()
     {
         $this->runMakeDraftFromUnsavedPostWithFeaturedImageTest();
     }
 
-    /**
-     * @test
-     * @testdox Changing post format updates its taxonomy
-     */
+    #[Test]
+    #[TestDox('Changing post format updates its taxonomy')]
     public function changingPostFormatUpdatesItsTaxonomy()
     {
         self::$worker->prepare_changePostFormat();
@@ -172,55 +137,43 @@ class PostsTest extends PostTypeTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Editation multiple posts creates bulk action
-     */
+    #[Test]
+    #[TestDox('Editation multiple posts creates bulk action')]
     public function editationOfMultiplePostsCreatesBulkAction()
     {
         $this->runEditationOfMultiplePostsCreatesBulkAction();
     }
 
-    /**
-     * @test
-     * @testdox Trashing multiple posts creates bulk action
-     */
+    #[Test]
+    #[TestDox('Trashing multiple posts creates bulk action')]
     public function trashingOfMultiplePostsCreatesBulkAction()
     {
         $this->runTrashingMultiplePostsCreatesBulkAction();
     }
 
-    /**
-     * @test
-     * @testdox Untrashing multiple posts creates bulk action
-     */
+    #[Test]
+    #[TestDox('Untrashing multiple posts creates bulk action')]
     public function untrashingOfMultiplePostsCreatesBulkAction()
     {
         $this->runUntrashingMultiplePostsCreatesBulkAction();
     }
 
-    /**
-     * @test
-     * @testdox Deleting multiple posts creates bulk action
-     */
+    #[Test]
+    #[TestDox('Deleting multiple posts creates bulk action')]
     public function deletingOfMultiplePostsCreatesBulkAction()
     {
         $this->runDeletingMultiplePostsCreatesBulkAction();
     }
 
-    /**
-     * @test
-     * @testdox Publishing multiple posts creates bulk action
-     */
+    #[Test]
+    #[TestDox('Publishing multiple posts creates bulk action')]
     public function publishingOfMultiplePostsCreatesBulkAction()
     {
         $this->runPublishingMultiplePostsCreatesBulkAction();
     }
 
-    /**
-     * @test
-     * @testdox Deleting post meta creates 'postmeta/delete' action
-     */
+    #[Test]
+    #[TestDox("Deleting post meta creates 'postmeta/delete' action")]
     public function deletingOfPostmetaCreatesPostmetaDeleteAction()
     {
         self::$worker->prepare_deletePostmeta();

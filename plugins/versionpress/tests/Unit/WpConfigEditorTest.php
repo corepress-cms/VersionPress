@@ -2,16 +2,18 @@
 
 namespace VersionPress\Tests\Unit;
 
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use org\bovigo\vfs\vfsStream;
 use VersionPress\Utils\WpConfigEditor;
 
-class WpConfigEditorTest extends \PHPUnit_Framework_TestCase
+class WpConfigEditorTest extends TestCase
 {
 
     private $configPath;
     private $commonConfigPath;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $root = vfsStream::setup();
         $virtualConfig = vfsStream::newFile('wp-config.common.php')->at($root);
@@ -21,10 +23,7 @@ class WpConfigEditorTest extends \PHPUnit_Framework_TestCase
     }
 
 // ---------- wp-config.common.php ------------
-
-    /**
-     * @test
-     */
+    #[Test]
     public function editorCreatesNewConstantInCommonConfigIfItsMissing()
     {
         file_put_contents($this->commonConfigPath, "<?php\n");
@@ -37,9 +36,7 @@ class WpConfigEditorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedContent, file_get_contents($this->commonConfigPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function editorUpdatesExistingConstantInCommonConfig()
     {
         file_put_contents($this->commonConfigPath, "<?php\ndefine('TEST', 'value');\n");
@@ -52,9 +49,7 @@ class WpConfigEditorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedContent, file_get_contents($this->commonConfigPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function editorAppendsNewConstantsAtTheEndOfCommonConfig()
     {
         file_put_contents($this->commonConfigPath, "<?php\ndefine('EXISTING_CONSTANT', 'value');\n");
@@ -67,9 +62,7 @@ class WpConfigEditorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedContent, file_get_contents($this->commonConfigPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function editorSavesIntConstantsAsIntegers()
     {
         file_put_contents($this->commonConfigPath, "<?php\ndefine('TEST', 'value');\n");
@@ -82,9 +75,7 @@ class WpConfigEditorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedContent, file_get_contents($this->commonConfigPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function editorSavesBoolConstantsAsBooleans()
     {
         file_put_contents($this->commonConfigPath, "<?php\ndefine('TEST', 'value');\n");
@@ -97,9 +88,7 @@ class WpConfigEditorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedContent, file_get_contents($this->commonConfigPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function editorSavesConstantWithRegexReferenceCorrectly()
     {
         file_put_contents($this->commonConfigPath, "<?php\ndefine('TEST', 'value');\n");
@@ -112,9 +101,7 @@ class WpConfigEditorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedContent, file_get_contents($this->commonConfigPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function editorSavesPlainValueConstantsCorrectly()
     {
         file_put_contents($this->commonConfigPath, "<?php\ndefine('TEST', 'value');\n");
@@ -127,9 +114,7 @@ class WpConfigEditorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedContent, file_get_contents($this->commonConfigPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function editorSavesPlainValueConstantsWithRegexReferenceCorrectly()
     {
         file_put_contents($this->commonConfigPath, "<?php\ndefine('TEST', 'value');\n");
@@ -142,9 +127,7 @@ class WpConfigEditorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedContent, file_get_contents($this->commonConfigPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function editorUpdatesOnlyDesiredConstantInCommonConfig()
     {
         file_put_contents(
@@ -160,9 +143,7 @@ class WpConfigEditorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedContent, file_get_contents($this->commonConfigPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function editorCreatesNewVariableInCommonConfigIfItsMissing()
     {
         file_put_contents($this->commonConfigPath, "<?php\n");
@@ -175,9 +156,7 @@ class WpConfigEditorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedContent, file_get_contents($this->commonConfigPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function editorUpdatesExistingVarialbeInCommonConfig()
     {
         file_put_contents($this->commonConfigPath, "<?php\n\$test = 'value';\n");
@@ -190,9 +169,7 @@ class WpConfigEditorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedContent, file_get_contents($this->commonConfigPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function editorAppendsNewVariablesAtTheEndOfCommonConfig()
     {
         file_put_contents($this->commonConfigPath, "<?php\n\$existing_variable = 'value';\n");
@@ -205,9 +182,7 @@ class WpConfigEditorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedContent, file_get_contents($this->commonConfigPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function editorSavesIntVariablesAsIntegers()
     {
         file_put_contents($this->commonConfigPath, "<?php\n\$test = 'value';\n");
@@ -220,9 +195,7 @@ class WpConfigEditorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedContent, file_get_contents($this->commonConfigPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function editorSavesBoolVariablesAsBooleans()
     {
         file_put_contents($this->commonConfigPath, "<?php\n\$test = 'value';\n");
@@ -235,9 +208,7 @@ class WpConfigEditorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedContent, file_get_contents($this->commonConfigPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function editorSavesVariableWithRegexReferenceCorrectly()
     {
         file_put_contents($this->commonConfigPath, "<?php\n\$test = 'value';\n");
@@ -250,9 +221,7 @@ class WpConfigEditorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedContent, file_get_contents($this->commonConfigPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function editorSavesVariableWithCrazyRegexCorrectly()
     {
         file_put_contents($this->commonConfigPath, "<?php\n\$test = 'value';\n");
@@ -265,9 +234,7 @@ class WpConfigEditorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedContent, file_get_contents($this->commonConfigPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function editorSavesPlainValueVariablesCorrectly()
     {
         file_put_contents($this->commonConfigPath, "<?php\n\$test = 'value';\n");
@@ -280,9 +247,7 @@ class WpConfigEditorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedContent, file_get_contents($this->commonConfigPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function editorSavesPlainValueVariablesWithRegexReferenceCorrectly()
     {
         file_put_contents($this->commonConfigPath, "<?php\n\$test = 'value';\n");
@@ -295,9 +260,7 @@ class WpConfigEditorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedContent, file_get_contents($this->commonConfigPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function editorUpdatesOnlyDesiredVariableInCommonConfig()
     {
         file_put_contents($this->commonConfigPath, "<?php\n\$test = 'value';\n\$my_variable = 'value';\n");
@@ -311,10 +274,7 @@ class WpConfigEditorTest extends \PHPUnit_Framework_TestCase
     }
 
 // ---------- wp-config.php ------------
-
-    /**
-     * @test
-     */
+    #[Test]
     public function editorCreatesNewConstantInWpConfigIfItsMissing()
     {
         file_put_contents($this->commonConfigPath, '<?php
@@ -362,9 +322,7 @@ require_once(ABSPATH . \'wp-settings.php\');
         $this->assertEquals($expectedContent, file_get_contents($this->commonConfigPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function editorUpdatesExistingConstantInWpConfig()
     {
         file_put_contents($this->commonConfigPath, '<?php
@@ -413,9 +371,7 @@ require_once(ABSPATH . \'wp-settings.php\');
         $this->assertEquals($expectedContent, file_get_contents($this->commonConfigPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function editorUpdatesOnlyDesiredConstantInWpConfig()
     {
         file_put_contents($this->commonConfigPath, '<?php
@@ -466,9 +422,7 @@ require_once(ABSPATH . \'wp-settings.php\');
         $this->assertEquals($expectedContent, file_get_contents($this->commonConfigPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function editorCreatesNewVariableInWpConfigIfItsMissing()
     {
         file_put_contents($this->commonConfigPath, '<?php
@@ -516,9 +470,7 @@ require_once(ABSPATH . \'wp-settings.php\');
         $this->assertEquals($expectedContent, file_get_contents($this->commonConfigPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function editorUpdatesExistingValueInWpConfig()
     {
         file_put_contents($this->commonConfigPath, '<?php
@@ -567,9 +519,7 @@ require_once(ABSPATH . \'wp-settings.php\');
         $this->assertEquals($expectedContent, file_get_contents($this->commonConfigPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function editorUpdatesOnlyDesiredValueInWpConfig()
     {
         file_put_contents($this->commonConfigPath, '<?php
@@ -618,9 +568,7 @@ require_once(ABSPATH . \'wp-settings.php\');
         $this->assertEquals($expectedContent, file_get_contents($this->commonConfigPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function editorWorksWithLocalizedWpConfig()
     {
         file_put_contents($this->commonConfigPath, '<?php
@@ -668,9 +616,7 @@ require_once(ABSPATH . \'wp-settings.php\');
         $this->assertEquals($expectedContent, file_get_contents($this->commonConfigPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function editorWorksWithoutHappyBloggingComment()
     {
         file_put_contents($this->commonConfigPath, '<?php
@@ -698,9 +644,7 @@ require_once(ABSPATH . \'wp-settings.php\');
         $this->assertEquals($expectedContent, file_get_contents($this->commonConfigPath));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function editorWorksWithoutDefiningAbspath()
     {
         file_put_contents($this->commonConfigPath, '<?php

@@ -2,6 +2,9 @@
 
 namespace VersionPress\Tests\Utils;
 
+use PHPUnit\Framework\AssertionFailedError;
+use PHPUnit\Framework\Constraint\IsIdentical;
+
 class ArrayAsserter
 {
     /**
@@ -13,13 +16,13 @@ class ArrayAsserter
     public static function assertSimilar($expected, $actual)
     {
         if (!is_array($expected) || !is_array($actual)) {
-            throw new \PHPUnit_Framework_AssertionFailedError('Only arrays can be compared');
+            throw new AssertionFailedError('Only arrays can be compared');
         }
 
         ksort($expected);
         ksort($actual);
 
-        $constraint = new \PHPUnit_Framework_Constraint_IsIdentical($expected);
+        $constraint = new IsIdentical($expected);
         $constraint->evaluate($actual);
     }
 }

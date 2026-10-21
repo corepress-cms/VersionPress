@@ -2,14 +2,14 @@
 
 namespace VersionPress\Tests\Utils;
 
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use VersionPress\Utils\ReferenceUtils;
 
-class ReferenceUtilsTest extends \PHPUnit_Framework_TestCase
+class ReferenceUtilsTest extends TestCase
 {
 
-    /**
-     * @test
-     */
+    #[Test]
     public function simpleNumericKey()
     {
         $pathInStructure = '[0]';
@@ -20,9 +20,7 @@ class ReferenceUtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([[[0]]], $paths);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function nestedNumericKeys()
     {
         $pathInStructure = '[0][1]';
@@ -33,9 +31,7 @@ class ReferenceUtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([[[0, 1]]], $paths);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function moreNestedNumericKeys()
     {
         $pathInStructure = '[0][1][2]';
@@ -46,9 +42,7 @@ class ReferenceUtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([[[0, 1, 2]]], $paths);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function combinedNumericAndStringKeys()
     {
         $pathInStructure = '[0]["some-key"][1]';
@@ -59,9 +53,7 @@ class ReferenceUtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([[[0, 'some-key', 1]]], $paths);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function structureWithNotMatchingData()
     {
         $pathInStructure = '[0]["some-key"][1]';
@@ -75,9 +67,7 @@ class ReferenceUtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([[[0, 'some-key', 1]]], $paths);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function simpleRegex()
     {
         $pathInStructure = '[/\d+/]';
@@ -91,9 +81,7 @@ class ReferenceUtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([[[0]], [[1]]], $paths);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function simpleRegexWithNotMatchingData()
     {
         $pathInStructure = '[/\d+/]';
@@ -109,9 +97,7 @@ class ReferenceUtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([[[0]], [[1]]], $paths);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function morePatternsWithNotMatchingData()
     {
         $pathInStructure = '[/\d+/][/some-.*/][/[0-9]+/]';
@@ -127,9 +113,7 @@ class ReferenceUtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([[[0, 'some-key', 1]], [[1, 'some-other-key', 1]]], $paths);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function nestedSerializedData()
     {
         $pathInStructure = '[0]..[0]';
@@ -140,9 +124,7 @@ class ReferenceUtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([[[0], [0]]], $paths);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function regexPathsInNestedSerializedData()
     {
         $pathInStructure = '[/\d+/]..[/prefix_\d+/]';
@@ -159,9 +141,7 @@ class ReferenceUtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedPaths, $paths);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function regexPathsInNestedSerializedDataWithMissingKeys()
     {
         $pathInStructure = '[/\d+/]..[/prefix_\d+/]';
@@ -176,9 +156,7 @@ class ReferenceUtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedPaths, $paths);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function regexPathsInNestedSerializedDataWithExtraKeys()
     {
         $pathInStructure = '[/\d+/]..[/prefix_\d+/]';

@@ -2,6 +2,7 @@
 
 namespace VersionPress\Tests\End2End\Revert;
 
+use PHPUnit\Framework\SkippedTestError;
 use Nette\Utils\Random;
 use VersionPress\Git\GitRepository;
 use VersionPress\Tests\End2End\Utils\WpCliWorker;
@@ -93,7 +94,7 @@ class RevertTestWpCliWorker extends WpCliWorker implements IRevertTestWorker
 
     public function prepare_clickOnCancel()
     {
-        throw new \PHPUnit_Framework_SkippedTestError("There is no cancel button in the WP-CLI");
+        throw new SkippedTestError("There is no cancel button in the WP-CLI");
     }
 
     public function clickOnCancel()

@@ -2,22 +2,19 @@
 
 namespace VersionPress\Tests\Unit;
 
-use org\bovigo\vfs\vfsStream;
-use Symfony\Component\Yaml\Yaml;
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use VersionPress\Actions\ActionsInfo;
-use VersionPress\Actions\ActionsInfoProvider;
 use VersionPress\Tests\Utils\HookMock;
 
-class ActionsInfoTest extends \PHPUnit_Framework_TestCase
+class ActionsInfoTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         HookMock::setUp();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function actionsInfoCreatesDescriptionForGivenAction()
     {
         $actions = [
@@ -33,9 +30,7 @@ class ActionsInfoTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('Other description', $description2);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function actionsInfoReplacesTagPlaceholderWithItsValue()
     {
         $tags = ['VP-Tag' => '/'];
@@ -48,9 +43,7 @@ class ActionsInfoTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('Some description containing tag value', $description);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function actionsInfoReplacesVpidPlaceholderWithVpid()
     {
         $actions = ['some-action' => ['message' => 'Some description containing %VPID%']];
@@ -60,9 +53,7 @@ class ActionsInfoTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('Some description containing some-id', $description);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function actionsInfoAppliesFilterOnDescription()
     {
         $actions = ['some-action' => ['message' => 'Some description']];

@@ -2,6 +2,8 @@
 
 namespace VersionPress\Tests\End2End\Revert;
 
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use VersionPress\Cli\VPCommandUtils;
 use VersionPress\Git\GitRepository;
 use VersionPress\Tests\End2End\Utils\End2EndTestCase;
@@ -13,10 +15,8 @@ class RevertTest extends End2EndTestCase
     /** @var IRevertTestWorker */
     private static $worker;
 
-    /**
-     * @test
-     * @testdox Undo reverts changes in given commit
-     */
+    #[Test]
+    #[TestDox('Undo reverts changes in given commit')]
     public function undoRevertChangesInGivenCommit()
     {
         $changes = self::$worker->prepare_undoLastCommit();
@@ -33,10 +33,8 @@ class RevertTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Undo reverts only one commit
-     */
+    #[Test]
+    #[TestDox('Undo reverts only one commit')]
     public function undoRevertsOnlyOneCommit()
     {
         $changes = self::$worker->prepare_undoSecondCommit();
@@ -52,10 +50,8 @@ class RevertTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Undo commit can be also reverted.
-     */
+    #[Test]
+    #[TestDox('Undo commit can be also reverted.')]
     public function undoCommitCanBeAlsoReverted()
     {
         $changes = self::$worker->prepare_undoRevertedCommit();
@@ -73,10 +69,8 @@ class RevertTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Comment deletion cannot be reverted if the commented post no longer exists
-     */
+    #[Test]
+    #[TestDox('Comment deletion cannot be reverted if the commented post no longer exists')]
     public function entityWithMissingReferenceCannotBeRestoredWithRevert()
     {
         self::$worker->prepare_tryRestoreEntityWithMissingReference();
@@ -89,10 +83,8 @@ class RevertTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Rollback reverts all changes made after chosen commit
-     */
+    #[Test]
+    #[TestDox('Rollback reverts all changes made after chosen commit')]
     public function rollbackRevertsAllChangesMadeAfterChosenCommit()
     {
         $changes = self::$worker->prepare_rollbackMoreChanges();
@@ -108,10 +100,8 @@ class RevertTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Clicking on Cancel only hides the popup
-     */
+    #[Test]
+    #[TestDox('Clicking on Cancel only hides the popup')]
     public function clickingOnCancelOnlyHidesThePopup()
     {
         self::$worker->prepare_clickOnCancel();
@@ -125,10 +115,8 @@ class RevertTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox OK button is disabled if the working directory is not clean
-     */
+    #[Test]
+    #[TestDox('OK button is disabled if the working directory is not clean')]
     public function undoDoesNothingIfTheWorkingDirectoryIsNotClean()
     {
         self::$worker->prepare_undoWithNotCleanWorkingDirectory();
@@ -144,9 +132,7 @@ class RevertTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function rollbackWorksWithMergeCommits()
     {
         $gitRepository = new GitRepository(self::$testConfig->testSite->path);
@@ -175,10 +161,8 @@ class RevertTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Undo to the same state should not do anything
-     */
+    #[Test]
+    #[TestDox('Undo to the same state should not do anything')]
     public function undoToTheSameStateDoesNothing()
     {
         self::$worker->prepare_undoToTheSameState();
@@ -192,10 +176,8 @@ class RevertTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Rollback to the same state should not do anything
-     */
+    #[Test]
+    #[TestDox('Rollback to the same state should not do anything')]
     public function rollbackToTheSameStateDoesNothing()
     {
         self::$worker->prepare_rollbackToTheSameState();
@@ -209,10 +191,8 @@ class RevertTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Undo multiple commits should create one commit
-     */
+    #[Test]
+    #[TestDox('Undo multiple commits should create one commit')]
     public function undoMultipleCommitsCreatesOneCommit()
     {
         $changes = self::$worker->prepare_undoMultipleCommits();
@@ -228,9 +208,7 @@ class RevertTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function undoMultipleCommitsDetectsMissingReferencesCorrectly()
     {
         $changes = self::$worker->prepare_undoMultipleDependentCommits();
@@ -246,10 +224,8 @@ class RevertTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Undo multiple commits should do nothing id one change cannot be reverted
-     */
+    #[Test]
+    #[TestDox('Undo multiple commits should do nothing id one change cannot be reverted')]
     public function undoMultipleCommitsDoesNothingIfOneChangeCannotBeReverted()
     {
         self::$worker->prepare_undoMultipleCommitsThatCannotBeReverted();
@@ -262,10 +238,8 @@ class RevertTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Non-DB change doesn't break the database
-     */
+    #[Test]
+    #[TestDox("Non-DB change doesn't break the database")]
     public function undoOfNonDbChangeDoesntBreakDatabase()
     {
         $changes = self::$worker->prepare_undoNonDbChange();

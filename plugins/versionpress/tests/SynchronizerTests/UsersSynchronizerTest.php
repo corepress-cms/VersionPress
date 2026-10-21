@@ -2,6 +2,8 @@
 
 namespace VersionPress\Tests\SynchronizerTests;
 
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use VersionPress\Storages\DirectoryStorage;
 use VersionPress\Synchronizers\Synchronizer;
 use VersionPress\Tests\SynchronizerTests\Utils\EntityUtils;
@@ -16,7 +18,7 @@ class UsersSynchronizerTest extends SynchronizerTestCase
     private $synchronizer;
     private static $vpId;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->storage = self::$storageFactory->getStorage('user');
@@ -32,10 +34,8 @@ class UsersSynchronizerTest extends SynchronizerTestCase
         );
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer adds new user to the database
-     */
+    #[Test]
+    #[TestDox('Synchronizer adds new user to the database')]
     public function synchronizerAddsNewUserToDatabase()
     {
         $this->createUser();
@@ -43,10 +43,8 @@ class UsersSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer updates changed user in the database
-     */
+    #[Test]
+    #[TestDox('Synchronizer updates changed user in the database')]
     public function synchronizerUpdatesChangedUserInDatabase()
     {
         $this->editUser();
@@ -54,10 +52,8 @@ class UsersSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer replaces absolute URLs
-     */
+    #[Test]
+    #[TestDox('Synchronizer replaces absolute URLs')]
     public function synchronizerReplacesAbsoluteUrls()
     {
         $this->editUser('user_url', AbsoluteUrlReplacer::PLACEHOLDER);
@@ -65,10 +61,8 @@ class UsersSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer removes deleted user from the database
-     */
+    #[Test]
+    #[TestDox('Synchronizer removes deleted user from the database')]
     public function synchronizerRemovesDeletedUserFromDatabase()
     {
         $this->deleteUser();
@@ -76,10 +70,8 @@ class UsersSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer adds new user to the database (selective synchronization)
-     */
+    #[Test]
+    #[TestDox('Synchronizer adds new user to the database (selective synchronization)')]
     public function synchronizerAddsNewUserToDatabase_selective()
     {
         $entitiesToSynchronize = $this->createUser();
@@ -87,10 +79,8 @@ class UsersSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer updates changed user in the database (selective synchronization)
-     */
+    #[Test]
+    #[TestDox('Synchronizer updates changed user in the database (selective synchronization)')]
     public function synchronizerUpdatesChangedUserInDatabase_selective()
     {
         $entitiesToSynchronize = $this->editUser();
@@ -98,10 +88,8 @@ class UsersSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer removes deleted user from the database (selective synchronization)
-     */
+    #[Test]
+    #[TestDox('Synchronizer removes deleted user from the database (selective synchronization)')]
     public function synchronizerRemovesDeletedUserFromDatabase_selective()
     {
         $entitiesToSynchronize = $this->deleteUser();

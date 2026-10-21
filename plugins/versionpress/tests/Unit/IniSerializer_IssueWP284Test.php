@@ -3,20 +3,19 @@
 
 namespace VersionPress\Tests\Unit;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use VersionPress\Storages\Serialization\IniSerializer;
 use VersionPress\Utils\StringUtils;
 
 /**
  * Test cases for reported issue WP-284
  */
-class IniSerializer_IssueWP284Test extends PHPUnit_Framework_TestCase
+class IniSerializer_IssueWP284Test extends TestCase
 {
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function justSerializedValue()
     {
 
@@ -48,9 +47,7 @@ INI
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function justFirstHtml()
     {
 
@@ -254,9 +251,7 @@ INI
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function justSecondHtml()
     {
 
@@ -481,9 +476,7 @@ INI
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function justThirdHtml()
     {
 
@@ -686,9 +679,7 @@ INI
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function combinationOfSerializationAndBlankLines()
     {
 
@@ -719,9 +710,7 @@ INI
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function combinationOfSerializationAndHtml()
     {
 
@@ -756,9 +745,7 @@ INI
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function full()
     {
 

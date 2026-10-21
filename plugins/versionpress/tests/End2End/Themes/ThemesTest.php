@@ -2,6 +2,9 @@
 
 namespace VersionPress\Tests\End2End\Themes;
 
+use PHPUnit\Framework\SkippedTestSuiteError;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use VersionPress\Tests\End2End\Utils\End2EndTestCase;
 use VersionPress\Tests\Utils\DBAsserter;
 
@@ -20,12 +23,12 @@ class ThemesTest extends End2EndTestCase
 
     private static $defaultTheme;
 
-    public static function setupBeforeClass()
+    public static function setupBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
         if (self::$testConfig->testSite->installationType !== 'standard') {
-            throw new \PHPUnit_Framework_SkippedTestSuiteError();
+            throw new SkippedTestSuiteError();
         }
 
         $testDataPath = __DIR__ . '/../test-data';
@@ -49,10 +52,8 @@ class ThemesTest extends End2EndTestCase
         self::$defaultTheme = self::$wpAutomation->getCurrentTheme();
     }
 
-    /**
-     * @test
-     * @testdox Uploading theme creates 'theme/install' action
-     */
+    #[Test]
+    #[TestDox("Uploading theme creates 'theme/install' action")]
     public function uploadingThemeCreatesThemeInstallAction()
     {
         self::$worker->prepare_uploadTheme();
@@ -69,10 +70,8 @@ class ThemesTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Switching theme create 'theme/switch' action
-     */
+    #[Test]
+    #[TestDox("Switching theme create 'theme/switch' action")]
     public function switchingThemeCreatesThemeSwitchAction()
     {
         self::$worker->prepare_switchTheme();
@@ -89,10 +88,8 @@ class ThemesTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Deleting theme creates 'theme/delete' action
-     */
+    #[Test]
+    #[TestDox("Deleting theme creates 'theme/delete' action")]
     public function deletingThemeCreatesThemeDeleteAction()
     {
 
@@ -112,10 +109,8 @@ class ThemesTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Uploading two themes creates a bulk action
-     */
+    #[Test]
+    #[TestDox('Uploading two themes creates a bulk action')]
     public function uploadingTwoThemesCreatesBulkAction()
     {
         self::$worker->prepare_uploadTwoThemes();
@@ -131,10 +126,8 @@ class ThemesTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Deleting two themes creates a bulk action
-     */
+    #[Test]
+    #[TestDox('Deleting two themes creates a bulk action')]
     public function deletingTwoThemesCreatesBulkAction()
     {
         self::$worker->prepare_deleteTwoThemes();

@@ -2,6 +2,8 @@
 
 namespace VersionPress\Tests\SynchronizerTests;
 
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use VersionPress\Storages\DirectoryStorage;
 use VersionPress\Synchronizers\Synchronizer;
 use VersionPress\Tests\SynchronizerTests\Utils\EntityUtils;
@@ -34,7 +36,7 @@ class PostsSynchronizerTest extends SynchronizerTestCase
     private static $categoryVpId;
     private static $categoryTaxonomyVpId;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->storage = self::$storageFactory->getStorage('post');
@@ -84,10 +86,8 @@ class PostsSynchronizerTest extends SynchronizerTestCase
         );
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer adds new post to the database
-     */
+    #[Test]
+    #[TestDox('Synchronizer adds new post to the database')]
     public function synchronizerAddsNewPostToDatabase()
     {
         $this->createPost();
@@ -97,10 +97,8 @@ class PostsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer updates changed post in the database
-     */
+    #[Test]
+    #[TestDox('Synchronizer updates changed post in the database')]
     public function synchronizerUpdatesChangedPostInDatabase()
     {
         $this->editPost();
@@ -108,10 +106,8 @@ class PostsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer replaces absolute URLs
-     */
+    #[Test]
+    #[TestDox('Synchronizer replaces absolute URLs')]
     public function synchronizerReplacesAbsoluteUrls()
     {
         $this->editPost('post_content', AbsoluteUrlReplacer::PLACEHOLDER);
@@ -119,10 +115,8 @@ class PostsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer removes deleted post from the database
-     */
+    #[Test]
+    #[TestDox('Synchronizer removes deleted post from the database')]
     public function synchronizerRemovesDeletedPostFromDatabase()
     {
         $this->deletePost();
@@ -132,10 +126,8 @@ class PostsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer handles circular dependencies
-     */
+    #[Test]
+    #[TestDox('Synchronizer handles circular dependencies')]
     public function synchronizerHandlesCircularDependencies()
     {
         $author = EntityUtils::prepareUser();
@@ -168,10 +160,8 @@ class PostsSynchronizerTest extends SynchronizerTestCase
         }
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer adds new post to the database (selective synchronization)
-     */
+    #[Test]
+    #[TestDox('Synchronizer adds new post to the database (selective synchronization)')]
     public function synchronizerAddsNewPostToDatabase_selective()
     {
         $entitiesToSynchronize = $this->createPost();
@@ -181,10 +171,8 @@ class PostsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer updates changed post in the database (selective synchronization)
-     */
+    #[Test]
+    #[TestDox('Synchronizer updates changed post in the database (selective synchronization)')]
     public function synchronizerUpdatesChangedPostInDatabase_selective()
     {
         $entitiesToSynchronize = $this->editPost();
@@ -192,10 +180,8 @@ class PostsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer removes deleted post from the database (selective synchronization)
-     */
+    #[Test]
+    #[TestDox('Synchronizer removes deleted post from the database (selective synchronization)')]
     public function synchronizerRemovesDeletedPostFromDatabase_selective()
     {
         $entitiesToSynchronize = $this->deletePost();
@@ -204,10 +190,8 @@ class PostsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer synchronizes term relationships (changes category)
-     */
+    #[Test]
+    #[TestDox('Synchronizer synchronizes term relationships (changes category)')]
     public function synchronizerSynchronizesTermRelationships_changeCategory()
     {
         $this->createPost();
@@ -219,10 +203,8 @@ class PostsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer synchronizes term relationships (removes category)
-     */
+    #[Test]
+    #[TestDox('Synchronizer synchronizes term relationships (removes category)')]
     public function synchronizerSynchronizesTermRelationships_removeCategory()
     {
         $this->removeCategory();
@@ -233,10 +215,8 @@ class PostsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer synchronizes term relationships (changes category, selective synchronization)
-     */
+    #[Test]
+    #[TestDox('Synchronizer synchronizes term relationships (changes category, selective synchronization)')]
     public function synchronizerSynchronizesTermRelationships_changeCategory_selective()
     {
         $entitiesToSynchronize = $this->createPost();
@@ -248,10 +228,8 @@ class PostsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer synchronizes term relationships (removes category, selective synchronization)
-     */
+    #[Test]
+    #[TestDox('Synchronizer synchronizes term relationships (removes category, selective synchronization)')]
     public function synchronizerSynchronizesTermRelationships_removeCategory_selective()
     {
         $entitiesToSynchronize = $this->removeCategory();
@@ -262,10 +240,8 @@ class PostsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer restores shortcodes
-     */
+    #[Test]
+    #[TestDox('Synchronizer restores shortcodes')]
     public function synchronizerRestoresShortcodes()
     {
         $this->createPostWithShortcode();

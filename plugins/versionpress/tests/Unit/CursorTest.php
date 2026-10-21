@@ -2,14 +2,14 @@
 
 namespace VersionPress\Tests\Unit;
 
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use VersionPress\Utils\Cursor;
 
-class CursorTest extends \PHPUnit_Framework_TestCase
+class CursorTest extends TestCase
 {
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorReadsScalarValue()
     {
         $data = 'value';
@@ -17,9 +17,7 @@ class CursorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('value', $cursor->getValue());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorReadsFromSimpleArray()
     {
         $data = ['value'];
@@ -27,9 +25,7 @@ class CursorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('value', $cursor->getValue());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorReadsFromNestedArrays()
     {
         $data = ['key' => [3 => 'value']];
@@ -37,9 +33,7 @@ class CursorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('value', $cursor->getValue());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorReadsFromArrayWithMixedKeys()
     {
         $data = ['key' => [3 => 'value'], 'another-key' => 'another value'];
@@ -47,9 +41,7 @@ class CursorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('value', $cursor->getValue());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorReadsFromObjectWithArray()
     {
         $data = new \stdClass();
@@ -60,9 +52,7 @@ class CursorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('value', $cursor->getValue());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorReadsFromNestedObjects()
     {
         $data = new \stdClass();
@@ -74,9 +64,7 @@ class CursorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('value', $cursor->getValue());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorUpdatesScalarValue()
     {
         $data = 'value';
@@ -87,9 +75,7 @@ class CursorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('another value', $data);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorUpdatesSimpleArray()
     {
         $data = ['value'];
@@ -100,9 +86,7 @@ class CursorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('another value', $data[0]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorUpdatesNestedArray()
     {
         $data = ['key' => [3 => 'value']];
@@ -113,9 +97,7 @@ class CursorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('another value', $data['key'][3]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorUpdatesArrayWithMixedKeys()
     {
         $data = ['key' => [3 => 'value'], 'another-key' => 'another value'];
@@ -126,9 +108,7 @@ class CursorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('another value', $data['key'][3]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorUpdatesObjectWithArray()
     {
         $data = new \stdClass();
@@ -140,9 +120,7 @@ class CursorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('another value', $data->key[3]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorUpdatesNestedObjects()
     {
         $data = new \stdClass();

@@ -2,6 +2,9 @@
 
 namespace VersionPress\Tests\End2End\Comments;
 
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\Attributes\Depends;
 use VersionPress\Tests\End2End\Utils\End2EndTestCase;
 use VersionPress\Tests\Utils\DBAsserter;
 
@@ -19,10 +22,9 @@ class CommentsTest extends End2EndTestCase
      *
      * @see wp_throttle_comment_flood()
      * @see check_comment_flood_db()
-     *
-     * @test
-     * @testdox Creating comment as an unauthenticated user creates 'comment/create-pending' action
      */
+    #[Test]
+    #[TestDox("Creating comment as an unauthenticated user creates 'comment/create-pending' action")]
     public function publicCommentAwaitsModeration()
     {
 
@@ -39,10 +41,7 @@ class CommentsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     *
-     * @test
-     */
+    #[Test]
     public function spamCommentIsNotCommitted()
     {
 
@@ -57,10 +56,8 @@ class CommentsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox New comment creates 'comment/create' action
-     */
+    #[Test]
+    #[TestDox("New comment creates 'comment/create' action")]
     public function addingCommentCreatesCommentCreateAction()
     {
 
@@ -78,11 +75,9 @@ class CommentsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Editing comment creates 'comment/update' action
-     * @depends addingCommentCreatesCommentCreateAction
-     */
+    #[Test]
+    #[Depends('addingCommentCreatesCommentCreateAction')]
+    #[TestDox("Editing comment creates 'comment/update' action")]
     public function editingCommentCreatesCommentEditAction()
     {
         self::$worker->prepare_editComment();
@@ -99,11 +94,9 @@ class CommentsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Trashing comment creates 'comment/trash' action
-     * @depends editingCommentCreatesCommentEditAction
-     */
+    #[Test]
+    #[Depends('editingCommentCreatesCommentEditAction')]
+    #[TestDox("Trashing comment creates 'comment/trash' action")]
     public function trashingCommentCreatesCommentTrashAction()
     {
         self::$worker->prepare_trashComment();
@@ -119,11 +112,9 @@ class CommentsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Untrashing comment creates 'comment/untrash' action
-     * @depends trashingCommentCreatesCommentTrashAction
-     */
+    #[Test]
+    #[Depends('trashingCommentCreatesCommentTrashAction')]
+    #[TestDox("Untrashing comment creates 'comment/untrash' action")]
     public function untrashingCommentCreatesCommentUntrashAction()
     {
         self::$worker->prepare_untrashComment();
@@ -139,11 +130,9 @@ class CommentsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Deleting comment creates 'comment/delete' action
-     * @depends untrashingCommentCreatesCommentUntrashAction
-     */
+    #[Test]
+    #[Depends('untrashingCommentCreatesCommentUntrashAction')]
+    #[TestDox("Deleting comment creates 'comment/delete' action")]
     public function deletingCommentCreatesCommentDeleteAction()
     {
         self::$worker->prepare_deleteComment();
@@ -159,11 +148,9 @@ class CommentsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Unapproving comment creates 'comment/unapprove' action
-     * @depends addingCommentCreatesCommentCreateAction
-     */
+    #[Test]
+    #[Depends('addingCommentCreatesCommentCreateAction')]
+    #[TestDox("Unapproving comment creates 'comment/unapprove' action")]
     public function unapproveComment()
     {
         self::$worker->prepare_unapproveComment();
@@ -179,11 +166,9 @@ class CommentsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Approving comment creates 'comment/approve' action
-     * @depends unapproveComment
-     */
+    #[Test]
+    #[Depends('unapproveComment')]
+    #[TestDox("Approving comment creates 'comment/approve' action")]
     public function approveComment()
     {
         self::$worker->prepare_approveComment();
@@ -199,11 +184,9 @@ class CommentsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Marking as spam creates 'comment/spam' action
-     * @depends approveComment
-     */
+    #[Test]
+    #[Depends('approveComment')]
+    #[TestDox("Marking as spam creates 'comment/spam' action")]
     public function markAsSpam()
     {
         self::$worker->prepare_markAsSpam();
@@ -219,11 +202,9 @@ class CommentsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Marking as not spam creates 'comment/unspam' action
-     * @depends markAsSpam
-     */
+    #[Test]
+    #[Depends('markAsSpam')]
+    #[TestDox("Marking as not spam creates 'comment/unspam' action")]
     public function markAsNotSpam()
     {
         self::$worker->prepare_markAsNotSpam();
@@ -239,10 +220,8 @@ class CommentsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Editing multiple comments creates bulk action
-     */
+    #[Test]
+    #[TestDox('Editing multiple comments creates bulk action')]
     public function editingMultipleCommentsCreatesBulkAction()
     {
         self::$worker->prepare_editTwoComments();
@@ -257,10 +236,8 @@ class CommentsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Deleting multiple comments creates bulk action
-     */
+    #[Test]
+    #[TestDox('Deleting multiple comments creates bulk action')]
     public function deletingMultipleCommentsCreatesBulkAction()
     {
         self::$worker->prepare_deleteTwoComments();
@@ -275,10 +252,8 @@ class CommentsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Trashing multiple comments creates bulk action
-     */
+    #[Test]
+    #[TestDox('Trashing multiple comments creates bulk action')]
     public function trashingMultipleCommentsCreatesBulkAction()
     {
         self::$worker->prepare_moveTwoCommentsInTrash();
@@ -293,10 +268,8 @@ class CommentsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Untrashing multiple comments creates bulk action
-     */
+    #[Test]
+    #[TestDox('Untrashing multiple comments creates bulk action')]
     public function untrashingMultipleCommentsCreatesBulkAction()
     {
         self::$worker->prepare_moveTwoCommentsFromTrash();
@@ -311,10 +284,8 @@ class CommentsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Marking multiple comments as spam creates bulk action
-     */
+    #[Test]
+    #[TestDox('Marking multiple comments as spam creates bulk action')]
     public function markingMultipleCommentsAsSpamCreatesBulkAction()
     {
         self::$worker->prepare_markTwoCommentsAsSpam();
@@ -329,10 +300,8 @@ class CommentsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Marking multiple spam comments as not spam creates bulk action
-     */
+    #[Test]
+    #[TestDox('Marking multiple spam comments as not spam creates bulk action')]
     public function markingMultipleSpamCommentsAsNotSpamCreatesBulkAction()
     {
         self::$worker->prepare_markTwoSpamCommentsAsNotSpam();
@@ -347,10 +316,8 @@ class CommentsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Unapproving multiple comments creates bulk action
-     */
+    #[Test]
+    #[TestDox('Unapproving multiple comments creates bulk action')]
     public function unapprovingMultipleCommentsCreatesBulkAction()
     {
         self::$worker->prepare_unapproveTwoComments();
@@ -365,10 +332,8 @@ class CommentsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Approving multiple comments creates bulk action
-     */
+    #[Test]
+    #[TestDox('Approving multiple comments creates bulk action')]
     public function approvingMultipleCommentsCreatesBulkAction()
     {
         self::$worker->prepare_approveTwoComments();
@@ -383,10 +348,8 @@ class CommentsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Adding commentmeta to comment creates 'commentmeta/create' action
-     */
+    #[Test]
+    #[TestDox("Adding commentmeta to comment creates 'commentmeta/create' action")]
     public function addingCommentmetaCreatesCommentmetaCreateAction()
     {
         self::$worker->prepare_commentmetaCreate();
@@ -401,11 +364,9 @@ class CommentsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Deleting commentmeta of comment creates 'commentmeta/delete' action
-     * @depends addingCommentmetaCreatesCommentmetaCreateAction
-     */
+    #[Test]
+    #[Depends('addingCommentmetaCreatesCommentmetaCreateAction')]
+    #[TestDox("Deleting commentmeta of comment creates 'commentmeta/delete' action")]
     public function deleteCommentmetaCreatesCommentmetaDeleteAction()
     {
         self::$worker->prepare_commentmetaDelete();

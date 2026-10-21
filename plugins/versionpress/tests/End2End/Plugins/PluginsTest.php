@@ -2,6 +2,10 @@
 
 namespace VersionPress\Tests\End2End\Plugins;
 
+use PHPUnit\Framework\SkippedTestSuiteError;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\Attributes\Depends;
 use VersionPress\Tests\End2End\Utils\End2EndTestCase;
 use VersionPress\Tests\End2End\Utils\WpCliWorker;
 use VersionPress\Tests\Utils\DBAsserter;
@@ -26,12 +30,12 @@ class PluginsTest extends End2EndTestCase
      */
     private static $secondPluginInfo;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
         if (self::$testConfig->testSite->installationType !== 'standard') {
-            throw new \PHPUnit_Framework_SkippedTestSuiteError();
+            throw new SkippedTestSuiteError();
         }
 
         $testDataPath = __DIR__ . '/../test-data';
@@ -72,10 +76,8 @@ class PluginsTest extends End2EndTestCase
         $process->run();
     }
 
-    /**
-     * @test
-     * @testdox Uploading plugin creates 'plugin/install' action
-     */
+    #[Test]
+    #[TestDox("Uploading plugin creates 'plugin/install' action")]
     public function uploadingPluginCreatesPluginInstallAction()
     {
         self::$worker->prepare_installPlugin();
@@ -92,11 +94,9 @@ class PluginsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Activating plugin creates 'plugin/activate' action
-     * @depends uploadingPluginCreatesPluginInstallAction
-     */
+    #[Test]
+    #[Depends('uploadingPluginCreatesPluginInstallAction')]
+    #[TestDox("Activating plugin creates 'plugin/activate' action")]
     public function activatingPluginCreatesPluginActivateAction()
     {
         self::$worker->prepare_activatePlugin();
@@ -113,11 +113,9 @@ class PluginsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Deactivating plugin creates 'plugin/deactivate' action
-     * @depends activatingPluginCreatesPluginActivateAction
-     */
+    #[Test]
+    #[Depends('activatingPluginCreatesPluginActivateAction')]
+    #[TestDox("Deactivating plugin creates 'plugin/deactivate' action")]
     public function deactivatingPluginCreatesPluginDeactivateAction()
     {
         self::$worker->prepare_deactivatePlugin();
@@ -134,11 +132,9 @@ class PluginsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Deleting plugin creates 'plugin/delete' action
-     * @depends deactivatingPluginCreatesPluginDeactivateAction
-     */
+    #[Test]
+    #[Depends('deactivatingPluginCreatesPluginDeactivateAction')]
+    #[TestDox("Deleting plugin creates 'plugin/delete' action")]
     public function deletingPluginCreatesPluginDeleteAction()
     {
         self::$worker->prepare_deletePlugin();
@@ -154,10 +150,8 @@ class PluginsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Installing two plugins creates a bulk action
-     */
+    #[Test]
+    #[TestDox('Installing two plugins creates a bulk action')]
     public function installingTwoPluginsCreatesBulkAction()
     {
         self::$worker->prepare_installTwoPlugins();
@@ -173,10 +167,8 @@ class PluginsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Activation of two plugins creates a bulk action
-     */
+    #[Test]
+    #[TestDox('Activation of two plugins creates a bulk action')]
     public function activatingTwoPluginsCreatesBulkAction()
     {
         self::$worker->prepare_activateTwoPlugins();
@@ -191,10 +183,8 @@ class PluginsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Deactivation of two plugins creates a bulk action
-     */
+    #[Test]
+    #[TestDox('Deactivation of two plugins creates a bulk action')]
     public function deactivatingTwoPluginsCreatesBulkAction()
     {
         self::$worker->prepare_deactivateTwoPlugins();
@@ -209,10 +199,8 @@ class PluginsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Uninstalling two plugins creates a bulk action
-     */
+    #[Test]
+    #[TestDox('Uninstalling two plugins creates a bulk action')]
     public function uninstallingTwoPluginsCreatesBulkAction()
     {
         self::$worker->prepare_uninstallTwoPlugins();

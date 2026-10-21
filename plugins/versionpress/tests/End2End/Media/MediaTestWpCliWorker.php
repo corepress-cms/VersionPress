@@ -2,6 +2,7 @@
 
 namespace VersionPress\Tests\End2End\Media;
 
+use PHPUnit\Framework\SkippedTestError;
 use VersionPress\Tests\End2End\Utils\WpCliWorker;
 
 class MediaTestWpCliWorker extends WpCliWorker implements IMediaTestWorker
@@ -45,7 +46,7 @@ class MediaTestWpCliWorker extends WpCliWorker implements IMediaTestWorker
 
     public function prepare_editFile()
     {
-        throw new \PHPUnit_Framework_SkippedTestError("File cannot be changed using WP-CLI.");
+        throw new SkippedTestError("File cannot be changed using WP-CLI.");
     }
 
     public function editFile()

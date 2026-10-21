@@ -2,30 +2,30 @@
 
 namespace VersionPress\Tests\LoadTests;
 
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use VersionPress\Git\GitRepository;
 use VersionPress\Utils\FileSystem;
 use VersionPress\Utils\Process;
 
-class CommitterTest extends \PHPUnit_Framework_TestCase
+class CommitterTest extends TestCase
 {
 
     private static $repositoryDir;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$repositoryDir = sys_get_temp_dir() . '/vp-repository';
         FileSystem::remove(self::$repositoryDir);
         mkdir(self::$repositoryDir);
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         FileSystem::remove(self::$repositoryDir);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function committerIsThreadSafe()
     {
         $gitRepository = new GitRepository(self::$repositoryDir, sys_get_temp_dir());

@@ -2,6 +2,8 @@
 
 namespace VersionPress\Tests\GitRepositoryTests;
 
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use VersionPress\Actions\ActionsInfoProvider;
 use VersionPress\Cli\VPCommandUtils;
 use VersionPress\Database\DbSchemaInfo;
@@ -9,7 +11,7 @@ use VersionPress\Git\GitRepository;
 use VersionPress\Tests\Utils\CommitAsserter;
 use VersionPress\Utils\FileSystem;
 
-class RevertTest extends \PHPUnit_Framework_TestCase
+class RevertTest extends TestCase
 {
 
     private static $repositoryPath;
@@ -17,7 +19,7 @@ class RevertTest extends \PHPUnit_Framework_TestCase
     /** @var GitRepository */
     private static $repository;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         self::$repositoryPath = sys_get_temp_dir() . '/vp-repository';
@@ -27,14 +29,14 @@ class RevertTest extends \PHPUnit_Framework_TestCase
         mkdir(self::$tempPath);
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         parent::tearDownAfterClass();
         FileSystem::remove(self::$repositoryPath);
         FileSystem::remove(self::$tempPath);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         FileSystem::removeContent(self::$repositoryPath);
@@ -46,9 +48,7 @@ class RevertTest extends \PHPUnit_Framework_TestCase
         $this->commitFile('initial-file', 'Initial commit');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function revertTakesBackChangesFromLastCommit()
     {
         $this->commitFile('some-file', 'Some commit');
@@ -66,9 +66,7 @@ class RevertTest extends \PHPUnit_Framework_TestCase
         $commitAsserter->assertCommitPath('D', 'some-file');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function revertTakesBackChangesFromSpecificCommit()
     {
         $this->commitFile('some-file', 'Some commit');
@@ -88,9 +86,7 @@ class RevertTest extends \PHPUnit_Framework_TestCase
         $commitAsserter->assertCommitPath('D', 'some-file');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function revertCannotTakeBackOverwrittenChanges()
     {
         $this->commitFile('some-file', 'Some commit', 'Some content');
@@ -108,9 +104,7 @@ class RevertTest extends \PHPUnit_Framework_TestCase
         $commitAsserter->assertCleanWorkingDirectory();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function revertAllTakesBackAllChanges()
     {
         $hash = self::$repository->getLastCommitHash();
@@ -130,9 +124,7 @@ class RevertTest extends \PHPUnit_Framework_TestCase
         $commitAsserter->assertCommitPath('D', 'other-file');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function revertAllTakesBackChangesFromMultipleBranches()
     {
         $hash = self::$repository->getLastCommitHash();
@@ -156,9 +148,7 @@ class RevertTest extends \PHPUnit_Framework_TestCase
         $commitAsserter->assertCommitPath('D', 'other-file');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function revertAllCanRevertToCommitInParallelBranch()
     {
         VPCommandUtils::exec('git branch test', self::$repositoryPath);
@@ -195,8 +185,6 @@ class RevertTest extends \PHPUnit_Framework_TestCase
 
     private function createCommitAsserter()
     {
-        $dbSchemaInfo = $this->getMockBuilder(DbSchemaInfo::class)->disableOriginalConstructor()->getMock();
-        $actionsInfoProvider = $this->getMockBuilder(ActionsInfoProvider::class)->disableOriginalConstructor()->getMock();
-        return new CommitAsserter(self::$repository, $dbSchemaInfo, $actionsInfoProvider);
+        return new CommitAsserter(self::$repository, $this->createStub(DbSchemaInfo::class), $this->createStub(ActionsInfoProvider::class));
     }
  }

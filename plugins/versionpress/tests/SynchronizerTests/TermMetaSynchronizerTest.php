@@ -2,6 +2,9 @@
 
 namespace VersionPress\Tests\SynchronizerTests;
 
+use PHPUnit\Framework\SkippedTestError;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use VersionPress\Storages\DirectoryStorage;
 use VersionPress\Storages\MetaEntityStorage;
 use VersionPress\Synchronizers\Synchronizer;
@@ -22,10 +25,10 @@ class TermMetaSynchronizerTest extends SynchronizerTestCase
     private static $vpId;
     private static $termVpId;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!in_array('termmeta', self::$schemaInfo->getAllEntityNames())) {
-            throw new \PHPUnit_Framework_SkippedTestError("Termmeta are not supported in this version of WP");
+            throw new SkippedTestError("Termmeta are not supported in this version of WP");
         }
 
         parent::setUp();
@@ -53,10 +56,8 @@ class TermMetaSynchronizerTest extends SynchronizerTestCase
         );
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer adds new termmeta to the database
-     */
+    #[Test]
+    #[TestDox('Synchronizer adds new termmeta to the database')]
     public function synchronizerAddsNewTermMetaToDatabase()
     {
         $this->createTermMeta();
@@ -65,10 +66,8 @@ class TermMetaSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer updates changed termmeta in the database
-     */
+    #[Test]
+    #[TestDox('Synchronizer updates changed termmeta in the database')]
     public function synchronizerUpdatesChangedTermMetaInDatabase()
     {
         $this->editTermMeta();
@@ -76,10 +75,8 @@ class TermMetaSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer replaces absolute URLs
-     */
+    #[Test]
+    #[TestDox('Synchronizer replaces absolute URLs')]
     public function synchronizerReplacesAbsoluteUrls()
     {
         $this->editTermMeta('some-meta', AbsoluteUrlReplacer::PLACEHOLDER);
@@ -87,10 +84,8 @@ class TermMetaSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer removes deleted termmeta from the database
-     */
+    #[Test]
+    #[TestDox('Synchronizer removes deleted termmeta from the database')]
     public function synchronizerRemovesDeletedTermMetaFromDatabase()
     {
         $this->deleteTermMeta();
@@ -99,10 +94,8 @@ class TermMetaSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer adds new termmeta to the database (selective synchronization)
-     */
+    #[Test]
+    #[TestDox('Synchronizer adds new termmeta to the database (selective synchronization)')]
     public function synchronizerAddsNewTermMetaToDatabase_selective()
     {
         $entitiesToSynchronize = $this->createTermMeta();
@@ -111,10 +104,8 @@ class TermMetaSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer updates changed termmeta in the database (selective synchronization)
-     */
+    #[Test]
+    #[TestDox('Synchronizer updates changed termmeta in the database (selective synchronization)')]
     public function synchronizerUpdatesChangedTermMetaInDatabase_selective()
     {
         $entitiesToSynchronize = $this->editTermMeta();
@@ -122,10 +113,8 @@ class TermMetaSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer removes deleted termmeta from the database (selective synchronization)
-     */
+    #[Test]
+    #[TestDox('Synchronizer removes deleted termmeta from the database (selective synchronization)')]
     public function synchronizerRemovesDeletedTermMetaFromDatabase_selective()
     {
         $entitiesToSynchronize = $this->deleteTermMeta();

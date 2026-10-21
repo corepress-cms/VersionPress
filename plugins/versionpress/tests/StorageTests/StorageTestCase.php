@@ -2,20 +2,21 @@
 
 namespace VersionPress\Tests\StorageTests;
 
-use VersionPress\Actions\ActionsInfo;
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\Stub;
 use VersionPress\ChangeInfos\ChangeInfoFactory;
 use VersionPress\ChangeInfos\EntityChangeInfo;
 use VersionPress\Database\EntityInfo;
 use VersionPress\Tests\Utils\HookMock;
 
-class StorageTestCase extends \PHPUnit_Framework_TestCase
+class StorageTestCase extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
-        HookMock::setUp(HookMock::WP_MOCK);
+        HookMock::setUp();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         HookMock::tearDown();
     }
@@ -23,32 +24,30 @@ class StorageTestCase extends \PHPUnit_Framework_TestCase
     /**
      * @param array $fields
      * @param array $methods
-     * @return \PHPUnit_Framework_MockObject_MockObject|EntityInfo
+     * @return Stub|EntityInfo
      */
     protected function createEntityInfoMock($fields, $methods)
     {
-        $entityInfo = $this->getMockBuilder(EntityInfo::class)->disableOriginalConstructor()->getMock();
+        $entityInfo = $this->createStub(EntityInfo::class);
 
         foreach ($fields as $field => $value) {
             $entityInfo->{$field} = $value;
         }
 
         foreach ($methods as $methodName => $returnValue) {
-            $entityInfo->expects($this->any())->method($methodName)->will($this->returnValue($returnValue));
+            $entityInfo->method($methodName)->willReturn($returnValue);
         }
 
         return $entityInfo;
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|ChangeInfoFactory
+     * @return Stub|ChangeInfoFactory
      */
     protected function createChangeInfoFactoryMock()
     {
-        $entityChangeInfo = $this->getMockBuilder(EntityChangeInfo::class)->disableOriginalConstructor()->getMock();
-
-        $changeInfoFactory = $this->getMockBuilder(ChangeInfoFactory::class)->disableOriginalConstructor()->getMock();
-        $changeInfoFactory->expects($this->any())->method('createEntityChangeInfo')->will($this->returnValue($entityChangeInfo));
+        $changeInfoFactory = $this->createStub(ChangeInfoFactory::class);
+        $changeInfoFactory->method('createEntityChangeInfo')->willReturn($this->createStub(EntityChangeInfo::class));
 
         return $changeInfoFactory;
     }

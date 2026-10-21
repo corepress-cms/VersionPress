@@ -2,6 +2,7 @@
 
 namespace VersionPress\Tests\End2End\Revert;
 
+use PHPUnit\Framework\SkippedTestError;
 use VersionPress\Tests\End2End\Utils\SeleniumWorker;
 use VersionPress\Utils\Process;
 
@@ -123,7 +124,7 @@ class RevertTestSeleniumWorker extends SeleniumWorker implements IRevertTestWork
 
     public function prepare_undoMultipleCommits()
     {
-        throw new \PHPUnit_Framework_SkippedTestError("There is no way to undo multiple commits in the old GUI");
+        throw new SkippedTestError("There is no way to undo multiple commits in the old GUI");
     }
 
     public function undoMultipleCommits()
@@ -133,7 +134,7 @@ class RevertTestSeleniumWorker extends SeleniumWorker implements IRevertTestWork
 
     public function prepare_undoMultipleDependentCommits()
     {
-        throw new \PHPUnit_Framework_SkippedTestError("There is no way to undo multiple commits in the old GUI");
+        throw new SkippedTestError("There is no way to undo multiple commits in the old GUI");
     }
 
     public function undoMultipleDependentCommits()
@@ -143,7 +144,7 @@ class RevertTestSeleniumWorker extends SeleniumWorker implements IRevertTestWork
 
     public function prepare_undoMultipleCommitsThatCannotBeReverted()
     {
-        throw new \PHPUnit_Framework_SkippedTestError("There is no way to undo multiple commits in the old GUI");
+        throw new SkippedTestError("There is no way to undo multiple commits in the old GUI");
     }
 
     public function undoMultipleCommitsThatCannotBeReverted()

@@ -2,6 +2,8 @@
 
 namespace VersionPress\Tests\StorageTests;
 
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
 use VersionPress\Storages\DirectoryStorage;
 use VersionPress\Utils\FileSystem;
 
@@ -29,9 +31,7 @@ class DirectoryStorageTest extends StorageTestCase
         "vp_comment_post_ID" => "F0E1B6313B7A48E49A1B38DF382B350D",
     ];
 
-    /**
-     * @test
-     */
+    #[Test]
     public function savedEntityEqualsLoadedEntity()
     {
         $this->storage->save($this->testingEntity);
@@ -40,9 +40,7 @@ class DirectoryStorageTest extends StorageTestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function loadAllReturnsOnlyOriginalEntities()
     {
         $this->storage->save($this->testingEntity);
@@ -51,9 +49,7 @@ class DirectoryStorageTest extends StorageTestCase
         $this->assertTrue($this->testingEntity == reset($loadedComments));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function storageDoesNotContainDeletedEntities()
     {
         $anotherTestingEntity = $this->testingEntity;
@@ -73,9 +69,7 @@ class DirectoryStorageTest extends StorageTestCase
         $this->assertEquals($anotherTestingEntity, reset($loadedEntities));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function savedEntityDoesNotContainVpIdKey()
     {
         $this->storage->save($this->testingEntity);
@@ -84,9 +78,7 @@ class DirectoryStorageTest extends StorageTestCase
         $this->assertFalse(strpos($content, 'vp_id'), 'Entity contains a vp_id key');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function savedEntityDoesNotContainPrimaryKey()
     {
         $testingEntity = $this->testingEntity;
@@ -97,9 +89,7 @@ class DirectoryStorageTest extends StorageTestCase
         $this->assertEquals($this->testingEntity, $loadedEntity);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function savedEntityDoesNotContainIgnoredColumns()
     {
         $testingEntity = $this->testingEntity;
@@ -110,9 +100,7 @@ class DirectoryStorageTest extends StorageTestCase
         $this->assertEquals($this->testingEntity, $loadedEntity);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function typesOfSavedAndLoadedEntityMatch()
     {
         $testingEntity = [
@@ -126,10 +114,8 @@ class DirectoryStorageTest extends StorageTestCase
         $this->assertSame($testingEntity, $loadedEntity);
     }
 
-    /**
-     * @test
-     * @dataProvider specialIdsProvider
-     */
+    #[Test]
+    #[DataProvider('specialIdsProvider')]
     public function naturalIdCanContainSpecialChars($id)
     {
         $idColumnName = 'entity_id';
@@ -156,7 +142,7 @@ class DirectoryStorageTest extends StorageTestCase
         $this->assertEquals($entity, $loadedEntity);
     }
 
-    public function specialIdsProvider()
+    public static function specialIdsProvider()
     {
         return [
             ['name_with_<'],
@@ -178,9 +164,8 @@ class DirectoryStorageTest extends StorageTestCase
 
     /**
      * Test covers part of for WP-428
-     *
-     * @test
      */
+    #[Test]
     public function vpidShouldBeReplaceableWithZero()
     {
         $updatedEntity = $this->testingEntity;
@@ -194,7 +179,7 @@ class DirectoryStorageTest extends StorageTestCase
         $this->assertEquals($updatedEntity, $loadedOption);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -222,7 +207,7 @@ class DirectoryStorageTest extends StorageTestCase
         $this->storage = new DirectoryStorage($this->storageDir, $entityInfo, 'prefix_', $changeInfoFactory);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         FileSystem::remove($this->storageDir);

@@ -2,14 +2,16 @@
 
 namespace VersionPress\Tests\Workflow;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\Depends;
 use VersionPress\Cli\VPCommandUtils;
 use VersionPress\Tests\Automation\WpAutomation;
 use VersionPress\Tests\Utils\SiteConfig;
 use VersionPress\Tests\Utils\TestConfig;
 use VersionPress\Utils\FileSystem;
 
-class CloneMergeTest extends PHPUnit_Framework_TestCase
+class CloneMergeTest extends TestCase
 {
 
     /** @var TestConfig */
@@ -19,7 +21,7 @@ class CloneMergeTest extends PHPUnit_Framework_TestCase
     /** @var SiteConfig */
     private static $cloneSiteConfig;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         self::$testConfig = TestConfig::createDefaultConfig();
@@ -28,9 +30,7 @@ class CloneMergeTest extends PHPUnit_Framework_TestCase
         self::$cloneSiteConfig = self::getCloneSiteConfig(self::$siteConfig);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cloneLooksExactlySameAsOriginal()
     {
         // Currently, we use an empty site as a basic test.
@@ -51,10 +51,8 @@ class CloneMergeTest extends PHPUnit_Framework_TestCase
         $this->assertCloneLooksExactlySameAsOriginal();
     }
 
-    /**
-     * @test
-     * @depends cloneLooksExactlySameAsOriginal
-     */
+    #[Test]
+    #[Depends('cloneLooksExactlySameAsOriginal')]
     public function updatedCloneCanBeMergedBack()
     {
         $cloneWpAutomation = new WpAutomation(self::$cloneSiteConfig, self::$testConfig->wpCliVersion);
@@ -66,10 +64,8 @@ class CloneMergeTest extends PHPUnit_Framework_TestCase
         $this->assertCloneLooksExactlySameAsOriginal();
     }
 
-    /**
-     * @test
-     * @depends cloneLooksExactlySameAsOriginal
-     */
+    #[Test]
+    #[Depends('cloneLooksExactlySameAsOriginal')]
     public function updatedSiteCanBePushedToClone()
     {
         $wpAutomation = new WpAutomation(self::$siteConfig, self::$testConfig->wpCliVersion);
@@ -80,12 +76,7 @@ class CloneMergeTest extends PHPUnit_Framework_TestCase
         $this->assertCloneLooksExactlySameAsOriginal();
     }
 
-    /**
-     * @test
-     *
-     * Creates a post and edits it (compatibly) in both environments. This leads to two different date modified's
-     * but they should still merge fine if our merge driver works correctly.
-     */
+    #[Test]
     public function dateModifiedMergesAutomatically()
     {
         $internalCommandPath = __DIR__ . '/../../src/Cli/vp-internal.php';
@@ -149,10 +140,7 @@ class CloneMergeTest extends PHPUnit_Framework_TestCase
     }
 
 
-    /**
-     * @test
-     *
-     */
+    #[Test]
     public function sitesAreNotMergedIfThereIsConflict()
     {
         $cloneWpAutomation = new WpAutomation(self::$cloneSiteConfig, self::$testConfig->wpCliVersion);
@@ -166,7 +154,7 @@ class CloneMergeTest extends PHPUnit_Framework_TestCase
 
         $output = $wpAutomation->runWpCliCommand('vp', 'pull', ['from' => self::$cloneSiteConfig->name]);
 
-        $this->assertContains("Pull aborted", $output);
+        $this->assertStringContainsString("Pull aborted", $output);
     }
 
     /**

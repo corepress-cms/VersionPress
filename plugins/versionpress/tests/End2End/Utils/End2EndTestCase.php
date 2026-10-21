@@ -2,7 +2,7 @@
 
 namespace VersionPress\Tests\End2End\Utils;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use VersionPress\Actions\ActionsInfoProvider;
 use VersionPress\Database\DbSchemaInfo;
 use VersionPress\Git\GitRepository;
@@ -11,7 +11,7 @@ use VersionPress\Tests\Utils\CommitAsserter;
 use VersionPress\Tests\Utils\TestConfig;
 use VersionPress\Utils\PathUtils;
 
-class End2EndTestCase extends PHPUnit_Framework_TestCase
+class End2EndTestCase extends TestCase
 {
 
     /** @var TestConfig */
@@ -24,7 +24,7 @@ class End2EndTestCase extends PHPUnit_Framework_TestCase
 
     private static $infoForNewCommitAsserter = [];
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
@@ -60,7 +60,7 @@ class End2EndTestCase extends PHPUnit_Framework_TestCase
         $propertyReflection->setValue(null, $worker);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         if (self::$skipAllBecauseOfMissingWorker) {

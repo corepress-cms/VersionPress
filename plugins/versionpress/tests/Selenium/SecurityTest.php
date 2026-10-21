@@ -2,27 +2,21 @@
 
 namespace VersionPress\Tests\Selenium;
 
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use VersionPress\Tests\Automation\WpAutomation;
 use VersionPress\Tests\End2End\Utils\HttpStatusCodeUtil;
 use VersionPress\Tests\Utils\TestConfig;
 use VersionPress\Utils\PathUtils;
 
-class SecurityTest extends \PHPUnit_Framework_TestCase
+class SecurityTest extends TestCase
 {
     /** @var TestConfig */
     private static $testConfig;
     /** @var WpAutomation */
     private static $wpAutomation;
 
-    public function __construct()
-    {
-        self::$testConfig = TestConfig::createDefaultConfig();
-        self::$wpAutomation = new WpAutomation(self::$testConfig->testSite, self::$testConfig->wpCliVersion);
-    }
-
-    /**
-     * @test
-     */
+    #[Test]
     public function gitRepositoryDoesntAllowDirectAccess()
     {
         $url = self::$testConfig->testSite->url . "/.git/config";
@@ -30,9 +24,7 @@ class SecurityTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($statusCode === 403 || $statusCode === 404, "Wrong HTTP status code ($statusCode)");
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function vpdbDoesntAllowDirectAccess()
     {
         $vpdbDir = self::$wpAutomation->getVpdbDir();
@@ -42,9 +34,7 @@ class SecurityTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($statusCode === 403 || $statusCode === 404, "Wrong HTTP status code ($statusCode)");
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function vpconfigDoesntAllowDirectAccess()
     {
         $pluginsDir = self::$wpAutomation->getPluginsDir();

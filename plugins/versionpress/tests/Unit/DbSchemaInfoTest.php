@@ -2,26 +2,27 @@
 
 namespace VersionPress\Tests\Unit;
 
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
 use org\bovigo\vfs\vfsStream;
 use Symfony\Component\Yaml\Yaml;
 use VersionPress\Database\DbSchemaInfo;
 use VersionPress\Database\EntityInfo;
 use VersionPress\Tests\Utils\HookMock;
 
-class DbSchemaInfoTest extends \PHPUnit_Framework_TestCase
+class DbSchemaInfoTest extends TestCase
 {
     private $root;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->root = vfsStream::setup();
         HookMock::setUp();
     }
 
-    /**
-     * @test
-     * @dataProvider schemaProvider
-     */
+    #[Test]
+    #[DataProvider('schemaProvider')]
     public function dbSchemaInfoCreatesEntityInfo($schema, $entityName, $idColumnName, $tableName, $references, $vpidColumnName, $hasNaturalId, $mnReferences, $valueReferences, $parentReference)
     {
 
@@ -44,7 +45,7 @@ class DbSchemaInfoTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($parentReference, $entityInfo->parentReference);
     }
 
-    public function schemaProvider()
+    public static function schemaProvider()
     {
         $simpleEntity = [
             'simple-entity' => [
@@ -111,9 +112,7 @@ class DbSchemaInfoTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function dbSchemaInfoMergesReferencesFromMultipleSources()
     {
         $schema1 = [

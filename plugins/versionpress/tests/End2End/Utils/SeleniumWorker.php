@@ -2,13 +2,13 @@
 
 namespace VersionPress\Tests\End2End\Utils;
 
+use PHPUnit\Framework\Assert;
 use Nette\Utils\Strings;
 use PHPUnit_Extensions_Selenium2TestCase_SessionStrategy_Isolated;
 use PHPUnit_Extensions_Selenium2TestCase_SessionStrategy_Shared;
 use PHPUnit_Extensions_Selenium2TestCase_URL;
 use PHPUnit_Extensions_Selenium2TestCase_WaitUntil;
 use PHPUnit_Extensions_Selenium2TestCase_WebDriverException;
-use PHPUnit_Framework_Assert;
 use VersionPress\Tests\Automation\WpAutomation;
 use VersionPress\Tests\Utils\TestConfig;
 use VersionPress\Tests\Utils\WpVersionComparer;
@@ -232,7 +232,7 @@ class SeleniumWorker implements ITestWorker
     protected function assertElementExists($cssSelector)
     {
         if (!$this->elementExists($cssSelector)) {
-            PHPUnit_Framework_Assert::fail("Element \"$cssSelector\" does not exist");
+            Assert::fail("Element \"$cssSelector\" does not exist");
         }
     }
 

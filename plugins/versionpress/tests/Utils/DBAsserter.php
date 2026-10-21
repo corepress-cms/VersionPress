@@ -2,6 +2,10 @@
 
 namespace VersionPress\Tests\Utils;
 
+// Standalone copy of WordPress's wpdb; excluded from the classmap so it can't shadow the real classes.
+require_once __DIR__ . '/../SynchronizerTests/Utils/WpdbCopy.php';
+
+use PHPUnit\Framework\AssertionFailedError;
 use VersionPress\Database\Database;
 use VersionPress\Database\DbSchemaInfo;
 use VersionPress\Database\ShortcodesInfo;
@@ -133,7 +137,7 @@ class DBAsserter
                 $problematicEntities = self::findExceedingEntities($entityName, $storageEntities, $dbEntities);
             }
 
-            throw new \PHPUnit_Framework_AssertionFailedError(
+            throw new AssertionFailedError(
                 "Different count of synchronized entities ($entityName): DB = $countOfentitiesInDb, " .
                 "storage = $countOfentitiesInStorage\nProblematic entities: " . join(", ", $problematicEntities)
             );
@@ -150,7 +154,7 @@ class DBAsserter
                     continue;
                 }
                 if (!isset($storageEntity[$column])) {
-                    throw new \PHPUnit_Framework_AssertionFailedError(
+                    throw new AssertionFailedError(
                         "{$entityName}[$column] with value = $value, ID = $id not found in storage"
                     );
                 }
@@ -164,7 +168,7 @@ class DBAsserter
                 }
 
                 if ($storageEntity[$column] != $value) {
-                    throw new \PHPUnit_Framework_AssertionFailedError(
+                    throw new AssertionFailedError(
                         "Different values ({$entityName}[$column]: $id): DB = $value, storage = $storageEntity[$column]"
                     );
                 }
@@ -337,7 +341,7 @@ class DBAsserter
                 $list .= "] ";
             }
 
-            throw new \PHPUnit_Framework_AssertionFailedError(
+            throw new AssertionFailedError(
                 sprintf($verb . " M:N reference in table %s %s", $junctionTable, $list)
             );
         }

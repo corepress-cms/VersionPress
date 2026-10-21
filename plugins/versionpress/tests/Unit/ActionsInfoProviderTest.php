@@ -2,26 +2,27 @@
 
 namespace VersionPress\Tests\Unit;
 
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
 use org\bovigo\vfs\vfsStream;
 use Symfony\Component\Yaml\Yaml;
 use VersionPress\Actions\ActionsInfo;
 use VersionPress\Actions\ActionsInfoProvider;
 use VersionPress\Tests\Utils\HookMock;
 
-class ActionsInfoProviderTest extends \PHPUnit_Framework_TestCase
+class ActionsInfoProviderTest extends TestCase
 {
     private $root;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->root = vfsStream::setup();
         HookMock::setUp();
     }
 
-    /**
-     * @test
-     * @dataProvider scopeDefinitionProvider
-     */
+    #[Test]
+    #[DataProvider('scopeDefinitionProvider')]
     public function actionsInfoProviderCreatesActionInfo($scopeDefinition, $description, $tags, $priority, $parentIdTag)
     {
         $actionsFilePath = $this->createActionsFile($scopeDefinition);
@@ -36,7 +37,7 @@ class ActionsInfoProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($parentIdTag, $actionsInfo->getTagContainingParentId());
     }
 
-    public function scopeDefinitionProvider()
+    public static function scopeDefinitionProvider()
     {
         $description = 'Some description';
         $simpleScopeDefinition = [
@@ -62,9 +63,7 @@ class ActionsInfoProviderTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function actionsInfoProviderSupportsMultipleFiles()
     {
         $description1 = 'Some description for some-scope-1';
@@ -96,9 +95,7 @@ class ActionsInfoProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($description2, $generatedDescription);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function actionsInfoSupportsActionsFromMultipleFilesForOneScope()
     {
         $description1 = 'Some description for some-action-1 with %action-1-tag%';
@@ -131,9 +128,7 @@ class ActionsInfoProviderTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function actionsInfoSupportsActionsFromMultipleFilesWithRedefinedTags()
     {
         $description1 = 'Some description for some-action-1 with %some-tag%';
@@ -165,9 +160,7 @@ class ActionsInfoProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(str_replace('%some-tag%', 'tag 2', $description2), $generatedDescription);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function actionsInfoTakesIteratorAsParameter()
     {
         $description = 'Some description';

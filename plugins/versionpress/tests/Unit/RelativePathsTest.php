@@ -2,32 +2,31 @@
 
 namespace VersionPress\Tests\Unit;
 
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
 use VersionPress\Utils\PathUtils;
 
-class RelativePathsTest extends \PHPUnit_Framework_TestCase
+class RelativePathsTest extends TestCase
 {
 
-    /**
-     * @test
-     * @dataProvider pathProvider
-     */
+    #[Test]
+    #[DataProvider('pathProvider')]
     public function relativePathIsCountedCorrectly($from, $to, $expectedRelativePath)
     {
         $relativePath = PathUtils::getRelativePath($from, $to);
         $this->assertEquals($expectedRelativePath, $relativePath, "Wrong relative path from: '{$from}' to: '{$to}'.");
     }
 
-    /**
-     * @test
-     * @dataProvider specialPathsProvider
-     */
+    #[Test]
+    #[DataProvider('specialPathsProvider')]
     public function specialPaths($from, $to, $expected)
     {
         $relativePath = PathUtils::getRelativePath($from, $to);
         $this->assertEquals($expected, $relativePath, "Wrong relative path from: '{$from}' to: '{$to}'.");
     }
 
-    public function specialPathsProvider()
+    public static function specialPathsProvider()
     {
         return [
             ['/some/path/..', '/some/other/path', 'other/path'],
@@ -39,7 +38,7 @@ class RelativePathsTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    public function pathProvider()
+    public static function pathProvider()
     {
         $testedRoots = [
             __DIR__, // existingDirectory

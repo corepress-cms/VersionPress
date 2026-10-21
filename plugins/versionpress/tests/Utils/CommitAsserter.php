@@ -2,9 +2,9 @@
 
 namespace VersionPress\Tests\Utils;
 
+use PHPUnit\Framework\Assert;
 use Exception;
 use Nette\Utils\Strings;
-use PHPUnit_Framework_Assert;
 use VersionPress\Actions\ActionsInfoProvider;
 use VersionPress\ChangeInfos\BulkChangeInfo;
 use VersionPress\ChangeInfos\ChangeInfoEnvelope;
@@ -56,7 +56,7 @@ class CommitAsserter
      * be called after a test setup (if there is any) and before all the actual work. Asserts follow
      * after it.
      *
-     * @param \VersionPress\Git\GitRepository $gitRepository
+     * @param GitRepository $gitRepository
      * @param DbSchemaInfo $dbSchema
      * @param ActionsInfoProvider $actionsInfoProvider
      * @param string[] $pathPlaceholders
@@ -110,12 +110,12 @@ class CommitAsserter
     {
         $commits = $this->getNonIgnoredCommits();
         $numActualCommits = count($commits);
-        if ($numExpectedCommits !== $numActualCommits) {
-            PHPUnit_Framework_Assert::fail(
-                "There were $numActualCommits commit(s) after {$this->startCommit->getShortHash()} " .
-                "while we expected $numExpectedCommits"
-            );
-        }
+        Assert::assertSame(
+            $numExpectedCommits,
+            $numActualCommits,
+            "There were $numActualCommits commit(s) after {$this->startCommit->getShortHash()} " .
+            "while we expected $numExpectedCommits"
+        );
     }
 
 
@@ -139,19 +139,18 @@ class CommitAsserter
 
         if ($regardlessOfPriority) {
             $changeInfoContainsAction = ChangeInfoUtils::containsAction($changeInfo, $expectedAction);
-            if (!$changeInfoContainsAction) {
-                PHPUnit_Framework_Assert::fail(
-                    "Action '$expectedAction' not found in commit {$commit->getShortHash()}"
-                );
-            }
+            Assert::assertTrue(
+                $changeInfoContainsAction,
+                "Action '$expectedAction' not found in commit {$commit->getShortHash()}"
+            );
         } else {
             $commitAction = ChangeInfoUtils::getFullAction($changeInfo);
 
-            if ($expectedAction != $commitAction) {
-                PHPUnit_Framework_Assert::fail(
-                    "Expected action '$expectedAction' but was '$commitAction' in commit {$commit->getShortHash()}"
-                );
-            }
+            Assert::assertEquals(
+                $expectedAction,
+                $commitAction,
+                "Expected action '$expectedAction' but was '$commitAction' in commit {$commit->getShortHash()}"
+            );
         }
 
     }
@@ -168,30 +167,26 @@ class CommitAsserter
         $changeInfoEnvelope = $this->getChangeInfo($commit);
 
         $changeInfoContainsAction = ChangeInfoUtils::containsAction($changeInfoEnvelope, $expectedAction);
-        if (!$changeInfoContainsAction) {
-            PHPUnit_Framework_Assert::fail("Action '$expectedAction' not found in commit {$commit->getShortHash()}");
-        }
+        Assert::assertTrue($changeInfoContainsAction, "Action '$expectedAction' not found in commit {$commit->getShortHash()}");
 
         $changeInfoList = $changeInfoEnvelope->getReorganizedInfoList();
         $firstChangeInfo = $changeInfoList[0];
 
-        if (!($firstChangeInfo instanceof BulkChangeInfo)) {
-            PHPUnit_Framework_Assert::fail("Commit is not a bulk action");
-        }
+        Assert::assertInstanceOf(BulkChangeInfo::class, $firstChangeInfo, "Commit is not a bulk action");
 
-        if (ChangeInfoUtils::getFullAction($firstChangeInfo) !== $expectedAction) {
-            PHPUnit_Framework_Assert::fail(
-                "Bulk action '{$firstChangeInfo->getAction()}' expected to be '{$expectedAction}'"
-            );
-        }
+        Assert::assertSame(
+            $expectedAction,
+            ChangeInfoUtils::getFullAction($firstChangeInfo),
+            "Bulk action '{$firstChangeInfo->getAction()}' expected to be '{$expectedAction}'"
+        );
 
         $countOfGroupedActions = count($firstChangeInfo->getChangeInfos());
-        if ($countOfGroupedActions !== $expectedCountOfGroupedActions) {
-            PHPUnit_Framework_Assert::fail(
-                "Expected that bulk action contains $expectedCountOfGroupedActions actions " .
-                "instead of $countOfGroupedActions."
-            );
-        }
+        Assert::assertSame(
+            $expectedCountOfGroupedActions,
+            $countOfGroupedActions,
+            "Expected that bulk action contains $expectedCountOfGroupedActions actions " .
+            "instead of $countOfGroupedActions."
+        );
     }
 
     /**
@@ -213,23 +208,21 @@ class CommitAsserter
         $commitChangeInfo = $this->getChangeInfo($commit);
         $referenceCommitChangeInfo = $this->getChangeInfo($referenceCommit);
 
-        if (!($commitChangeInfo instanceof TrackedChangeInfo || $commitChangeInfo instanceof ChangeInfoEnvelope) ||
-            !($referenceCommitChangeInfo instanceof TrackedChangeInfo
-                || $referenceCommitChangeInfo instanceof ChangeInfoEnvelope)) {
-            PHPUnit_Framework_Assert::fail(
-                "Sorry, this assertion is only available for TrackedChangedInfo or ChangeInfoEnvelope commits"
-            );
-        }
+        Assert::assertTrue(
+            ($commitChangeInfo instanceof TrackedChangeInfo || $commitChangeInfo instanceof ChangeInfoEnvelope) &&
+            ($referenceCommitChangeInfo instanceof TrackedChangeInfo
+                || $referenceCommitChangeInfo instanceof ChangeInfoEnvelope),
+            "Sorry, this assertion is only available for TrackedChangedInfo or ChangeInfoEnvelope commits"
+        );
 
         /** @var TrackedChangeInfo $commitChangeInfo */
         /** @var TrackedChangeInfo $referenceCommitChangeInfo */
 
-        if (!ChangeInfoUtils::captureSameAction($commitChangeInfo, $referenceCommitChangeInfo)) {
-            PHPUnit_Framework_Assert::fail(
-                "Commit " . $commit->getHash() . " does not capture the same action as reference commit " .
-                $referenceCommit->getHash()
-            );
-        }
+        Assert::assertTrue(
+            ChangeInfoUtils::captureSameAction($commitChangeInfo, $referenceCommitChangeInfo),
+            "Commit " . $commit->getHash() . " does not capture the same action as reference commit " .
+            $referenceCommit->getHash()
+        );
     }
 
     public function assertCommitTag($tagKey, $tagValue)
@@ -237,13 +230,9 @@ class CommitAsserter
         $changeInfo = $this->getChangeInfo($this->getCommit());
         $foundCustomTagValue = ChangeInfoUtils::getCustomTagValue($changeInfo, $tagKey);
 
-        if (!$foundCustomTagValue) {
-            PHPUnit_Framework_Assert::fail("VP tag " . $tagKey . " not found on created commit");
-        }
+        Assert::assertNotEmpty($foundCustomTagValue, "VP tag " . $tagKey . " not found on created commit");
 
-        if ($foundCustomTagValue !== $tagValue) {
-            PHPUnit_Framework_Assert::fail("Expected: '$tagKey: $tagValue', Actual: '$tagKey: $foundCustomTagValue'");
-        }
+        Assert::assertSame($tagValue, $foundCustomTagValue, "Expected: '$tagKey: $tagValue', Actual: '$tagKey: $foundCustomTagValue'");
     }
 
     /**
@@ -269,9 +258,7 @@ class CommitAsserter
         $matchingPaths = array_filter($affectedFiles, function ($item) use ($type, $path) {
             return in_array($item["status"], (array)$type) && fnmatch($path, $item["path"]);
         });
-        if (count($matchingPaths) == 0) {
-            PHPUnit_Framework_Assert::fail("Commit didn't affect path '$path' with change of type '$type'");
-        }
+        Assert::assertNotEmpty($matchingPaths, "Commit didn't affect path '$path' with change of type '$type'");
     }
 
     /**
@@ -299,32 +286,30 @@ class CommitAsserter
         $revRange = $this->getRevRange($whichCommit);
         $affectedFiles = $this->gitRepository->getModifiedFilesWithStatus($revRange);
         $countOfAffectedFiles = count($affectedFiles);
-        if ($countOfAffectedFiles != $count) {
-            $adverb = $countOfAffectedFiles < $count ? "less" : "more";
-            PHPUnit_Framework_Assert::fail(
-                "Commit affected $adverb files ($countOfAffectedFiles) then expected ($count)"
-            );
-        }
+        $adverb = $countOfAffectedFiles < $count ? "less" : "more";
+        Assert::assertEquals(
+            $count,
+            $countOfAffectedFiles,
+            "Commit affected $adverb files ($countOfAffectedFiles) then expected ($count)"
+        );
     }
 
     public function assertCountOfUntrackedFiles($count)
     {
         $gitStatus = $this->gitRepository->getStatus(true);
         $countOfUntrackedFiles = count($gitStatus);
-        if ($countOfUntrackedFiles != $count) {
-            $adverb = $countOfUntrackedFiles < $count ? "less" : "more";
-            PHPUnit_Framework_Assert::fail(
-                "In the working directory is $adverb untracked files ($countOfUntrackedFiles) then expected ($count)"
-            );
-        }
+        $adverb = $countOfUntrackedFiles < $count ? "less" : "more";
+        Assert::assertEquals(
+            $count,
+            $countOfUntrackedFiles,
+            "In the working directory is $adverb untracked files ($countOfUntrackedFiles) then expected ($count)"
+        );
     }
 
     public function assertCleanWorkingDirectory()
     {
         $gitStatus = $this->gitRepository->getStatus();
-        if (!empty($gitStatus)) {
-            PHPUnit_Framework_Assert::fail("Expected clean working directory but got:\n$gitStatus");
-        }
+        Assert::assertEmpty($gitStatus, "Expected clean working directory but got:\n$gitStatus");
     }
 
 

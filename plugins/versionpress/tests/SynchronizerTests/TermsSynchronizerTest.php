@@ -2,6 +2,8 @@
 
 namespace VersionPress\Tests\SynchronizerTests;
 
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use VersionPress\Storages\DirectoryStorage;
 use VersionPress\Synchronizers\Synchronizer;
 use VersionPress\Tests\SynchronizerTests\Utils\EntityUtils;
@@ -16,7 +18,7 @@ class TermsSynchronizerTest extends SynchronizerTestCase
     private $synchronizer;
     private static $vpId;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->storage = self::$storageFactory->getStorage('term');
@@ -32,10 +34,8 @@ class TermsSynchronizerTest extends SynchronizerTestCase
         );
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer adds new term to the database
-     */
+    #[Test]
+    #[TestDox('Synchronizer adds new term to the database')]
     public function synchronizerAddsNewTermToDatabase()
     {
         $this->createTerm();
@@ -43,10 +43,8 @@ class TermsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer updates changed term in the database
-     */
+    #[Test]
+    #[TestDox('Synchronizer updates changed term in the database')]
     public function synchronizerUpdatesChangedTermInDatabase()
     {
         $this->editTerm();
@@ -54,10 +52,8 @@ class TermsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer replaces absolute URLs
-     */
+    #[Test]
+    #[TestDox('Synchronizer replaces absolute URLs')]
     public function synchronizerReplacesAbsoluteUrls()
     {
         $this->editTerm(AbsoluteUrlReplacer::PLACEHOLDER);
@@ -65,10 +61,8 @@ class TermsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer removes deleted term from the database
-     */
+    #[Test]
+    #[TestDox('Synchronizer removes deleted term from the database')]
     public function synchronizerRemovesDeletedTermFromDatabase()
     {
         $this->deleteTerm();
@@ -76,10 +70,8 @@ class TermsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer adds new term to the database (selective synchronization)
-     */
+    #[Test]
+    #[TestDox('Synchronizer adds new term to the database (selective synchronization)')]
     public function synchronizerAddsNewTermToDatabase_selective()
     {
         $entitiesToSynchronize = $this->createTerm();
@@ -87,10 +79,8 @@ class TermsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer updates changed term in the database (selective synchronization)
-     */
+    #[Test]
+    #[TestDox('Synchronizer updates changed term in the database (selective synchronization)')]
     public function synchronizerUpdatesChangedTermInDatabase_selective()
     {
         $entitiesToSynchronize = $this->editTerm();
@@ -98,10 +88,8 @@ class TermsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer removes deleted term from the database (selective synchronization)
-     */
+    #[Test]
+    #[TestDox('Synchronizer removes deleted term from the database (selective synchronization)')]
     public function synchronizerRemovesDeletedTermFromDatabase_selective()
     {
         $entitiesToSynchronize = $this->deleteTerm();

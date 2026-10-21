@@ -7,15 +7,12 @@ use VersionPress\Utils\ArrayUtils;
 /**
  * Class used for mocking hooks in tests.
  *
- * It does two types of "mocking":
- *   a) The first type simulates behavior of WordPress (TRUE_HOOKS). With this type you can call `add_filter` and `apply_filters`
- *      and the registered filter will be actually executed.
- *   b) The second type uses WP_MOCK. You can use all features of WP_MOCK if you choose it. The problem is,
- *      WP_MOCK does not execute the registered hooks; therefore, we introduced this thin wrapper.
+ * It simulates the behavior of WordPress (TRUE_HOOKS): you can call `add_filter` and `apply_filters`
+ * and the registered filter will actually be executed. With no hooks registered, filters pass values through.
  *
  * Usage:
  *
- * Just call `HookMock::setUp` with desired type of mocking in the `setUp` method of your test case
+ * Just call `HookMock::setUp` in the `setUp` method of your test case
  * and `HookMock::tearDown` in the `tearDown` method.
  *
  * Note:
@@ -26,7 +23,6 @@ class HookMock
 {
 
     const TRUE_HOOKS = 'true-hooks';
-    const WP_MOCK = 'wp_mock';
 
     private static $type = null;
 
@@ -38,18 +34,10 @@ class HookMock
 
         self::$type = $type;
         self::$hooks = [];
-
-        if (self::$type === HookMock::WP_MOCK) {
-            \WP_Mock::setUp();
-        }
     }
 
     public static function tearDown()
     {
-        if (self::$type === HookMock::WP_MOCK) {
-            \WP_Mock::tearDown();
-        }
-
         self::$type = null;
     }
 
@@ -58,10 +46,6 @@ class HookMock
         $args = func_get_args();
         $args = array_slice($args, 1);
         $args[0] = $value;
-
-        if (self::$type === HookMock::WP_MOCK) {
-            return \WP_Mock::onFilter($tag)->apply($args);
-        }
 
         if (self::$type === HookMock::TRUE_HOOKS) {
             $relatedFilters = self::getRelatedHooks($tag, 'filters');
@@ -80,9 +64,6 @@ class HookMock
 
     public static function addFilter($tag, $fn, $priority = 10, $acceptedArgs = 1)
     {
-        if (self::$type === HookMock::WP_MOCK) {
-            \WP_Mock::onFilterAdded($tag)->react($fn, (int)$priority, (int)$acceptedArgs);
-        }
 
         if (self::$type === HookMock::TRUE_HOOKS) {
             self::$hooks['filters'][$tag][] = ['fn' => $fn, 'priority' => $priority, 'args' => $acceptedArgs];
@@ -93,10 +74,6 @@ class HookMock
     {
         $args = func_get_args();
         $args = array_slice($args, 1);
-
-        if (self::$type === HookMock::WP_MOCK) {
-            \WP_Mock::onAction($tag)->react($args);
-        }
 
         if (self::$type === HookMock::TRUE_HOOKS) {
             $relatedHooks = self::getRelatedHooks($tag, 'actions');
@@ -112,9 +89,6 @@ class HookMock
 
     public static function addAction($tag, $fn, $priority = 10, $acceptedArgs = 1)
     {
-        if (self::$type === HookMock::WP_MOCK) {
-            \WP_Mock::onActionAdded($tag)->react($fn, (int)$priority, (int)$acceptedArgs);
-        }
 
         if (self::$type === HookMock::TRUE_HOOKS) {
             self::$hooks['actions'][$tag][] = ['fn' => $fn, 'priority' => $priority, 'args' => $acceptedArgs];

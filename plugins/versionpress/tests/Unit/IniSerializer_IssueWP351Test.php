@@ -3,13 +3,15 @@
 
 namespace VersionPress\Tests\Unit;
 
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use VersionPress\Storages\Serialization\IniSerializer;
 use VersionPress\Utils\StringUtils;
 
-class IniSerializer_IssueWP351Test extends \PHPUnit_Framework_TestCase
+class IniSerializer_IssueWP351Test extends TestCase
 {
 
-    /** @test */
+    #[Test]
     public function full()
     {
         $ini = StringUtils::ensureLf(<<<'INI'

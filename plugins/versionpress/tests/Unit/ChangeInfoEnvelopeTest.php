@@ -2,7 +2,9 @@
 
 namespace VersionPress\Tests\Unit;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
 use VersionPress\ChangeInfos\BulkChangeInfo;
 use VersionPress\ChangeInfos\ChangeInfo;
 use VersionPress\ChangeInfos\ChangeInfoEnvelope;
@@ -10,16 +12,16 @@ use VersionPress\ChangeInfos\EntityChangeInfo;
 use VersionPress\ChangeInfos\TrackedChangeInfo;
 use VersionPress\Database\EntityInfo;
 
-class ChangeInfoEnvelopeTest extends PHPUnit_Framework_TestCase
+class ChangeInfoEnvelopeTest extends TestCase
 {
 
 
     /**
-     * @test
-     * @dataProvider samePriorityExamples
      * @param $inputChangeInfosSample
      * @param $sortedChangeInfosSample
      */
+    #[Test]
+    #[DataProvider('samePriorityExamples')]
     public function changeInfosWithSamePriorityMaintainOrder($inputChangeInfosSample, $sortedChangeInfosSample)
     {
         $changeInfoEnvelope = new ChangeInfoEnvelope($inputChangeInfosSample, "1.0");
@@ -29,11 +31,11 @@ class ChangeInfoEnvelopeTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($sortedChangeInfosSample, $sortedByChangeInfoEnvelope);
     }
 
-    /** @test */
+    #[Test]
     public function entityChangeInfoWithCreateActionHasHigherPriorityThanOtherActions()
     {
 
-        $entityInfo = $this->createEntityInfoMock('some_entity');
+        $entityInfo = self::createEntityInfo('some_entity');
 
         $lowerPriorityChangeInfo = new EntityChangeInfo($entityInfo, null, 'update', 'vpid', [], [], 12);
         $normalPriorityChangeInfo = new EntityChangeInfo($entityInfo, null, 'create', 'vpid');
@@ -47,10 +49,10 @@ class ChangeInfoEnvelopeTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedSorted, $sortedByChangeInfoEnvelope);
     }
 
-    /** @test */
+    #[Test]
     public function bulkChangeInfoDoesNotAffectChangeInfoOrder()
     {
-        $entityInfo = $this->createEntityInfoMock('some_entity');
+        $entityInfo = self::createEntityInfo('some_entity');
 
         $normalPriorityChangeInfo = new EntityChangeInfo($entityInfo, null, 'create', 'vpid');
         $lowerPriorityChangeInfo1 = new EntityChangeInfo($entityInfo, null, 'update', 'vpid', [], [], 12);
@@ -64,10 +66,10 @@ class ChangeInfoEnvelopeTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
-     * @dataProvider changeInfosRepresentingBulkActions
      * @param $changeInfos
      */
+    #[Test]
+    #[DataProvider('changeInfosRepresentingBulkActions')]
     public function bulkActionsAreGroupedIntoBulkChangeInfo($changeInfos)
     {
         $changeInfoEnvelope = new ChangeInfoEnvelope($changeInfos, '1.0');
@@ -86,12 +88,12 @@ class ChangeInfoEnvelopeTest extends PHPUnit_Framework_TestCase
      *
      * @return array First item in the nested array is the input array, second is the expected sorted array
      */
-    public function samePriorityExamples()
+    public static function samePriorityExamples()
     {
 
         $entityName = 'some_entity';
 
-        $entityInfoMock = $this->createEntityInfoMock($entityName);
+        $entityInfoMock = self::createEntityInfo($entityName);
 
         $wordpressUpdateChangeInfo1 = new TrackedChangeInfo('wordpress', null, 'update', '4.0', [], [], 12);
         $wordPressUpdateChangeInfo2 = new TrackedChangeInfo('wordpress', null, 'update', '4.1', [], [], 12);
@@ -113,9 +115,9 @@ class ChangeInfoEnvelopeTest extends PHPUnit_Framework_TestCase
         ];
     }
 
-    public function changeInfosRepresentingBulkActions()
+    public static function changeInfosRepresentingBulkActions()
     {
-        $entityInfoMock = $this->createEntityInfoMock('some_entity');
+        $entityInfoMock = self::createEntityInfo('some_entity');
 
         return [
             [
@@ -156,13 +158,10 @@ class ChangeInfoEnvelopeTest extends PHPUnit_Framework_TestCase
 
     /**
      * @param string $entityName
-     * @return \PHPUnit_Framework_MockObject_MockObject|EntityInfo
+     * @return EntityInfo
      */
-    private function createEntityInfoMock($entityName)
+    private static function createEntityInfo($entityName)
     {
-        $entityInfoMock = $this->getMockBuilder(EntityInfo::class)->disableOriginalConstructor()->getMock();
-        $entityInfoMock->expects($this->any())->method('__get')->with($this->equalTo('entityName'))->will($this->returnValue($entityName));
-
-        return $entityInfoMock;
+        return new EntityInfo([$entityName => ['id' => 'id']]);
     }
 }

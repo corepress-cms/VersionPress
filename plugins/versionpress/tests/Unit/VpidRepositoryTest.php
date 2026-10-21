@@ -2,14 +2,16 @@
 
 namespace VersionPress\Tests\Unit;
 
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use VersionPress\Database\Database;
 use VersionPress\Database\DbSchemaInfo;
 use VersionPress\Database\EntityInfo;
 use VersionPress\Database\VpidRepository;
 
-class VpidRepositoryTest extends \PHPUnit_Framework_TestCase
+class VpidRepositoryTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function replacingSimpleValueReference()
     {
         $databaseMock = \Mockery::mock(Database::class);
@@ -48,7 +50,7 @@ class VpidRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expectedEntity, $replacedEntity);
     }
 
-    /** @test */
+    #[Test]
     public function replacingReferenceInSerializedData()
     {
         $databaseMock = \Mockery::mock(Database::class);
@@ -87,7 +89,7 @@ class VpidRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expectedEntity, $replacedEntity);
     }
 
-    /** @test */
+    #[Test]
     public function replacingReferenceInSerializedDataWithWildcard()
     {
         $databaseMock = \Mockery::mock(Database::class);
@@ -126,7 +128,7 @@ class VpidRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expectedEntity, $replacedEntity);
     }
 
-    /** @test */
+    #[Test]
     public function replacingReferenceInSerializedDataWithRegex()
     {
         $databaseMock = \Mockery::mock(Database::class);
@@ -165,7 +167,7 @@ class VpidRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expectedEntity, $replacedEntity);
     }
 
-    /** @test */
+    #[Test]
     public function replacingAllReferenceInSerializedDataWithRegex()
     {
         $databaseMock = \Mockery::mock(Database::class);
@@ -205,7 +207,7 @@ class VpidRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expectedEntity, $replacedEntity);
     }
 
-    /** @test */
+    #[Test]
     public function replacingReferenceInSerializedDataInSerializedData()
     {
         $databaseMock = \Mockery::mock(Database::class);

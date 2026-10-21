@@ -2,6 +2,8 @@
 
 namespace VersionPress\Tests\End2End\Options;
 
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use VersionPress\Tests\End2End\Utils\End2EndTestCase;
 use VersionPress\Tests\Utils\DBAsserter;
 
@@ -11,10 +13,8 @@ class OptionsTest extends End2EndTestCase
     /** @var IOptionsTestWorker */
     private static $worker;
 
-    /**
-     * @test
-     * @testdox Changing option creates 'option/update' action
-     */
+    #[Test]
+    #[TestDox("Changing option creates 'option/update' action")]
     public function changingOptionCreatesOptionEditAction()
     {
         self::$worker->prepare_changeOption();
@@ -30,10 +30,8 @@ class OptionsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Changing more option creates bulk 'option/update' action
-     */
+    #[Test]
+    #[TestDox("Changing more option creates bulk 'option/update' action")]
     public function changingMoreOptionsCreatesOptionEditAction()
     {
         self::$worker->prepare_changeTwoOptions();

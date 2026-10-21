@@ -2,10 +2,12 @@
 
 namespace VersionPress\Tests\Unit;
 
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use org\bovigo\vfs\vfsStream;
 use VersionPress\Initialization\WpConfigSplitter;
 
-class WpConfigSplitterTest extends \PHPUnit_Framework_TestCase {
+class WpConfigSplitterTest extends TestCase {
     // @codingStandardsIgnoreStart
     private $originalConfig = <<<'DOC'
 <?php
@@ -112,7 +114,7 @@ DOC;
     private $wpConfigPath;
     private $commonConfigPath;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $root = vfsStream::setup();
 
@@ -124,15 +126,13 @@ DOC;
         @unlink($this->commonConfigPath);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         @unlink($this->wpConfigPath);
         @unlink($this->commonConfigPath);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function splitterExtractsDesiredConstantsIntoSeparateFile()
     {
         WpConfigSplitter::split($this->wpConfigPath, $this->commonConfigName);
@@ -143,9 +143,7 @@ DOC;
         $this->assertEquals($this->commonConfig, $commonConfig);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function runningSplitterMultipleTimesDoesntChangeTheOutput()
     {
         WpConfigSplitter::split($this->wpConfigPath, $this->commonConfigName);

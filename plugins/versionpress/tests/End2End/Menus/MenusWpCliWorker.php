@@ -2,6 +2,7 @@
 
 namespace VersionPress\Tests\End2End\Menus;
 
+use PHPUnit\Framework\SkippedTestError;
 use VersionPress\Tests\End2End\Utils\WpCliWorker;
 
 class MenusTestWpCliWorker extends WpCliWorker implements IMenusTestWorker
@@ -54,7 +55,7 @@ class MenusTestWpCliWorker extends WpCliWorker implements IMenusTestWorker
 
     public function prepare_createMenuItemDraft()
     {
-        throw new \PHPUnit_Framework_SkippedTestError('There is no way to create menu item draft in the WP-CLI');
+        throw new SkippedTestError('There is no way to create menu item draft in the WP-CLI');
     }
 
     public function createMenuItemDraft()
@@ -63,7 +64,7 @@ class MenusTestWpCliWorker extends WpCliWorker implements IMenusTestWorker
 
     public function prepare_deleteOrphanedMenuItems()
     {
-        throw new \PHPUnit_Framework_SkippedTestError('There is no way to create menu item draft in the WP-CLI');
+        throw new SkippedTestError('There is no way to create menu item draft in the WP-CLI');
     }
 
     public function deleteOrphanedMenuItems()

@@ -2,6 +2,9 @@
 
 namespace VersionPress\Tests\End2End\Widgets;
 
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\Attributes\Depends;
 use Exception;
 use VersionPress\Tests\End2End\Utils\End2EndTestCase;
 use VersionPress\Tests\Utils\DBAsserter;
@@ -13,7 +16,7 @@ class WidgetsTest extends End2EndTestCase
     /** @var IWidgetsTestWorker */
     private static $worker;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         self::clearSidebars();
@@ -24,10 +27,8 @@ class WidgetsTest extends End2EndTestCase
         }
     }
 
-    /**
-     * @test
-     * @testdox Creating first widget of given type creates new option
-     */
+    #[Test]
+    #[TestDox('Creating first widget of given type creates new option')]
     public function creatingFirstWidgetOfGivenTypeCreatesOption()
     {
         self::$worker->prepare_createWidget();
@@ -53,11 +54,9 @@ class WidgetsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Creating second widget of given type updates the option
-     * @depends creatingFirstWidgetOfGivenTypeCreatesOption
-     */
+    #[Test]
+    #[Depends('creatingFirstWidgetOfGivenTypeCreatesOption')]
+    #[TestDox('Creating second widget of given type updates the option')]
     public function creatingSecondWidgetOfGivenTypeUpdatesOption()
     {
         self::$worker->prepare_createWidget();
@@ -74,10 +73,8 @@ class WidgetsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Editing widget creates 'option/update' action.
-     */
+    #[Test]
+    #[TestDox("Editing widget creates 'option/update' action.")]
     public function editingWidgetCreatesOptionEditAction()
     {
         self::$worker->prepare_editWidget();
@@ -94,10 +91,8 @@ class WidgetsTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Deleting widget creates 'option/update' action
-     */
+    #[Test]
+    #[TestDox("Deleting widget creates 'option/update' action")]
     public function deletingWidgetCreatesOptionEditAction()
     {
         self::$worker->prepare_deleteWidget();

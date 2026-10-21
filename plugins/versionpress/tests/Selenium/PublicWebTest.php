@@ -2,9 +2,8 @@
 
 namespace VersionPress\Tests\Selenium;
 
+use PHPUnit\Framework\Attributes\Test;
 use VersionPress\Git\GitRepository;
-use VersionPress\Tests\Utils\CommitAsserter;
-use VersionPress\Utils\PathUtils;
 
 class PublicWebTest extends SeleniumTestCase
 {
@@ -34,9 +33,9 @@ class PublicWebTest extends SeleniumTestCase
     }
 
     /**
-     * @test
      * @testdox Public web is accessible
      */
+    #[Test]
     public function publicWebIsAccessible()
     {
 
@@ -48,9 +47,9 @@ class PublicWebTest extends SeleniumTestCase
 
     /**
      * Same test as {@link CommentsTest::testNewComment}
-     * @test
      * @depends publicWebIsAccessible
      */
+    #[Test]
     public function commentCanBeAdded()
     {
         $this->url('?p=' . self::$testPostId);

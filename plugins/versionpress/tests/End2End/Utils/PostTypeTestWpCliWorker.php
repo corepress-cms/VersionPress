@@ -2,6 +2,7 @@
 
 namespace VersionPress\Tests\End2End\Utils;
 
+use PHPUnit\Framework\SkippedTestError;
 use VersionPress\Tests\Utils\TestConfig;
 
 abstract class PostTypeTestWpCliWorker extends WpCliWorker implements IPostTypeTestWorker
@@ -48,7 +49,7 @@ abstract class PostTypeTestWpCliWorker extends WpCliWorker implements IPostTypeT
 
     public function prepare_quickEditPost()
     {
-        throw new \PHPUnit_Framework_SkippedTestError('There is nothing like quick edit in the WP-CLI');
+        throw new SkippedTestError('There is nothing like quick edit in the WP-CLI');
     }
 
     public function quickEditPost()
@@ -97,7 +98,7 @@ abstract class PostTypeTestWpCliWorker extends WpCliWorker implements IPostTypeT
 
     public function prepare_previewDraft()
     {
-        throw new \PHPUnit_Framework_SkippedTestError('There is nothing like preview in the WP-CLI');
+        throw new SkippedTestError('There is nothing like preview in the WP-CLI');
     }
 
     public function previewDraft()
@@ -125,7 +126,7 @@ abstract class PostTypeTestWpCliWorker extends WpCliWorker implements IPostTypeT
 
     public function prepare_previewUnsavedPost()
     {
-        throw new \PHPUnit_Framework_SkippedTestError('There is nothing like preview in the WP-CLI');
+        throw new SkippedTestError('There is nothing like preview in the WP-CLI');
     }
 
     public function previewUnsavedPost()
@@ -134,7 +135,7 @@ abstract class PostTypeTestWpCliWorker extends WpCliWorker implements IPostTypeT
 
     public function prepare_setFeaturedImageForUnsavedPost()
     {
-        throw new \PHPUnit_Framework_SkippedTestError(
+        throw new SkippedTestError(
             'Featured image cannot be assigned to unexisting post using WP-CLI'
         );
     }
@@ -145,7 +146,7 @@ abstract class PostTypeTestWpCliWorker extends WpCliWorker implements IPostTypeT
 
     public function prepare_makeDraftFromUnsavedPost()
     {
-        throw new \PHPUnit_Framework_SkippedTestError(
+        throw new SkippedTestError(
             'Featured image cannot be assigned to unexisting post using WP-CLI'
         );
     }

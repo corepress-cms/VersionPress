@@ -2,7 +2,9 @@
 
 namespace VersionPress\Tests\StorageTests;
 
-use VersionPress\Actions\ActionsInfo;
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use VersionPress\ChangeInfos\ChangeInfoFactory;
 use VersionPress\Database\Database;
 use VersionPress\Database\DbSchemaInfo;
@@ -11,13 +13,11 @@ use VersionPress\Storages\DirectoryStorage;
 use VersionPress\Storages\MetaEntityStorage;
 use VersionPress\Storages\StorageFactory;
 
-class StorageFactoryTest extends \PHPUnit_Framework_TestCase
+class StorageFactoryTest extends TestCase
 {
 
-    /**
-     * @test
-     * @testdox Factory creates right storages
-     */
+    #[Test]
+    #[TestDox('Factory creates right storages')]
     public function factoryCreatesRightStorages()
     {
         $storages = [
@@ -38,8 +38,8 @@ class StorageFactoryTest extends \PHPUnit_Framework_TestCase
         $wpdbStub->prefix = 'prefix_';
 
         $database = new Database($wpdbStub);
-        $changeInfoFactory = $this->getMockBuilder(ChangeInfoFactory::class)->disableOriginalConstructor()->getMock();
-        $tableSchemaStorage = $this->getMockBuilder(TableSchemaStorage::class)->disableOriginalConstructor()->getMock();
+        $changeInfoFactory = $this->createStub(ChangeInfoFactory::class);
+        $tableSchemaStorage = $this->createStub(TableSchemaStorage::class);
 
         $factory = new StorageFactory(
             __DIR__ . '/vpdb',

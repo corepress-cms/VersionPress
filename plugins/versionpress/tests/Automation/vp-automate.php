@@ -11,6 +11,7 @@
  */
 namespace VersionPress\Tests\Automation;
 
+use Faker\Factory;
 use DateTime;
 use Faker;
 use mysqli;
@@ -19,7 +20,6 @@ use Tracy\Debugger;
 use VersionPress\Database\Database;
 use VersionPress\Utils\FileSystem;
 use WP_CLI;
-use wpdb;
 
 /**
  * Internal VersionPress automation commands. Some of them depend on tests-config.ini.
@@ -79,7 +79,7 @@ class VpAutomateCommand extends \WP_CLI_Command
     public function generate($args, $assoc_args)
     {
         global $wpdb;
-        $this->faker = Faker\Factory::create();
+        $this->faker = Factory::create();
 
         $this->database = new Database($wpdb);
 

@@ -2,7 +2,7 @@
 
 namespace VersionPress\Tests\Utils;
 
-use PHPUnit_Framework_Assert;
+use PHPUnit\Framework\Assert;
 
 class MergeAsserter
 {
@@ -17,14 +17,8 @@ class MergeAsserter
 
         $exitCode = MergeDriverTestUtils::runGitCommand($mergeCommand);
 
-        if ($exitCode == 0) {
-            PHPUnit_Framework_Assert::fail('Expected merge conflict, got clean merge instead');
-        } else {
-            if ($exitCode != 1) {
-                PHPUnit_Framework_Assert::fail('Merge ended with an unexpected exit code ' . $exitCode);
-            }
-        }
-
+        Assert::assertNotEquals(0, $exitCode, 'Expected merge conflict, got clean merge instead');
+        Assert::assertEquals(1, $exitCode, 'Merge ended with an unexpected exit code ' . $exitCode);
     }
 
     /**
@@ -36,13 +30,7 @@ class MergeAsserter
     {
         $exitCode = MergeDriverTestUtils::runGitCommand($mergeCommand);
 
-        if ($exitCode == 1) {
-            PHPUnit_Framework_Assert::fail('Merge ended with a conflict, clean merge was expected');
-        } else {
-            if ($exitCode != 0) {
-                PHPUnit_Framework_Assert::fail('Merge ended with an unexpected exit code ' . $exitCode);
-            }
-        }
-
+        Assert::assertNotEquals(1, $exitCode, 'Merge ended with a conflict, clean merge was expected');
+        Assert::assertEquals(0, $exitCode, 'Merge ended with an unexpected exit code ' . $exitCode);
     }
 }

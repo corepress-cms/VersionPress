@@ -2,8 +2,10 @@
 
 namespace VersionPress\Tests\SynchronizerTests;
 
-use PHPUnit_Framework_MockObject_Generator;
-use VersionPress\Actions\ActionsInfo;
+// Standalone copy of WordPress's wpdb; excluded from the classmap so it can't shadow the real classes.
+require_once __DIR__ . '/Utils/WpdbCopy.php';
+
+use PHPUnit\Framework\TestCase;
 use VersionPress\Actions\ActionsInfoProvider;
 use VersionPress\ChangeInfos\ChangeInfoFactory;
 use VersionPress\Database\Database;
@@ -21,7 +23,7 @@ use VersionPress\Utils\Process;
 use VersionPress\Utils\ProcessUtils;
 use wpdb;
 
-class SynchronizerTestCase extends \PHPUnit_Framework_TestCase
+class SynchronizerTestCase extends TestCase
 {
 
     /** @var DbSchemaInfo */
@@ -43,7 +45,7 @@ class SynchronizerTestCase extends \PHPUnit_Framework_TestCase
     /** @var WpAutomation */
     private static $wpAutomation;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         self::$testConfig = TestConfig::createDefaultConfig();
@@ -99,7 +101,7 @@ class SynchronizerTestCase extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         $process = Process::fromShellCommandline(
             "git add -A && git commit -m " . ProcessUtils::escapeshellarg("Committed changes made by " . get_called_class()),

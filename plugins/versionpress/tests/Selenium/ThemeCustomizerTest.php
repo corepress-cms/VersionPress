@@ -2,14 +2,14 @@
 
 namespace VersionPress\Tests\Selenium;
 
-use VersionPress\Tests\Utils\CommitAsserter;
+use PHPUnit\Framework\Attributes\Test;
 
 class ThemeCustomizerTest // extends SeleniumTestCase // temporarily disabled
 {
     /**
-     * @test
      * @testdox Every change made in customizer creates 'theme/customize' action
      */
+    #[Test]
     public function everyChangeMadeInCustomizerCreatesThemeCustomizeAction()
     {
         $this->url(self::$wpAdminPath . '/customize.php');

@@ -3,24 +3,21 @@
 
 namespace VersionPress\Tests\Unit;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use VersionPress\Tests\Utils\OptionsConventionConverter;
 
-class OptionsConventionConverterTest extends PHPUnit_Framework_TestCase
+class OptionsConventionConverterTest extends TestCase
 {
 
-    /**
-     * @test
-     */
+    #[Test]
     public function convertsFromPropertyConventionToEnvVarConvention()
     {
         $this->assertEquals("VP_OPTION_NAME", OptionsConventionConverter::getEnvVarOptionName("optionName"));
         $this->assertEquals("VP_OPTION", OptionsConventionConverter::getEnvVarOptionName("option"));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function convertsFromPropertyConventionToCliConvention()
     {
         $this->assertEquals("option-name", OptionsConventionConverter::getCliOptionName("optionName"));

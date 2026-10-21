@@ -2,6 +2,7 @@
 
 namespace VersionPress\Tests\End2End\Users;
 
+use PHPUnit\Framework\SkippedTestError;
 use Nette\Utils\Random;
 use Nette\Utils\Strings;
 use VersionPress\Tests\End2End\Utils\WpCliWorker;
@@ -136,7 +137,7 @@ class UsersTestWpCliWorker extends WpCliWorker implements IUsersTestWorker
 
     public function prepare_editTwoUsermeta()
     {
-        throw new \PHPUnit_Framework_SkippedTestError("There is no way to change multiple usermeta using WP-CLI");
+        throw new SkippedTestError("There is no way to change multiple usermeta using WP-CLI");
     }
 
     public function editTwoUsermeta()

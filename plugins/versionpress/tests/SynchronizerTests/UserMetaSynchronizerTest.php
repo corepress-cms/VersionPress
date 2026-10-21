@@ -2,6 +2,8 @@
 
 namespace VersionPress\Tests\SynchronizerTests;
 
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use VersionPress\Storages\DirectoryStorage;
 use VersionPress\Storages\MetaEntityStorage;
 use VersionPress\Synchronizers\Synchronizer;
@@ -22,7 +24,7 @@ class UserMetaSynchronizerTest extends SynchronizerTestCase
     private static $vpId;
     private static $userVpId;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->storage = self::$storageFactory->getStorage('usermeta');
@@ -49,10 +51,8 @@ class UserMetaSynchronizerTest extends SynchronizerTestCase
         );
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer adds new usermeta to the database
-     */
+    #[Test]
+    #[TestDox('Synchronizer adds new usermeta to the database')]
     public function synchronizerAddsNewUserMetaToDatabase()
     {
         $this->createUserMeta();
@@ -61,10 +61,8 @@ class UserMetaSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer updates changed usermeta in the database
-     */
+    #[Test]
+    #[TestDox('Synchronizer updates changed usermeta in the database')]
     public function synchronizerUpdatesChangedUserMetaInDatabase()
     {
         $this->editUserMeta();
@@ -72,10 +70,8 @@ class UserMetaSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer replaces absolute URLs
-     */
+    #[Test]
+    #[TestDox('Synchronizer replaces absolute URLs')]
     public function synchronizerReplacesAbsoluteUrls()
     {
         $this->editUserMeta('some-meta', AbsoluteUrlReplacer::PLACEHOLDER);
@@ -83,10 +79,8 @@ class UserMetaSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer removes deleted usermeta from the database
-     */
+    #[Test]
+    #[TestDox('Synchronizer removes deleted usermeta from the database')]
     public function synchronizerRemovesDeletedUserMetaFromDatabase()
     {
         $this->deleteUserMeta();
@@ -95,10 +89,8 @@ class UserMetaSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer adds new usermeta to the database (selective synchronization)
-     */
+    #[Test]
+    #[TestDox('Synchronizer adds new usermeta to the database (selective synchronization)')]
     public function synchronizerAddsNewUserMetaToDatabase_selective()
     {
         $entitiesToSynchronize = $this->createUserMeta();
@@ -107,10 +99,8 @@ class UserMetaSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer updates changed usermeta in the database (selective synchronization)
-     */
+    #[Test]
+    #[TestDox('Synchronizer updates changed usermeta in the database (selective synchronization)')]
     public function synchronizerUpdatesChangedUserMetaInDatabase_selective()
     {
         $entitiesToSynchronize = $this->editUserMeta();
@@ -118,10 +108,8 @@ class UserMetaSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer removes deleted usermeta from the database (selective synchronization)
-     */
+    #[Test]
+    #[TestDox('Synchronizer removes deleted usermeta from the database (selective synchronization)')]
     public function synchronizerRemovesDeletedUserMetaFromDatabase_selective()
     {
         $entitiesToSynchronize = $this->deleteUserMeta();

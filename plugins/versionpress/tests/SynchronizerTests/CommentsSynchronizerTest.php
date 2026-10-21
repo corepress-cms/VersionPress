@@ -2,6 +2,8 @@
 
 namespace VersionPress\Tests\SynchronizerTests;
 
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use VersionPress\Storages\DirectoryStorage;
 use VersionPress\Synchronizers\Synchronizer;
 use VersionPress\Tests\SynchronizerTests\Utils\EntityUtils;
@@ -26,7 +28,7 @@ class CommentsSynchronizerTest extends SynchronizerTestCase
     private static $postVpId;
     private static $vpId;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->storage = self::$storageFactory->getStorage('comment');
@@ -64,10 +66,8 @@ class CommentsSynchronizerTest extends SynchronizerTestCase
         );
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer adds new comment to the database
-     */
+    #[Test]
+    #[TestDox('Synchronizer adds new comment to the database')]
     public function synchronizerAddsNewCommentToDatabase()
     {
         $this->createComment();
@@ -78,10 +78,8 @@ class CommentsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer updates changed comment in the database
-     */
+    #[Test]
+    #[TestDox('Synchronizer updates changed comment in the database')]
     public function synchronizerUpdatesChangedCommentInDatabase()
     {
         $this->editComment();
@@ -89,10 +87,8 @@ class CommentsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer replaces absolute URLs
-     */
+    #[Test]
+    #[TestDox('Synchronizer replaces absolute URLs')]
     public function synchronizerReplacesAbsoluteUrls()
     {
         $this->editComment('comment_content', AbsoluteUrlReplacer::PLACEHOLDER);
@@ -100,10 +96,8 @@ class CommentsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer removes deleted comment from the database
-     */
+    #[Test]
+    #[TestDox('Synchronizer removes deleted comment from the database')]
     public function synchronizerRemovesDeletedCommentFromDatabase()
     {
         $this->deleteComment();
@@ -113,10 +107,8 @@ class CommentsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer adds new comment to the database (selective synchronization)
-     */
+    #[Test]
+    #[TestDox('Synchronizer adds new comment to the database (selective synchronization)')]
     public function synchronizerAddsNewCommentToDatabase_selective()
     {
         $entitiesToSynchronize = $this->createComment();
@@ -127,10 +119,8 @@ class CommentsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer updates changed comment in the database (selective synchronization)
-     */
+    #[Test]
+    #[TestDox('Synchronizer updates changed comment in the database (selective synchronization)')]
     public function synchronizerUpdatesChangedCommentInDatabase_selective()
     {
         $entitiesToSynchronize = $this->editComment();
@@ -138,10 +128,8 @@ class CommentsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer removes deleted comment from the database (selective synchronization)
-     */
+    #[Test]
+    #[TestDox('Synchronizer removes deleted comment from the database (selective synchronization)')]
     public function synchronizerRemovesDeletedCommentFromDatabase_selective()
     {
         $entitiesToSynchronize = $this->deleteComment();

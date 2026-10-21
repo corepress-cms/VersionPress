@@ -2,6 +2,8 @@
 
 namespace VersionPress\Tests\SynchronizerTests;
 
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use VersionPress\Storages\DirectoryStorage;
 use VersionPress\Storages\MetaEntityStorage;
 use VersionPress\Synchronizers\Synchronizer;
@@ -28,7 +30,7 @@ class PostMetaSynchronizerTest extends SynchronizerTestCase
     private static $post2VpId;
     private static $vpId;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->storage = self::$storageFactory->getStorage('postmeta');
@@ -66,10 +68,8 @@ class PostMetaSynchronizerTest extends SynchronizerTestCase
         );
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer adds new postmeta to the database
-     */
+    #[Test]
+    #[TestDox('Synchronizer adds new postmeta to the database')]
     public function synchronizerAddsNewPostMetaToDatabase()
     {
         $this->createPostMeta();
@@ -80,10 +80,8 @@ class PostMetaSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer updates changed postmeta in the database
-     */
+    #[Test]
+    #[TestDox('Synchronizer updates changed postmeta in the database')]
     public function synchronizerUpdatesChangedPostMetaInDatabase()
     {
         $this->editPostMeta('_thumbnail_id', self::$postVpId);
@@ -91,10 +89,8 @@ class PostMetaSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer replaces absolute URLs
-     */
+    #[Test]
+    #[TestDox('Synchronizer replaces absolute URLs')]
     public function synchronizerReplacesAbsoluteUrls()
     {
         $this->editPostMeta('some_meta', AbsoluteUrlReplacer::PLACEHOLDER);
@@ -102,10 +98,8 @@ class PostMetaSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer removes deleted postmeta from the database
-     */
+    #[Test]
+    #[TestDox('Synchronizer removes deleted postmeta from the database')]
     public function synchronizerRemovesDeletedPostMetaFromDatabase()
     {
         $this->deletePostMeta();
@@ -115,10 +109,8 @@ class PostMetaSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer adds new postmeta to the database (selective synchronization)
-     */
+    #[Test]
+    #[TestDox('Synchronizer adds new postmeta to the database (selective synchronization)')]
     public function synchronizerAddsNewPostMetaToDatabase_selective()
     {
         $entitiesToSynchronize = $this->createPostMeta();
@@ -129,10 +121,8 @@ class PostMetaSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer updates changed postmeta in the database (selective synchronization)
-     */
+    #[Test]
+    #[TestDox('Synchronizer updates changed postmeta in the database (selective synchronization)')]
     public function synchronizerUpdatesChangedPostMetaInDatabase_selective()
     {
         $entitiesToSynchronize = $this->editPostMeta('_thumbnail_id', self::$postVpId);
@@ -140,10 +130,8 @@ class PostMetaSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer removes deleted postmeta from the database (selective synchronization)
-     */
+    #[Test]
+    #[TestDox('Synchronizer removes deleted postmeta from the database (selective synchronization)')]
     public function synchronizerRemovesDeletedPostMetaFromDatabase_selective()
     {
         $entitiesToSynchronize = $this->deletePostMeta();

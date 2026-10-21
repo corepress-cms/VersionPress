@@ -2,6 +2,7 @@
 
 namespace VersionPress\Tests\End2End\Media;
 
+use PHPUnit\Framework\SkippedTestError;
 use VersionPress\Tests\End2End\Utils\SeleniumWorker;
 
 class MediaTestSeleniumWorker extends SeleniumWorker implements IMediaTestWorker
@@ -34,7 +35,7 @@ class MediaTestSeleniumWorker extends SeleniumWorker implements IMediaTestWorker
 
     public function prepare_editFileName()
     {
-        throw new \PHPUnit_Framework_SkippedTestError("It's impossible to submit the form from Selenium. I tried everything. Maybe some future me will be more lucky.");
+        throw new SkippedTestError("It's impossible to submit the form from Selenium. I tried everything. Maybe some future me will be more lucky.");
     }
 
     public function editFileName()

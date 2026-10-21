@@ -2,17 +2,17 @@
 
 namespace VersionPress\Tests\Unit;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use VersionPress\Tests\Utils\TestConfig;
 
-class TestConfigTest extends PHPUnit_Framework_TestCase
+class TestConfigTest extends TestCase
 {
 
     /**
      * This is just a quick smoke test.
-     *
-     * @test
      */
+    #[Test]
     public function yamlParsingWorks()
     {
         $config = new TestConfig(__DIR__ . "/../test-config.yml");

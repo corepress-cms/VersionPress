@@ -1,10 +1,12 @@
 <?php
 namespace VersionPress\Tests\LoadTests;
 
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use VersionPress\Git\MergeDriverInstaller;
 use VersionPress\Tests\Utils\MergeDriverTestUtils;
 
-class MergeDriverLoadTest extends \PHPUnit_Framework_TestCase
+class MergeDriverLoadTest extends TestCase
 {
 
     private static $repositoryDir;
@@ -15,17 +17,17 @@ class MergeDriverLoadTest extends \PHPUnit_Framework_TestCase
      */
     const ITERATIONS = 1;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$repositoryDir = sys_get_temp_dir() . '/repository';
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         MergeDriverTestUtils::initRepository(self::$repositoryDir);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         MergeDriverTestUtils::destroyRepository();
     }
@@ -44,9 +46,7 @@ class MergeDriverLoadTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function phpDriverLoadTested()
     {
 
@@ -64,9 +64,7 @@ class MergeDriverLoadTest extends \PHPUnit_Framework_TestCase
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function bashDriverLoadTested()
     {
 

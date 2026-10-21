@@ -2,8 +2,10 @@
 
 namespace VersionPress\Tests\Unit;
 
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Faker\Provider\Lorem;
-use PHPUnit_Framework_TestCase;
 use VersionPress\Storages\Serialization\IniSerializer;
 use VersionPress\Utils\StringUtils;
 
@@ -11,29 +13,24 @@ use VersionPress\Utils\StringUtils;
  * Tests covering IniSerializer. There are also IniSerializer_Issue* tests which contain
  * tests cases for reported issues.
  */
-class IniSerializerTest extends PHPUnit_Framework_TestCase
+class IniSerializerTest extends TestCase
 {
 
 
     //--------------------------------
     // Invalid inputs
     //--------------------------------
-
-    /**
-     * @test
-     */
+    #[Test]
     public function throwsOnNonSectionedData()
     {
-        $this->setExpectedException('Exception');
+        $this->expectException('Exception');
         IniSerializer::serialize(["key" => "value"]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function throwsOnEmptySection()
     {
-        $this->setExpectedException('Exception');
+        $this->expectException('Exception');
         IniSerializer::serialize(["Section" => []]);
     }
 
@@ -42,8 +39,6 @@ class IniSerializerTest extends PHPUnit_Framework_TestCase
     //--------------------------------
     // The most basic test
     //--------------------------------
-
-
     /**
      * Simplest possible sectioned INI - anything less that this throws. A couple of required elements can be seen here:
      *
@@ -51,9 +46,8 @@ class IniSerializerTest extends PHPUnit_Framework_TestCase
      *   2. ... and non-empty
      *   3. There must be a value, at least an empty string (`key = ` throws)
      *   4. There must be an empty line after the section
-     *
-     * @test
      */
+    #[Test]
     public function smallestPossibleExample()
     {
 
@@ -74,11 +68,7 @@ INI
     //--------------------------------
     // Supported types
     //--------------------------------
-
-
-    /**
-     * @test
-     */
+    #[Test]
     public function strings()
     {
 
@@ -96,9 +86,7 @@ INI
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function numericValues()
     {
 
@@ -117,9 +105,7 @@ INI
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function numericStringsSerializedAsStrings()
     {
 
@@ -138,9 +124,7 @@ INI
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function arraysAsSquareBrackets()
     {
 
@@ -162,13 +146,9 @@ INI
     //--------------------------------
     // Escaping / special characters
     //--------------------------------
-
     // Note: since WP-458 this has been simplified as INI_SCANNER_RAW is used for parse_ini_string()
     // Previously, backslashes were a bit tricky, see WP-289.
-
-    /**
-     * @test
-     */
+    #[Test]
     public function backslash_single()
     {
 
@@ -189,9 +169,7 @@ INI
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function backslash_double()
     {
 
@@ -212,9 +190,7 @@ INI
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function backslash_tripple()
     {
 
@@ -235,9 +211,7 @@ INI
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function backslash_atTheEndOfString()
     {
 
@@ -260,9 +234,7 @@ INI
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function doubleQuoteEscaping()
     {
 
@@ -281,9 +253,8 @@ INI
 
     /**
      * This tests one problematic aspect of parse_ini_string(), see WP-288.
-     *
-     * @test
      */
+    #[Test]
     public function doubleQuoteEscapingAtTheEOL()
     {
 
@@ -301,9 +272,7 @@ INI
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function doubleQuoteEscaping_HereDoc()
     {
 
@@ -329,9 +298,7 @@ INI
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function hashSignCommentInsideQuotes()
     {
 
@@ -358,9 +325,7 @@ INI
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function dollarSignInsideQuotes()
     {
         $data = ["Section" => ["key1" => 'some$value', "key2" => 'another${value']];
@@ -377,9 +342,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function semicolonCommentInsideQuotes()
     {
 
@@ -407,9 +370,7 @@ INI
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function newLineHandlingInsideValues_LF()
     {
 
@@ -421,9 +382,7 @@ INI
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function newLineHandlingInsideValues_CR()
     {
 
@@ -435,9 +394,7 @@ INI
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function newLineHandlingInsideValues_CRLF()
     {
 
@@ -449,9 +406,7 @@ INI
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function newLineHandling_BlankLines()
     {
 
@@ -463,9 +418,7 @@ INI
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function newLineHandling_NewLineAfterStringMark()
     {
         $ini = StringUtils::ensureLf(<<<'INI'
@@ -487,9 +440,7 @@ INI
         $this->assertSame($ini, IniSerializer::serialize($data));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function newLineHandling_SupportsCRLFOnInput() {
 
         // See smallestPossibleExample()
@@ -501,9 +452,7 @@ INI
         $this->assertSame($outputWithLF, IniSerializer::serialize($data));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function specialCharactersAreTakenLiterally()
     {
 
@@ -522,10 +471,8 @@ INI
 
     }
 
-    /**
-     * @test
-     * @dataProvider specialCharactersProvider
-     */
+    #[Test]
+    #[DataProvider('specialCharactersProvider')]
     public function specialCharactersInSectionName($specialCharacter)
     {
 
@@ -542,10 +489,8 @@ INI
 
     }
 
-    /**
-     * @test
-     * @dataProvider specialCharactersProvider
-     */
+    #[Test]
+    #[DataProvider('specialCharactersProvider')]
     public function specialCharacterInKey($specialCharacter)
     {
 
@@ -563,10 +508,8 @@ INI
     }
 
 
-    /**
-     * @test
-     * @dataProvider specialCharactersInValueProvider
-     */
+    #[Test]
+    #[DataProvider('specialCharactersInValueProvider')]
     public function specialCharacterInValue($specialCharacter)
     {
 
@@ -583,7 +526,7 @@ INI
 
     }
 
-    public function specialCharactersProvider()
+    public static function specialCharactersProvider()
     {
         return array_map(
             function ($specialChar) {
@@ -631,17 +574,15 @@ INI
         );
     }
 
-    public function specialCharactersInValueProvider()
+    public static function specialCharactersInValueProvider()
     {
         // Double quotes and backslashes are escaped see WP-458 and WP-619
-        return array_filter($this->specialCharactersProvider(), function ($val) {
+        return array_filter(self::specialCharactersProvider(), function ($val) {
             return $val[0] !== "\"" && $val[0] !== "\\";
         });
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function twoSections()
     {
 
@@ -661,9 +602,7 @@ INI
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function sectionWithDotInName()
     {
         $data = ["Section.Name" => ["key" => "value"]];
@@ -678,9 +617,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedString()
     {
         $serializedString = serialize('some string');
@@ -697,9 +634,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedInteger()
     {
         $serializedString = serialize(777);
@@ -716,9 +651,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedDouble()
     {
         $serializedString = serialize(1.2);
@@ -735,9 +668,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedBoolean()
     {
         $serializedString = serialize(false);
@@ -754,9 +685,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedEmptyArray()
     {
         $serializedString = serialize([]);
@@ -773,9 +702,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedArrayWithString()
     {
         $serializedString = serialize(['some string']);
@@ -793,9 +720,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedArrayWithNegativeInteger()
     {
         $serializedString = serialize([-1]);
@@ -813,10 +738,8 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     * @dataProvider specialCharactersInValueProvider
-     */
+    #[Test]
+    #[DataProvider('specialCharactersInValueProvider')]
     public function serializedArrayWithSpecialStrings($str)
     {
         $serializedString = serialize([$str, $str, $str]);
@@ -837,9 +760,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedArrayWithEscapedSpecialStrings()
     {
         $serializedString = serialize(["\\", "\"", "\\\""]);
@@ -860,9 +781,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedHTMLString()
     {
         $arrayWithHtml = ["meta_key" => "who_is_the_best", "meta_value" => "<p>VersionPress</p>"];
@@ -882,9 +801,7 @@ INI
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedStringWithNewLines()
     {
         $arrayWithNewLines = ["meta_key" => "who_is_the_best", "meta_value" => "VersionPress\nis\nthe\nbest"];
@@ -906,9 +823,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
 
     }
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedOption()
     {
         $sidebarWidgets = [
@@ -938,9 +853,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedComplexArray()
     {
         $array = [
@@ -981,9 +894,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedEmptyStdClass()
     {
         $serializedString = serialize(new \stdClass());
@@ -1000,9 +911,7 @@ INI
         $this->assertSame($ini, IniSerializer::serialize($data));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedStdClassWithAttribute()
     {
         $object = new \stdClass();
@@ -1023,9 +932,7 @@ INI
         $this->assertSame($ini, IniSerializer::serialize($data));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedStdClassWithMultipleAttributes()
     {
         $object = new \stdClass();
@@ -1053,9 +960,7 @@ INI
         $this->assertSame($ini, IniSerializer::serialize($data));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedCustomClassWithPublicAttribute()
     {
         $object = new IniSerializer_FooPublic('value');
@@ -1075,9 +980,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedCustomClassWithProtectedAttribute()
     {
         $object = new IniSerializer_FooProtected('value');
@@ -1097,9 +1000,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedCustomClassWithPrivateAttribute()
     {
         $object = new IniSerializer_FooPrivate('value');
@@ -1119,9 +1020,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedCustomClassWithSleepMethod()
     {
         $object = new IniSerializer_FooWithCleanup('value');
@@ -1141,9 +1040,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedCustomClassWithPrivateAttributeInParent()
     {
         $object = new IniSerializer_FooPrivateChild('value');
@@ -1163,9 +1060,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedNull()
     {
         $serializedString = serialize(null);
@@ -1182,9 +1077,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedMultipleSameObjects()
     {
         $object = new \stdClass();
@@ -1206,9 +1099,7 @@ INI
         $this->assertSame($ini, IniSerializer::serialize($data));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedMultipleDifferentObjects()
     {
         $serializedString = serialize([new \stdClass(), new \stdClass(), new \stdClass()]);
@@ -1228,9 +1119,7 @@ INI
         $this->assertSame($ini, IniSerializer::serialize($data));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedReferenceToArray()
     {
         $array = [];
@@ -1252,9 +1141,7 @@ INI
         $this->assertSame($ini, IniSerializer::serialize($data));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedMoreComplexArrayReferences()
     {
         $parent = [];
@@ -1279,9 +1166,7 @@ INI
         $this->assertSame($ini, IniSerializer::serialize($data));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedEvenMoreComplexArrayReferences()
     {
         $parent = [];
@@ -1321,9 +1206,7 @@ INI
         $this->assertSame($ini, IniSerializer::serialize($data));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedReferenceToClass()
     {
         $class = new \stdClass();
@@ -1344,9 +1227,7 @@ INI
         $this->assertSame($ini, IniSerializer::serialize($data));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedMoreComplexClassReferences()
     {
         $parent = new \stdClass();
@@ -1383,9 +1264,7 @@ INI
         $this->assertSame($ini, IniSerializer::serialize($data));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedMultipleDifferentData()
     {
 
@@ -1426,9 +1305,7 @@ INI
         $this->assertSame($ini, IniSerializer::serialize($data));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function longString()
     {
         $loremIpsum = StringUtils::ensureLf(Lorem::text(50000));
@@ -1445,9 +1322,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializationDoesntChangeTheOrder()
     {
         $serializedString = serialize(777);
@@ -1465,9 +1340,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializationDoesntChangeTypeOfNumericString()
     {
 
@@ -1483,9 +1356,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializationDoesntChangeTypeOfNumericStringInSerializedData()
     {
         $serializedString = serialize("777");
@@ -1502,9 +1373,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializationDoesntChangeTypeOfNumericStringInArray()
     {
         $serializedString = serialize(["777"]);
@@ -1522,9 +1391,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedArrayInSerializedArray()
     {
         $serializedString = serialize([serialize(['some string'])]);
@@ -1543,9 +1410,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function serializedStringInSerializedArray()
     {
         $serializedString = serialize([serialize('some string')]);
@@ -1563,9 +1428,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function doubleSerializedString()
     {
 	    $serializedValue = serialize(serialize('test'));
@@ -1582,9 +1445,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function doubleSerializedArray()
     {
 	    $serializedValue = serialize(serialize(['test']));
@@ -1602,9 +1463,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function threeNestedSerializedValues()
     {
         $stdClass = new \stdClass();
@@ -1625,9 +1484,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function nullValueSerializesCorrectly()
     {
         $data = ["Section" => ["data" => null]];
@@ -1641,9 +1498,7 @@ INI
         $this->assertSame($data, IniSerializer::deserialize($ini));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function stringContaingNullPlaceholderIsDeserializedToOriginalString()
     {
         $data = ["Section" => ["data" => "<null>"]];

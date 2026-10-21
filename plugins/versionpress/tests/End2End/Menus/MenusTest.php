@@ -2,6 +2,9 @@
 
 namespace VersionPress\Tests\End2End\Menus;
 
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\Attributes\Depends;
 use VersionPress\Tests\End2End\Utils\End2EndTestCase;
 use VersionPress\Tests\Utils\DBAsserter;
 
@@ -11,10 +14,8 @@ class MenusTest extends End2EndTestCase
     /** @var IMenusTestWorker */
     private static $worker;
 
-    /**
-     * @test
-     * @testdox New menu creates 'term/create' action
-     */
+    #[Test]
+    #[TestDox("New menu creates 'term/create' action")]
     public function addingMenuCreatesTermCreateAction()
     {
         self::$worker->prepare_createMenu();
@@ -31,11 +32,9 @@ class MenusTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Renaming menu creates 'term/rename' action
-     * @depends addingMenuCreatesTermCreateAction
-     */
+    #[Test]
+    #[Depends('addingMenuCreatesTermCreateAction')]
+    #[TestDox("Renaming menu creates 'term/rename' action")]
     public function renamingMenuCreatesTermRenameAction()
     {
         self::$worker->prepare_editMenu();
@@ -51,11 +50,9 @@ class MenusTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Adding menu item creates 'post/create' action
-     * @depends renamingMenuCreatesTermRenameAction
-     */
+    #[Test]
+    #[Depends('renamingMenuCreatesTermRenameAction')]
+    #[TestDox("Adding menu item creates 'post/create' action")]
     public function addingMenuItemCreatesPostCreateAction()
     {
         self::$worker->prepare_addMenuItem();
@@ -71,11 +68,9 @@ class MenusTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Editing menu item order creates 'post/update' action.
-     * @depends addingMenuItemCreatesPostCreateAction
-     */
+    #[Test]
+    #[Depends('addingMenuItemCreatesPostCreateAction')]
+    #[TestDox("Editing menu item order creates 'post/update' action.")]
     public function editingMenuItemCreatesPostEditAction()
     {
         self::$worker->prepare_editMenuItem();
@@ -91,11 +86,9 @@ class MenusTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Creating menu item draft leaves not clean working directory.
-     * @depends addingMenuItemCreatesPostCreateAction
-     */
+    #[Test]
+    #[Depends('addingMenuItemCreatesPostCreateAction')]
+    #[TestDox('Creating menu item draft leaves not clean working directory.')]
     public function creatingMenuItemDraftLeavesNotCleanWorkingDirectory()
     {
         self::$worker->prepare_createMenuItemDraft();
@@ -109,11 +102,9 @@ class MenusTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Orphaned menu item should be deleted when doing undo
-     * @depends creatingMenuItemDraftLeavesNotCleanWorkingDirectory
-     */
+    #[Test]
+    #[Depends('creatingMenuItemDraftLeavesNotCleanWorkingDirectory')]
+    #[TestDox('Orphaned menu item should be deleted when doing undo')]
     public function orphanedMenuItemShouldBeDeletedWhenDoingUndo()
     {
         self::$worker->prepare_deleteOrphanedMenuItems();
@@ -127,11 +118,9 @@ class MenusTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Removing menu item creates 'post/delete' action
-     * @depends editingMenuItemCreatesPostEditAction
-     */
+    #[Test]
+    #[Depends('editingMenuItemCreatesPostEditAction')]
+    #[TestDox("Removing menu item creates 'post/delete' action")]
     public function removingMenuItemCreatesPostDeleteAction()
     {
         self::$worker->prepare_removeMenuItem();
@@ -147,10 +136,8 @@ class MenusTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Removing menu item withChildrenUpdatesChildrensParent
-     */
+    #[Test]
+    #[TestDox('Removing menu item withChildrenUpdatesChildrensParent')]
     public function removingMenuItemWithChildrenUpdatesChildrensParent()
     {
         self::$worker->prepare_removeMenuItemWithChildren();
@@ -166,11 +153,9 @@ class MenusTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Deleting menu creates 'term/delete' action
-     * @depends removingMenuItemCreatesPostDeleteAction
-     */
+    #[Test]
+    #[Depends('removingMenuItemCreatesPostDeleteAction')]
+    #[TestDox("Deleting menu creates 'term/delete' action")]
     public function deletingMenuCreatesTermDeleteAction()
     {
         self::$worker->prepare_deleteMenu();

@@ -1,5 +1,12 @@
 <?php
 
+use Tracy\Debugger;
+use VersionPress\ChangeInfos\TrackedChangeInfo;
+use VersionPress\Git\GitRepository;
+use VersionPress\DI\DIContainer;
+use VersionPress\DI\VersionPressServices;
+use VersionPress\ChangeInfos\ChangeInfoFactory;
+use VersionPress\Git\Committer;
 use Composer\Autoload\ClassLoader;
 use VersionPress\Storages\Mirror;
 use VersionPress\Storages\StorageFactory;
@@ -14,7 +21,7 @@ if (count($args) < count($opts)) {
 
 require_once(__DIR__ . '/../../vendor/autoload.php');
 
-\Tracy\Debugger::enable(\Tracy\Debugger::DEVELOPMENT, sys_get_temp_dir());
+Debugger::enable(Debugger::DEVELOPMENT, sys_get_temp_dir());
 
 $classloader = new ClassLoader();
 $classloader->addPsr4('VersionPress\\', __DIR__ . '/../../src');
@@ -23,7 +30,7 @@ $classloader->register();
 HookMock::setUp(HookMock::TRUE_HOOKS);
 
 // @codingStandardsIgnoreLine
-class FooChangeInfo extends \VersionPress\ChangeInfos\TrackedChangeInfo
+class FooChangeInfo extends TrackedChangeInfo
 {
 
     private $files;
@@ -89,7 +96,7 @@ $mirror->shouldReceive('getChangeList')->andReturn($changeList);
 
 $storageFactory = Mockery::mock(StorageFactory::class);
 
-$gitRepository = new \VersionPress\Git\GitRepository($repositoryDir, sys_get_temp_dir());
+$gitRepository = new GitRepository($repositoryDir, sys_get_temp_dir());
 
 /**
  * @var Mirror $mirror
@@ -97,12 +104,12 @@ $gitRepository = new \VersionPress\Git\GitRepository($repositoryDir, sys_get_tem
  */
 
 global $versionPressContainer;
-$versionPressContainer = new \VersionPress\DI\DIContainer();
-$versionPressContainer->register(\VersionPress\DI\VersionPressServices::CHANGEINFO_FACTORY, function () {
-    return Mockery::mock(\VersionPress\ChangeInfos\ChangeInfoFactory::class);
+$versionPressContainer = new DIContainer();
+$versionPressContainer->register(VersionPressServices::CHANGEINFO_FACTORY, function () {
+    return Mockery::mock(ChangeInfoFactory::class);
 });
 
-$committer = new \VersionPress\Git\Committer($mirror, $gitRepository, $storageFactory);
+$committer = new Committer($mirror, $gitRepository, $storageFactory);
 $committer->commit();
 function createFiles($dir, $from, $to)
 {

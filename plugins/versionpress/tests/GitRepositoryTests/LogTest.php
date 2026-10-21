@@ -2,11 +2,13 @@
 
 namespace VersionPress\Tests\GitRepositoryTests;
 
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use VersionPress\Git\CommitMessage;
 use VersionPress\Git\GitRepository;
 use VersionPress\Utils\FileSystem;
 
-class LogTest extends \PHPUnit_Framework_TestCase
+class LogTest extends TestCase
 {
 
     private static $repositoryPath;
@@ -14,7 +16,7 @@ class LogTest extends \PHPUnit_Framework_TestCase
     /** @var GitRepository */
     private static $repository;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         self::$repositoryPath = sys_get_temp_dir() . '/vp-repository';
@@ -24,14 +26,14 @@ class LogTest extends \PHPUnit_Framework_TestCase
         mkdir(self::$tempPath);
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         parent::tearDownAfterClass();
         FileSystem::remove(self::$repositoryPath);
         FileSystem::remove(self::$tempPath);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         FileSystem::removeContent(self::$repositoryPath);
@@ -39,18 +41,14 @@ class LogTest extends \PHPUnit_Framework_TestCase
         self::$repository->init();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logReturnsEmptyArrayInEmptyRepository()
     {
         $log = self::$repository->log();
         $this->assertEquals([], $log);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logReturnsOneEntryAfterOneCommit()
     {
         touch(self::$repositoryPath . '/somefile');
@@ -61,9 +59,7 @@ class LogTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, count($log));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function commitContainsListOfChangedFiles()
     {
         touch(self::$repositoryPath . '/somefile');
@@ -82,9 +78,7 @@ class LogTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedChangedFiles, $lastCommit->getChangedFiles());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function allCommitsContainListOfChangedFiles()
     {
         touch(self::$repositoryPath . '/somefile');

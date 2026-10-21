@@ -2,6 +2,8 @@
 
 namespace VersionPress\Tests\SynchronizerTests;
 
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use VersionPress\Storages\DirectoryStorage;
 use VersionPress\Synchronizers\Synchronizer;
 use VersionPress\Tests\SynchronizerTests\Utils\EntityUtils;
@@ -22,7 +24,7 @@ class OptionsSynchronizerTest extends SynchronizerTestCase
 
     private $entitiesForSelectiveSynchronization = [['vp_id' => 'foo', 'parent' => null]];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->storage = self::$storageFactory->getStorage('option');
@@ -49,10 +51,8 @@ class OptionsSynchronizerTest extends SynchronizerTestCase
         );
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer adds new option to the database
-     */
+    #[Test]
+    #[TestDox('Synchronizer adds new option to the database')]
     public function synchronizerAddsNewOptionToDatabase()
     {
         $this->storage->save(EntityUtils::prepareOption('foo', 'bar'));
@@ -60,10 +60,8 @@ class OptionsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer does not delete ignored options
-     */
+    #[Test]
+    #[TestDox('Synchronizer does not delete ignored options')]
     public function synchronizerDoesNotDeleteIgnoredOptions()
     {
         $optionTable = self::$database->options;
@@ -84,10 +82,8 @@ class OptionsSynchronizerTest extends SynchronizerTestCase
         $this->assertEquals($optionsBeforeSync, $optionsAfterSync);
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer updates changed option in the database
-     */
+    #[Test]
+    #[TestDox('Synchronizer updates changed option in the database')]
     public function synchronizerUpdatesChangedOptionInDatabase()
     {
         $this->storage->save(EntityUtils::prepareOption('foo', 'another value'));
@@ -95,10 +91,8 @@ class OptionsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer replaces URLs
-     */
+    #[Test]
+    #[TestDox('Synchronizer replaces URLs')]
     public function synchronizerReplacesUrls()
     {
         $this->storage->save(EntityUtils::prepareOption('foo', AbsoluteUrlReplacer::PLACEHOLDER));
@@ -106,10 +100,8 @@ class OptionsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer removes deleted option from the database
-     */
+    #[Test]
+    #[TestDox('Synchronizer removes deleted option from the database')]
     public function synchronizerRemovesDeletedOptionFromDatabase()
     {
         $this->storage->delete(EntityUtils::prepareOption('foo', 'bar'));
@@ -117,10 +109,8 @@ class OptionsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer adds new option to the database
-     */
+    #[Test]
+    #[TestDox('Synchronizer adds new option to the database')]
     public function synchronizerAddsNewOptionToDatabase_selective()
     {
         $this->storage->save(EntityUtils::prepareOption('foo', 'bar'));
@@ -131,10 +121,8 @@ class OptionsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer updates changed option in the database
-     */
+    #[Test]
+    #[TestDox('Synchronizer updates changed option in the database')]
     public function synchronizerUpdatesChangedOptionInDatabase_selective()
     {
         $this->storage->save(EntityUtils::prepareOption('foo', 'another value'));
@@ -145,10 +133,8 @@ class OptionsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer removes deleted option from the database
-     */
+    #[Test]
+    #[TestDox('Synchronizer removes deleted option from the database')]
     public function synchronizerRemovesDeletedOptionFromDatabase_selective()
     {
         $this->storage->delete(EntityUtils::prepareOption('foo', 'bar'));
@@ -159,10 +145,8 @@ class OptionsSynchronizerTest extends SynchronizerTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Synchronizer replaces value references
-     */
+    #[Test]
+    #[TestDox('Synchronizer replaces value references')]
     public function synchronizerReplacesValueReferences()
     {
         $post = EntityUtils::preparePost();

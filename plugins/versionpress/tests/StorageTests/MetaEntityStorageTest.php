@@ -2,6 +2,7 @@
 
 namespace VersionPress\Tests\StorageTests;
 
+use PHPUnit\Framework\Attributes\Test;
 use VersionPress\Storages\DirectoryStorage;
 use VersionPress\Storages\MetaEntityStorage;
 use VersionPress\Utils\FileSystem;
@@ -29,9 +30,7 @@ class MetaEntityStorageTest extends StorageTestCase
         'vp_id' => "F0E1B6313B7A48E49A1B38DF382B350D",
     ];
 
-    /**
-     * @test
-     */
+    #[Test]
     public function savedMetaEntityEqualsLoadedMetaEntity()
     {
         $this->parentStorage->save($this->testingParentEntity);
@@ -40,9 +39,7 @@ class MetaEntityStorageTest extends StorageTestCase
         $this->assertEquals($this->testingMetaEntity, $loadedMetaEntity);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function loadAllReturnsOnlyOriginalEntities()
     {
         $this->parentStorage->save($this->testingParentEntity);
@@ -52,7 +49,7 @@ class MetaEntityStorageTest extends StorageTestCase
         $this->assertEquals($this->testingMetaEntity, reset($loadedPostMeta));
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -87,7 +84,7 @@ class MetaEntityStorageTest extends StorageTestCase
         $this->storage = new MetaEntityStorage($this->parentStorage, $metaEntityInfo, 'prefix_', $changeInfoFactory);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         FileSystem::remove(__DIR__ . '/entities');

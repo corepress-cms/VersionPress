@@ -2,9 +2,11 @@
 
 namespace VersionPress\Tests\Unit;
 
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use VersionPress\Database\EntityInfo;
 
-class EntityInfoTest extends \PHPUnit_Framework_TestCase
+class EntityInfoTest extends TestCase
 {
 
     private $entitySchema = [
@@ -32,14 +34,12 @@ class EntityInfoTest extends \PHPUnit_Framework_TestCase
     /** @var EntityInfo */
     private $entityInfo;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->entityInfo = new EntityInfo($this->entitySchema);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function rulesAndIntervalsOfFrequentlyWrittenEntitiesEqualEntitySchema()
     {
         $expectedRules = [
@@ -60,9 +60,7 @@ class EntityInfoTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expectedRules, $this->entityInfo->getRulesAndIntervalsForFrequentlyWrittenEntities());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function rulesOfIgnoredEntitiesEqualEntitySchema()
     {
         $expectedRules = [
@@ -81,9 +79,7 @@ class EntityInfoTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expectedRules, $this->entityInfo->getRulesForIgnoredEntities());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function frequentlyWrittenEntityIsCorrectlyIdentified()
     {
         $entity = [
@@ -94,9 +90,7 @@ class EntityInfoTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->entityInfo->isFrequentlyWrittenEntity($entity));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function partialMatchIsNotFalselyIdentifiedAsFrequentlyWritten()
     {
         // The rule is `'some_field: value other_field: a'` and the entity only partially matches it:
@@ -107,9 +101,7 @@ class EntityInfoTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->entityInfo->isFrequentlyWrittenEntity($entity));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function ignoredEntityIsCorrectlyIdentified()
     {
         $entity = [
@@ -120,9 +112,7 @@ class EntityInfoTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->entityInfo->isIgnoredEntity($entity));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function ignoredEntityCapitalizedIsCorrectlyIdentified()
     {
         $entity = [
@@ -134,9 +124,7 @@ class EntityInfoTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->entityInfo->isIgnoredEntity($entity));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function partialMatchIsNotFalselyIdentifiedAsIgnored()
     {
         // The rule is `'some_field: value other_field: a'` and the entity must match it entirely.
@@ -155,9 +143,7 @@ class EntityInfoTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->entityInfo->isIgnoredEntity($entity));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function ignoredColumnsAreIdentifiedCorrectly()
     {
         $this->assertEquals([], array_diff(

@@ -1,6 +1,7 @@
 <?php
 namespace VersionPress\Tests\Selenium;
 
+use PHPUnit\Framework\Attributes\Test;
 use Exception;
 use VersionPress\Initialization\InitializationConfig;
 use VersionPress\Tests\Utils\DBAsserter;
@@ -27,10 +28,7 @@ class ActivationDeactivationTest // extends SeleniumTestCase // disabled in Dock
     //----------------------------
     // Delete unactivated plugin
     //----------------------------
-
-    /**
-     * @test
-     */
+    #[Test]
     public function completeUninstallationOfUnactivatedPluginRemovesAllFiles()
     {
         self::installVersionPress();
@@ -48,11 +46,10 @@ class ActivationDeactivationTest // extends SeleniumTestCase // disabled in Dock
     //----------------------------
     // Activation
     //----------------------------
-
     /**
-     * @test
      * @see vp_gettext_filter_plugin_activated() Nag string is constructed here
      */
+    #[Test]
     public function successfulActivationDisplaysInitializationHintInTheActivationMessage()
     {
         self::installVersionPress();
@@ -62,9 +59,9 @@ class ActivationDeactivationTest // extends SeleniumTestCase // disabled in Dock
     }
 
     /**
-     * @test
      * @depends successfulActivationDisplaysInitializationHintInTheActivationMessage
      */
+    #[Test]
     public function nagIsDisplayedOnSubsequentRequests()
     {
         $this->url(self::$wpAdminPath . '/index.php');
@@ -72,9 +69,9 @@ class ActivationDeactivationTest // extends SeleniumTestCase // disabled in Dock
     }
 
     /**
-     * @test
      * @depends nagIsDisplayedOnSubsequentRequests
      */
+    #[Test]
     public function visitingVersionPressScreenShowsInitializationInformation()
     {
         $updateConfigArgs = [
@@ -90,9 +87,9 @@ class ActivationDeactivationTest // extends SeleniumTestCase // disabled in Dock
     }
 
     /**
-     * @test
      * @depends visitingVersionPressScreenShowsInitializationInformation
      */
+    #[Test]
     public function successfulActivationRedirectsToMainVersionPressTableAndAltersWpdbClass()
     {
         $wpdbFile = self::$wpAutomation->getAbspath() . '/wp-includes/class-wpdb.php';
@@ -111,9 +108,9 @@ class ActivationDeactivationTest // extends SeleniumTestCase // disabled in Dock
     }
 
     /**
-     * @test
      * @depends successfulActivationRedirectsToMainVersionPressTableAndAltersWpdbClass
      */
+    #[Test]
     public function afterActivationTheFilesystemMatchDatabase()
     {
         DBAsserter::assertFilesEqualDatabase();
@@ -122,11 +119,7 @@ class ActivationDeactivationTest // extends SeleniumTestCase // disabled in Dock
     //----------------------------
     // Automatic reactivation
     //----------------------------
-
-    /**
-     * @test
-     *
-     */
+    #[Test]
     public function versionPressRestoresMethodsInWpdbAfterReplacingWithOriginal()
     {
         $isReplacedCall = 'echo VersionPress\Initialization\WpdbReplacer::isReplaced();';
@@ -146,11 +139,7 @@ class ActivationDeactivationTest // extends SeleniumTestCase // disabled in Dock
     //----------------------------
     // Deactivation
     //----------------------------
-
-
-    /**
-     * @test
-     */
+    #[Test]
     public function deactivateShowsConfirmationScreen()
     {
         $this->url(self::$wpAdminPath . '/plugins.php');
@@ -167,9 +156,9 @@ class ActivationDeactivationTest // extends SeleniumTestCase // disabled in Dock
     }
 
     /**
-     * @test
      * @depends deactivateShowsConfirmationScreen
      */
+    #[Test]
     public function cancelDeactivationReturnsToPluginPage()
     {
 
@@ -181,9 +170,9 @@ class ActivationDeactivationTest // extends SeleniumTestCase // disabled in Dock
     }
 
     /**
-     * @test
      * @depends cancelDeactivationReturnsToPluginPage
      */
+    #[Test]
     public function confirmingDeactivationFullyDeactivatesVersionPress()
     {
 
@@ -206,9 +195,9 @@ class ActivationDeactivationTest // extends SeleniumTestCase // disabled in Dock
     }
 
     /**
-     * @test
      * @depends confirmingDeactivationFullyDeactivatesVersionPress
      */
+    #[Test]
     public function deactivateBeforeFullActivationSkipsConfirmation()
     {
         $this->byCssSelector('.activate a[href*=\'versionpress\']')->click();
@@ -220,9 +209,9 @@ class ActivationDeactivationTest // extends SeleniumTestCase // disabled in Dock
 
 
     /**
-     * @test
      * @depends deactivateBeforeFullActivationSkipsConfirmation
      */
+    #[Test]
     public function completeUninstallationRemovesGitRepo()
     {
 

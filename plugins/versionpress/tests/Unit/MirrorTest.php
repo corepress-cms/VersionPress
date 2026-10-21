@@ -2,26 +2,23 @@
 
 namespace VersionPress\Tests\Unit;
 
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use VersionPress\Storages\Mirror;
 use VersionPress\Storages\Storage;
 use VersionPress\Storages\StorageFactory;
 use VersionPress\Utils\AbsoluteUrlReplacer;
 
-class MirrorTest extends \PHPUnit_Framework_TestCase
+class MirrorTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function mirrorCallsTheReplacerOnSavingEntity()
     {
-        $fakeStorageFactory = $this->getMockBuilder(StorageFactory::class)
-            ->disableOriginalConstructor()->getMock();
-        $fakeReplacer = $this->getMockBuilder(AbsoluteUrlReplacer::class)
-            ->disableOriginalConstructor()->getMock();
-        $fakeStorage = $this->getMockBuilder(Storage::class)
-            ->disableOriginalConstructor()->getMockForAbstractClass();
+        $fakeStorageFactory = $this->createStub(StorageFactory::class);
+        $fakeReplacer = $this->createMock(AbsoluteUrlReplacer::class);
+        $fakeStorage = $this->createStub(Storage::class);
 
-        $fakeStorageFactory->expects($this->any())->method('getStorage')->will($this->returnValue($fakeStorage));
+        $fakeStorageFactory->method('getStorage')->willReturn($fakeStorage);
         $fakeReplacer->expects($this->once())->method('replace');
 
         /**
@@ -32,24 +29,19 @@ class MirrorTest extends \PHPUnit_Framework_TestCase
         $mirror->save('foo', []);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function mirrorUsesRightStorage()
     {
         $entityName = 'some-entity';
         $someEntity = ['foo' => 'bar'];
 
-        $fakeStorageFactory = $this->getMockBuilder(StorageFactory::class)
-            ->disableOriginalConstructor()->getMock();
-        $fakeReplacer = $this->getMockBuilder(AbsoluteUrlReplacer::class)
-            ->disableOriginalConstructor()->getMock();
-        $fakeStorage = $this->getMockBuilder(Storage::class)
-            ->disableOriginalConstructor()->getMockForAbstractClass();
+        $fakeStorageFactory = $this->createMock(StorageFactory::class);
+        $fakeReplacer = $this->createMock(AbsoluteUrlReplacer::class);
+        $fakeStorage = $this->createMock(Storage::class);
 
-        $fakeReplacer->expects($this->once())->method('replace')->will($this->returnArgument(0));
+        $fakeReplacer->expects($this->once())->method('replace')->willReturnArgument(0);
         $fakeStorageFactory->expects($this->once())->method('getStorage')
-            ->with($entityName)->will($this->returnValue($fakeStorage));
+            ->with($entityName)->willReturn($fakeStorage);
         $fakeStorage->expects($this->once())->method('save')->with($someEntity);
 
         /**

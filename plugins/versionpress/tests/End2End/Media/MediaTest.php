@@ -2,6 +2,9 @@
 
 namespace VersionPress\Tests\End2End\Media;
 
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\Attributes\Depends;
 use VersionPress\Tests\End2End\Utils\End2EndTestCase;
 use VersionPress\Tests\Utils\DBAsserter;
 
@@ -11,16 +14,14 @@ class MediaTest extends End2EndTestCase
     /** @var IMediaTestWorker */
     private static $worker;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         self::$worker->setUploadedFilePath(realpath(__DIR__ . '/../test-data/test.png'));
     }
 
-    /**
-     * @test
-     * @testdox Uploading file creates 'post/create' action
-     */
+    #[Test]
+    #[TestDox("Uploading file creates 'post/create' action")]
     public function uploadingFileCreatesPostCreateAction()
     {
         self::$worker->prepare_uploadFile();
@@ -39,11 +40,9 @@ class MediaTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Editing file name creates 'post/update' action
-     * @depends uploadingFileCreatesPostCreateAction
-     */
+    #[Test]
+    #[Depends('uploadingFileCreatesPostCreateAction')]
+    #[TestDox("Editing file name creates 'post/update' action")]
     public function editingFileNameCreatesPostEditAction()
     {
         self::$worker->prepare_editFileName();
@@ -59,11 +58,9 @@ class MediaTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Deleting file creates 'post/delete' action
-     * @depends editingFileNameCreatesPostEditAction
-     */
+    #[Test]
+    #[Depends('editingFileNameCreatesPostEditAction')]
+    #[TestDox("Deleting file creates 'post/delete' action")]
     public function deletingFileCreatesPostDeleteAction()
     {
         self::$worker->prepare_deleteFile();
@@ -80,10 +77,8 @@ class MediaTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @depends uploadingFileCreatesPostCreateAction
-     */
+    #[Test]
+    #[Depends('uploadingFileCreatesPostCreateAction')]
     public function editationOfFileCreatesCommit()
     {
         self::$worker->prepare_editFile();

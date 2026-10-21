@@ -2,14 +2,14 @@
 
 namespace VersionPress\Tests\Unit;
 
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use VersionPress\Utils\SerializedDataCursor;
 
-class SerializedDataCursorTest extends \PHPUnit_Framework_TestCase
+class SerializedDataCursorTest extends TestCase
 {
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorReadsScalarValue()
     {
         $data = 'value';
@@ -17,9 +17,7 @@ class SerializedDataCursorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('value', $cursor->getValue());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorReadsSerializedScalarValue()
     {
         $data = serialize('value');
@@ -27,9 +25,7 @@ class SerializedDataCursorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('value', $cursor->getValue());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorReadsFromSimpleSerializedArray()
     {
         $data = serialize(['value']);
@@ -37,9 +33,7 @@ class SerializedDataCursorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('value', $cursor->getValue());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorReadsFromSerializedNestedArrays()
     {
         $data = serialize(['key' => [3 => 'value']]);
@@ -47,9 +41,7 @@ class SerializedDataCursorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('value', $cursor->getValue());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorReadsFromSerializedArrayWithMixedKeys()
     {
         $data = serialize(['key' => [3 => 'value'], 'another-key' => 'another value']);
@@ -57,9 +49,7 @@ class SerializedDataCursorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('value', $cursor->getValue());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorReadsFromSerializedObjectWithArray()
     {
         $data = new \stdClass();
@@ -71,9 +61,7 @@ class SerializedDataCursorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('value', $cursor->getValue());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorReadsFromSerializedNestedObjects()
     {
         $data = new \stdClass();
@@ -86,9 +74,7 @@ class SerializedDataCursorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('value', $cursor->getValue());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorUpdatesScalarValue()
     {
         $data = 'value';
@@ -99,9 +85,7 @@ class SerializedDataCursorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('another value', $data);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorUpdatesSimpleSerializedArray()
     {
         $originalValue = 'value';
@@ -116,9 +100,7 @@ class SerializedDataCursorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedData, $originalData);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorUpdatesNestedSerializedArray()
     {
         $originalValue = 'value';
@@ -133,9 +115,7 @@ class SerializedDataCursorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedData, $originalData);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorUpdatesSerializedArrayWithMixedKeys()
     {
         $originalValue = 'value';
@@ -149,9 +129,7 @@ class SerializedDataCursorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedData, $originalData);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorUpdatesSerializedObjectWithArray()
     {
         $originalValue = 'value';
@@ -172,9 +150,7 @@ class SerializedDataCursorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedData, $originalData);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorUpdatesSerializedNestedObjects()
     {
         $originalValue = 'VP is cool';
@@ -195,9 +171,7 @@ class SerializedDataCursorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedData, $originalData);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorUpdatesSerializedArrayInSerializedArray()
     {
         $originalValue = 'value';
@@ -212,9 +186,7 @@ class SerializedDataCursorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedData, $originalData);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorUpdatesSerializedArrayInSerializedObject()
     {
         $originalValue = 'value';
@@ -234,9 +206,7 @@ class SerializedDataCursorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedData, $originalData);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorUpdatesSerializedObjectInSerializedObject()
     {
         $originalValue = 'value';
@@ -260,9 +230,7 @@ class SerializedDataCursorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedData, $originalData);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cursorHandlesThreeLevelsOfSerializedArrays()
     {
         $originalValue = 'value';

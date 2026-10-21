@@ -2,11 +2,14 @@
 
 namespace VersionPress\Tests\Unit;
 
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
 use VersionPress\Database\ShortcodesInfo;
 use VersionPress\Database\ShortcodesReplacer;
 use VersionPress\Database\VpidRepository;
 
-class ShortcodesReplacerTest extends \PHPUnit_Framework_TestCase
+class ShortcodesReplacerTest extends TestCase
 {
 
     private $shortcodeSchemaValueMap = [
@@ -14,7 +17,7 @@ class ShortcodesReplacerTest extends \PHPUnit_Framework_TestCase
         ['bar', ['id' => 'some-entity']],
     ];
 
-    private $idValueMap = [
+    private static $idValueMap = [
         ['some-entity', '1', '123ABCD45EF'],
         ['another-entity', '1', '1234567890'],
         ['another-entity', '7', 'BOND007'],
@@ -26,54 +29,44 @@ class ShortcodesReplacerTest extends \PHPUnit_Framework_TestCase
 
     private $vpidRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!function_exists('get_shortcode_regex')) {
-
-            $shortcodesFileRelativePath = 'ext-libs/wordpress/wp-includes/shortcodes.php';
-            $shortcodesFile = __DIR__ . '/../../../../' . $shortcodesFileRelativePath;
-            if (!file_exists($shortcodesFile)) {
-                // Probably running in Docker, `ext-lib` is expected as a folder in /opt
-                $shortcodesFile = '/opt/' . $shortcodesFileRelativePath;
-            }
-            include_once $shortcodesFile;
+            // Tests run inside wp-env where the plugin lives in wp-content/plugins of a real WordPress install.
+            include_once __DIR__ . '/../../../../../wp-includes/shortcodes.php';
         }
 
-        $this->shortcodesInfo = $this->getMockBuilder(ShortcodesInfo::class)
-            ->disableOriginalConstructor()->getMock();
-        $this->shortcodesInfo->expects($this->any())
+        $this->shortcodesInfo = $this->createStub(ShortcodesInfo::class);
+        $this->shortcodesInfo
             ->method('getAllShortcodeNames')
-            ->will($this->returnValue(array_column($this->shortcodeSchemaValueMap, 0)));
+            ->willReturn(array_column($this->shortcodeSchemaValueMap, 0));
 
-        $this->shortcodesInfo->expects($this->any())
+        $this->shortcodesInfo
             ->method('getShortcodeInfo')
-            ->will($this->returnValueMap($this->shortcodeSchemaValueMap));
+            ->willReturnMap($this->shortcodeSchemaValueMap);
 
-        $this->shortcodesInfo->expects($this->any())
+        $this->shortcodesInfo
             ->method('getShortcodeLocations')
-            ->will($this->returnValue($this->postShortcodesSchema));
+            ->willReturn($this->postShortcodesSchema);
 
-        $this->vpidRepository = $this->getMockBuilder(VpidRepository::class)
-            ->disableOriginalConstructor()->getMock();
-        $this->vpidRepository->expects($this->any())
+        $this->vpidRepository = $this->createStub(VpidRepository::class);
+        $this->vpidRepository
             ->method('getVpidForEntity')
-            ->will($this->returnValueMap($this->idValueMap));
+            ->willReturnMap(self::$idValueMap);
 
         $vpidValueMap = array_map(function ($idValueMapItem) {
             return [$idValueMapItem[2], $idValueMapItem[1]];
-        }, $this->idValueMap);
+        }, self::$idValueMap);
 
-        $this->vpidRepository->expects($this->any())
+        $this->vpidRepository
             ->method('getIdForVpid')
-            ->will($this->returnValueMap($vpidValueMap));
+            ->willReturnMap($vpidValueMap);
 
 
     }
 
-    /**
-     * @test
-     * @dataProvider shortcodeProvider
-     */
+    #[Test]
+    #[DataProvider('shortcodeProvider')]
     public function replacerReplacesIdForVpidsInEntity($input, $expectedReplacedOutput)
     {
         $shortcodesReplacer = new ShortcodesReplacer($this->shortcodesInfo, $this->vpidRepository);
@@ -89,10 +82,8 @@ class ShortcodesReplacerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedPost, $entityWithReplacedShortCodes);
     }
 
-    /**
-     * @test
-     * @dataProvider shortcodeProvider
-     */
+    #[Test]
+    #[DataProvider('shortcodeProvider')]
     public function replacerRestoresIdsFromVpidsInEntity($expectedReplacedOutput, $input)
     {
         $shortcodesReplacer = new ShortcodesReplacer($this->shortcodesInfo, $this->vpidRepository);
@@ -108,10 +99,10 @@ class ShortcodesReplacerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedPost, $entityWithReplacedShortCodes);
     }
 
-    public function shortcodeProvider()
+    public static function shortcodeProvider()
     {
         /** @var callable $ids */
-        $ids = [$this, 'getVpidForId'];
+        $ids = [self::class, 'getVpidForId'];
 
         return [
             ['[foo id="1"]', '[foo id="' . $ids('some-entity', 1) . '"]'],
@@ -129,14 +120,14 @@ class ShortcodesReplacerTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    public function getVpidForId($entity, $id1, $id2 = null)
+    public static function getVpidForId($entity, $id1, $id2 = null)
     {
         $args = func_get_args();
         array_shift($args);
 
         $foundIds = [];
         foreach ($args as $id) {
-            foreach ($this->idValueMap as $idValueMapItem) {
+            foreach (self::$idValueMap as $idValueMapItem) {
                 if ($idValueMapItem[0] === $entity && $idValueMapItem[1] == $id) {
                     $foundIds[] = $idValueMapItem[2];
                     continue 2;

@@ -2,16 +2,18 @@
 
 namespace VersionPress\Tests\Unit;
 
-use PHPUnit_Framework_MockObject_Matcher_AnyInvokedCount;
-use PHPUnit_Framework_MockObject_MockObject;
-use PHPUnit_Framework_MockObject_Stub_Return;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Stub;
 use VersionPress\Database\DbSchemaInfo;
 use VersionPress\Database\ParsedQueryData;
 use VersionPress\Database\SqlQueryParser;
 use VersionPress\Tests\Utils\HookMock;
+use VersionPress\Tests\Utils\WpdbStub;
 
-class SqlQueryParserTest extends PHPUnit_Framework_TestCase
+class SqlQueryParserTest extends TestCase
 {
 
     /**
@@ -19,15 +21,19 @@ class SqlQueryParserTest extends PHPUnit_Framework_TestCase
      */
     private static $dbSchemaInfo;
 
-    /** @var \wpdb|PHPUnit_Framework_MockObject_MockObject */
+    /** @var WpdbStub|Stub|MockObject */
     private $database;
 
     /** @var  SqlQueryParser */
     private $sqlParser;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
-        HookMock::setUp(HookMock::WP_MOCK);
+        if (!defined('ARRAY_N')) {
+            define('ARRAY_N', 'ARRAY_N');
+        }
+
+        HookMock::setUp();
         self::$dbSchemaInfo = new DbSchemaInfo(
             [__DIR__ . '/../../.versionpress/schema.yml'],
             'wp_',
@@ -35,28 +41,36 @@ class SqlQueryParserTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         HookMock::tearDown();
     }
 
-    public function setup()
+    public function setup(): void
     {
-        $this->database = $this->getMockBuilder('\wpdb')->disableOriginalConstructor()->getMock();
+        $this->database = $this->createStub(WpdbStub::class);
         $this->sqlParser = new SqlQueryParser(self::$dbSchemaInfo, $this->database);
     }
 
     /**
-     * @test
-     * @dataProvider updateQueryParseTestDataProvider
+     * Replaces the default stub with a mock so that tests can verify the generated SELECT query via `with()`.
+     */
+    private function useDatabaseMock(): void
+    {
+        $this->database = $this->createMock(WpdbStub::class);
+        $this->sqlParser = new SqlQueryParser(self::$dbSchemaInfo, $this->database);
+    }
+
+    /**
      * @param $query
      * @param $expectedSelect
      * @param $expectedData
      */
-    public function dataToSetFromUpdate($query, $expectedSelect, $expectedData)
+    #[Test]
+    #[DataProvider('updateQueryParseTestDataProvider')]
+    public function dataToSetFromUpdate($query, $expectedSelect, $expectedData, $expectedIds)
     {
 
-        $this->database->expects(new PHPUnit_Framework_MockObject_Matcher_AnyInvokedCount)->method("get_results");
         $parsedQueryData = $this->sqlParser->parseQuery($query);
 
         $this->assertEquals($expectedData, $parsedQueryData->data);
@@ -64,29 +78,30 @@ class SqlQueryParserTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
-     * @dataProvider updateQueryParseTestDataProvider
      * @param $query
      * @param $expectedSelectQuery
      * @param $expectedData
      * @param $expectedIds
      */
+    #[Test]
+    #[DataProvider('updateQueryParseTestDataProvider')]
     public function selectQueryFromUpdate($query, $expectedSelectQuery, $expectedData, $expectedIds)
     {
-        $this->database->expects(new PHPUnit_Framework_MockObject_Matcher_AnyInvokedCount)->method("get_col")
-            ->with($expectedSelectQuery)->will(new PHPUnit_Framework_MockObject_Stub_Return($expectedIds));
+        $this->useDatabaseMock();
+        $this->database->expects($this->any())->method("get_col")
+            ->with($expectedSelectQuery)->willReturn($expectedIds);
         $parsedQueryData = $this->sqlParser->parseQuery($query);
 
         $this->assertEquals($expectedSelectQuery, $parsedQueryData->sqlQuery);
     }
 
     /**
-     * @test
-     * @dataProvider insertQueryParseTestDataProvider
      * @param $query
      * @param $expectedData
      */
-    public function dataFromInsert($query, $expectedData)
+    #[Test]
+    #[DataProvider('insertQueryParseTestDataProvider')]
+    public function dataFromInsert($query, $expectedData, $expectedQueryType)
     {
         $parsedQueryData = $this->sqlParser->parseQuery($query);
         $parsedData = $parsedQueryData == null ? null : $parsedQueryData->data;
@@ -95,12 +110,12 @@ class SqlQueryParserTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
-     * @dataProvider insertQueryParseTestDataProvider
      * @param $query
      * @param $expectedData
      * @param $expectedQueryType
      */
+    #[Test]
+    #[DataProvider('insertQueryParseTestDataProvider')]
     public function detectNonStandardInsert($query, $expectedData, $expectedQueryType)
     {
         $parsedQueryData = $this->sqlParser->parseQuery($query);
@@ -110,21 +125,22 @@ class SqlQueryParserTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
-     * @dataProvider deleteQueryParseTestDataProvider
      * @param $query
      * @param $expectedSelectQuery
      */
+    #[Test]
+    #[DataProvider('deleteQueryParseTestDataProvider')]
     public function selectQueryFromDelete($query, $expectedSelectQuery)
     {
-        $this->database->expects(new PHPUnit_Framework_MockObject_Matcher_AnyInvokedCount)->method("get_results")
-            ->with($expectedSelectQuery)->will(new PHPUnit_Framework_MockObject_Stub_Return([]));
+        $this->useDatabaseMock();
+        $this->database->expects($this->any())->method("get_results")
+            ->with($expectedSelectQuery)->willReturn([]);
         $parsedQueryData = $this->sqlParser->parseQuery($query);
 
         $this->assertEquals($expectedSelectQuery, $parsedQueryData->sqlQuery);
     }
 
-    public function deleteQueryParseTestDataProvider()
+    public static function deleteQueryParseTestDataProvider()
     {
         return [
             [
@@ -154,7 +170,7 @@ class SqlQueryParserTest extends PHPUnit_Framework_TestCase
         ];
     }
 
-    public function insertQueryParseTestDataProvider()
+    public static function insertQueryParseTestDataProvider()
     {
         return [
             [
@@ -203,7 +219,7 @@ class SqlQueryParserTest extends PHPUnit_Framework_TestCase
         ];
     }
 
-    public function updateQueryParseTestDataProvider()
+    public static function updateQueryParseTestDataProvider()
     {
         $testIds = [1, 3, 15];
         return [

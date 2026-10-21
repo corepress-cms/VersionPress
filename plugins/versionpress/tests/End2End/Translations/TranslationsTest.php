@@ -2,6 +2,8 @@
 
 namespace VersionPress\Tests\End2End\Translations;
 
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
 use VersionPress\Tests\End2End\Utils\End2EndTestCase;
 use VersionPress\Tests\Utils\DBAsserter;
 
@@ -11,10 +13,8 @@ class TranslationsTest extends End2EndTestCase
     /** @var ITranslationsTestWorker */
     private static $worker;
 
-    /**
-     * @test
-     * @testdox Switching language creates 'translation/activate' action
-     */
+    #[Test]
+    #[TestDox("Switching language creates 'translation/activate' action")]
     public function switchingLanguageCreatesLanguageActivateAction()
     {
         self::$worker->prepare_switchLanguage();

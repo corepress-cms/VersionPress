@@ -2,29 +2,32 @@
 
 namespace VersionPress\Tests\Unit;
 
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
 use VersionPress\Utils\AbsoluteUrlReplacer;
 
-class AbsoluteUrlReplacerTest extends \PHPUnit_Framework_TestCase
+class AbsoluteUrlReplacerTest extends TestCase
 {
 
     const REPLACED_URL = 'http://wp.example.com/';
 
-    /** @var \VersionPress\Utils\AbsoluteUrlReplacer */
+    /** @var AbsoluteUrlReplacer */
     private $filter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->filter = new AbsoluteUrlReplacer(self::REPLACED_URL);
     }
 
     /**
-     * @test
-     * @dataProvider entityDataProvider
      *
      * @param $entity
      * @param $entityWithReplacedUrls
      */
+    #[Test]
+    #[DataProvider('entityDataProvider')]
     public function itReplacesUrlWithPlaceholder($entity, $entityWithReplacedUrls)
     {
         $result = $this->filter->replace($entity);
@@ -32,19 +35,19 @@ class AbsoluteUrlReplacerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
-     * @dataProvider entityDataProvider
      *
      * @param $entity
      * @param $entityWithReplacedUrls
      */
+    #[Test]
+    #[DataProvider('entityDataProvider')]
     public function itRestoresUrl($entity, $entityWithReplacedUrls)
     {
         $result = $this->filter->restore($entityWithReplacedUrls);
         $this->assertEquals($entity, $result);
     }
 
-    public function entityDataProvider()
+    public static function entityDataProvider()
     {
 
         $simpleObject = new \stdClass();

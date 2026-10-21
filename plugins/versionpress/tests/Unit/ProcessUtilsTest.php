@@ -2,30 +2,26 @@
 
 namespace VersionPress\Tests\Unit;
 
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 use VersionPress\Utils\ProcessUtils;
 
-class ProcessUtilsTest extends \PHPUnit_Framework_TestCase
+class ProcessUtilsTest extends TestCase
 {
 
-    /**
-     * @test
-     */
+    #[Test]
     public function windowsEscapingUsesDoubleQuotes()
     {
         $this->assertEquals("\"arg\"", ProcessUtils::escapeshellarg("arg", "windows"));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function linuxEscapingUsesSingleQuotes()
     {
         $this->assertEquals("'arg'", ProcessUtils::escapeshellarg("arg", "linux"));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function linuxEscapingPassesStandardTests()
     {
 
@@ -37,9 +33,7 @@ class ProcessUtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("''", ProcessUtils::escapeshellarg("", "linux"));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function windowsEscapingPassesStandardTests()
     {
 

@@ -1,42 +1,39 @@
-<phpunit bootstrap="phpunit-bootstrap.php"
-         verbose="true"
-         colors="true">
-    <logging>
-        <log type="testdox-text" target="/var/opt/versionpress/logs/testdox.txt" />
-    </logging>
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="../vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="phpunit-bootstrap.php"
+         cacheDirectory="../.phpunit.cache"
+         colors="true"
+         displayDetailsOnTestsThatTriggerDeprecations="true"
+         displayDetailsOnTestsThatTriggerWarnings="true"
+         displayDetailsOnPhpunitDeprecations="true">
     <testsuites>
-
+        <!-- Self-contained: no WordPress or database needed. -->
         <testsuite name="Unit">
             <directory>Unit</directory>
         </testsuite>
-
         <testsuite name="StorageTests">
             <directory>StorageTests</directory>
         </testsuite>
-
-        <testsuite name="SynchronizerTests">
-            <directory>SynchronizerTests</directory>
-        </testsuite>
-
         <testsuite name="GitRepositoryTests">
             <directory>GitRepositoryTests</directory>
         </testsuite>
 
+        <!--
+            Need a full WordPress site driven by WpAutomation; these still target the
+            pre-wp-env Docker setup and are pending a port.
+        -->
+        <testsuite name="SynchronizerTests">
+            <directory>SynchronizerTests</directory>
+        </testsuite>
         <testsuite name="End2End">
             <directory>End2End</directory>
         </testsuite>
-
-        <!-- <testsuite name="Selenium">
-            <directory>Selenium</directory>
-        </testsuite> -->
-
         <testsuite name="Workflow">
             <directory>Workflow</directory>
         </testsuite>
-
         <testsuite name="LoadTests">
             <directory>LoadTests</directory>
         </testsuite>
-
     </testsuites>
 </phpunit>

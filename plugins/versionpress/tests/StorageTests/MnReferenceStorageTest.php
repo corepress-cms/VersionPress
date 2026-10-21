@@ -2,6 +2,7 @@
 
 namespace VersionPress\Tests\StorageTests;
 
+use PHPUnit\Framework\Attributes\Test;
 use VersionPress\Storages\DirectoryStorage;
 use VersionPress\Storages\MnReferenceStorage;
 use VersionPress\Utils\FileSystem;
@@ -16,9 +17,7 @@ class MnReferenceStorageTest extends StorageTestCase
     /** @var string */
     private $storageDir;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function parentEntityContainsReferenceAfterItsSaved()
     {
         $parent = [
@@ -42,9 +41,7 @@ class MnReferenceStorageTest extends StorageTestCase
         $this->assertEquals($expectedParent, $loadedParent);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function parentEntityContainsReferenceOnlyOnce()
     {
         $parent = [
@@ -66,9 +63,7 @@ class MnReferenceStorageTest extends StorageTestCase
         $this->assertCount(1, $loadedParent['vp_other_entity']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function parentEntityDoesNotContainReferenceAfterItsDeleted()
     {
         $parent = [
@@ -89,7 +84,7 @@ class MnReferenceStorageTest extends StorageTestCase
         $this->assertArrayNotHasKey('vp_other_entity', $loadedParent);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -122,7 +117,7 @@ class MnReferenceStorageTest extends StorageTestCase
         $this->storage = new MnReferenceStorage($this->parentStorage, $referenceDetails);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         FileSystem::remove(__DIR__ . '/entities');

@@ -2,18 +2,16 @@
 
 namespace VersionPress\Tests\End2End\Utils;
 
-use VersionPress\Tests\End2End\Utils;
-
 /**
  * @method executeScript($script)
  */
 class SeleniumWorkerBasedFakeTestCase extends \PHPUnit_Extensions_Selenium2TestCase
 {
 
-    /** @var \VersionPress\Tests\End2End\Utils\SeleniumWorker */
+    /** @var SeleniumWorker */
     private $worker;
 
-    public function __construct(Utils\SeleniumWorker $worker)
+    public function __construct(SeleniumWorker $worker)
     {
         $this->worker = $worker;
     }

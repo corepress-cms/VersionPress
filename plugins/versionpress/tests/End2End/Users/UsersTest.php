@@ -2,6 +2,9 @@
 
 namespace VersionPress\Tests\End2End\Users;
 
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\Attributes\Depends;
 use VersionPress\Tests\End2End\Utils\End2EndTestCase;
 use VersionPress\Tests\Utils\DBAsserter;
 
@@ -19,16 +22,14 @@ class UsersTest extends End2EndTestCase
         'last-name' => 'Tester',
     ];
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         self::$worker->setTestUser(self::$testUser);
     }
 
-    /**
-     * @test
-     * @testdox Adding users creates 'user/create' action
-     */
+    #[Test]
+    #[TestDox("Adding users creates 'user/create' action")]
     public function addingUserCreatesUserCreateAction()
     {
         self::$worker->prepare_createUser();
@@ -45,11 +46,9 @@ class UsersTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Editing user's email creates 'user/update' action
-     * @depends addingUserCreatesUserCreateAction
-     */
+    #[Test]
+    #[Depends('addingUserCreatesUserCreateAction')]
+    #[TestDox("Editing user's email creates 'user/update' action")]
     public function editingUserCreatesUserEditAction()
     {
         self::$worker->prepare_editUser();
@@ -66,11 +65,9 @@ class UsersTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Editing user's name creates 'usermeta/update' action
-     * @depends addingUserCreatesUserCreateAction
-     */
+    #[Test]
+    #[Depends('addingUserCreatesUserCreateAction')]
+    #[TestDox("Editing user's name creates 'usermeta/update' action")]
     public function editingUsermetaCreatesUsermetaEditAction()
     {
         self::$worker->prepare_editUsermeta();
@@ -87,11 +84,9 @@ class UsersTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Deleting user creates 'user/delete' action
-     * @depends editingUserCreatesUserEditAction
-     */
+    #[Test]
+    #[Depends('editingUserCreatesUserEditAction')]
+    #[TestDox("Deleting user creates 'user/delete' action")]
     public function deletingUserCreatesUserDeleteAction()
     {
         self::$worker->prepare_deleteUser();
@@ -108,10 +103,8 @@ class UsersTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Editing multiple users creates bulk action
-     */
+    #[Test]
+    #[TestDox('Editing multiple users creates bulk action')]
     public function editingMultipleUsersCreatesBulkAction()
     {
         self::$worker->prepare_editTwoUsers();
@@ -126,10 +119,8 @@ class UsersTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Deleting multiple users creates bulk action
-     */
+    #[Test]
+    #[TestDox('Deleting multiple users creates bulk action')]
     public function deletingMultipleUsersCreatesBulkAction()
     {
         self::$worker->prepare_deleteTwoUsers();
@@ -145,10 +136,8 @@ class UsersTest extends End2EndTestCase
     }
 
 
-    /**
-     * @test
-     * @testdox Editing multiple usermeta creates bulk action
-     */
+    #[Test]
+    #[TestDox('Editing multiple usermeta creates bulk action')]
     public function editingMultipleUsermetaCreatesBulkAction()
     {
         self::$worker->prepare_editTwoUsermeta();
@@ -163,10 +152,8 @@ class UsersTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    /**
-     * @test
-     * @testdox Deleting usermeta creates multiple usermeta creates 'usermeta/delete' action
-     */
+    #[Test]
+    #[TestDox("Deleting usermeta creates multiple usermeta creates 'usermeta/delete' action")]
     public function deletingUsermetaCreatesUsermetaDeleteAction()
     {
         self::$worker->prepare_deleteUsermeta();
@@ -183,7 +170,7 @@ class UsersTest extends End2EndTestCase
         DBAsserter::assertFilesEqualDatabase();
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         parent::tearDownAfterClass();
         self::$worker->tearDownAfterClass();
