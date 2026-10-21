@@ -122,15 +122,18 @@
 		}
 	}
 
-	.is-fulfilled svg {
-		fill: #00a32a;
+	.is-fulfilled > svg {
+		color: #00a32a;
+		fill: currentColor;
 	}
 
-	.is-critical svg {
-		fill: #d63638;
+	.is-critical > svg {
+		color: #d63638;
+		fill: currentColor;
 	}
 
-	.is-warning svg {
-		fill: #dba617;
+	.is-warning > svg {
+		color: #dba617;
+		fill: currentColor;
 	}
 }
