@@ -2,7 +2,7 @@
 
 namespace VersionPress\Tests\End2End\Themes;
 
-use PHPUnit\Framework\SkippedTestError;
+use PHPUnit\Framework\SkippedWithMessageException;
 use VersionPress\Tests\End2End\Utils\SeleniumWorker;
 
 class ThemesTestSeleniumWorker extends SeleniumWorker implements IThemesTestWorker
@@ -62,7 +62,7 @@ class ThemesTestSeleniumWorker extends SeleniumWorker implements IThemesTestWork
 
     public function prepare_uploadTwoThemes()
     {
-        throw new SkippedTestError('There is no way to upload more themes at once using selenium');
+        throw new SkippedWithMessageException('There is no way to upload more themes at once using selenium');
     }
 
     public function uploadTwoThemes()
@@ -71,7 +71,7 @@ class ThemesTestSeleniumWorker extends SeleniumWorker implements IThemesTestWork
 
     public function prepare_deleteTwoThemes()
     {
-        throw new SkippedTestError('There is no way to delete more themes at once using selenium');
+        throw new SkippedWithMessageException('There is no way to delete more themes at once using selenium');
     }
 
     public function deleteTwoThemes()

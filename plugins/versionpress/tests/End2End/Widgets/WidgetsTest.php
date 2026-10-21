@@ -16,9 +16,17 @@ class WidgetsTest extends End2EndTestCase
     /** @var IWidgetsTestWorker */
     private static $worker;
 
+    /** Widgets need a classic theme with sidebars; current default themes are block themes. */
+    private const CLASSIC_THEME = 'twentytwentyone';
+
+    private static $originalTheme;
+
     public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
+        self::$originalTheme = self::$wpAutomation->getCurrentTheme();
+        self::$wpAutomation->runWpCliCommand('theme', 'install', [self::CLASSIC_THEME]);
+        self::$wpAutomation->switchTheme(self::CLASSIC_THEME);
         self::clearSidebars();
         try {
             self::$wpAutomation->deleteOption('widget_calendar');
@@ -107,6 +115,12 @@ class WidgetsTest extends End2EndTestCase
         $commitAsserter->assertCommitPath('M', '%vpdb%/options/%VPID%.ini');
         $commitAsserter->assertCleanWorkingDirectory();
         DBAsserter::assertFilesEqualDatabase();
+    }
+
+    public static function tearDownAfterClass(): void
+    {
+        self::$wpAutomation->switchTheme(self::$originalTheme);
+        parent::tearDownAfterClass();
     }
 
     private static function clearSidebars()

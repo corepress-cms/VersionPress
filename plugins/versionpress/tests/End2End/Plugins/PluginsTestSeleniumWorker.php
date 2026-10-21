@@ -2,7 +2,7 @@
 
 namespace VersionPress\Tests\End2End\Plugins;
 
-use PHPUnit\Framework\SkippedTestError;
+use PHPUnit\Framework\SkippedWithMessageException;
 use VersionPress\Tests\End2End\Utils\SeleniumWorker;
 use VersionPress\Utils\PathUtils;
 
@@ -76,7 +76,7 @@ class PluginsTestSeleniumWorker extends SeleniumWorker implements IPluginsTestWo
 
     public function prepare_installTwoPlugins()
     {
-        throw new SkippedTestError('There is no way to install more plugins at once using selenium');
+        throw new SkippedWithMessageException('There is no way to install more plugins at once using selenium');
     }
 
     public function installTwoPlugins()

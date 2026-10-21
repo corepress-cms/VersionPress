@@ -151,6 +151,7 @@ function wp_debug_backtrace_summary($ignore_class = null, $skip_frames = 0, $pre
  * @subpackage Database
  * @since 0.71
  */
+#[\AllowDynamicProperties]
 class wpdb
 {
 

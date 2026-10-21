@@ -2,7 +2,7 @@
 
 namespace VersionPress\Tests\End2End\Comments;
 
-use PHPUnit\Framework\SkippedTestError;
+use PHPUnit\Framework\SkippedWithMessageException;
 use VersionPress\Tests\End2End\Utils\SeleniumWorker;
 
 class CommentsTestSeleniumWorker extends SeleniumWorker implements ICommentsTestWorker
@@ -30,7 +30,7 @@ class CommentsTestSeleniumWorker extends SeleniumWorker implements ICommentsTest
 
     public function prepare_createSpamComment()
     {
-        throw new SkippedTestError('It\'s too difficult to create spam comment via Selenium');
+        throw new SkippedWithMessageException('It\'s too difficult to create spam comment via Selenium');
     }
 
     public function createSpamComment()
@@ -184,7 +184,7 @@ class CommentsTestSeleniumWorker extends SeleniumWorker implements ICommentsTest
 
     public function prepare_editTwoComments()
     {
-        throw new SkippedTestError('There is no way to edit more comments at once using selenium');
+        throw new SkippedWithMessageException('There is no way to edit more comments at once using selenium');
     }
 
     public function editTwoComments()

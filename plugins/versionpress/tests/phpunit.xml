@@ -20,8 +20,8 @@
         </testsuite>
 
         <!--
-            Need a full WordPress site driven by WpAutomation; these still target the
-            pre-wp-env Docker setup and are pending a port.
+            Need WordPress sites set up by WpAutomation in the isolated test environment
+            (.wp-env.test.json); run them with `pnpm run test:wp`.
         -->
         <testsuite name="SynchronizerTests">
             <directory>SynchronizerTests</directory>

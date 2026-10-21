@@ -2,7 +2,7 @@
 
 namespace VersionPress\Tests\End2End\Options;
 
-use PHPUnit\Framework\SkippedTestError;
+use PHPUnit\Framework\SkippedWithMessageException;
 use Nette\Utils\Random;
 use VersionPress\Tests\End2End\Utils\WpCliWorker;
 
@@ -24,7 +24,7 @@ class OptionsTestWpCliWorker extends WpCliWorker implements IOptionsTestWorker
 
     public function prepare_changeTwoOptions()
     {
-        throw new SkippedTestError("More options cannot be changed at once using WP-CLI");
+        throw new SkippedWithMessageException("More options cannot be changed at once using WP-CLI");
     }
 
     public function changeTwoOptions()

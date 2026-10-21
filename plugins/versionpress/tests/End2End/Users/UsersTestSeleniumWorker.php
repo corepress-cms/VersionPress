@@ -2,7 +2,7 @@
 
 namespace VersionPress\Tests\End2End\Users;
 
-use PHPUnit\Framework\SkippedTestError;
+use PHPUnit\Framework\SkippedWithMessageException;
 use Nette\Utils\Random;
 use VersionPress\Tests\End2End\Utils\SeleniumWorker;
 
@@ -90,7 +90,7 @@ class UsersTestSeleniumWorker extends SeleniumWorker implements IUsersTestWorker
 
     public function prepare_editTwoUsers()
     {
-        throw new SkippedTestError("There is no way to edit multiple users in the GUI");
+        throw new SkippedWithMessageException("There is no way to edit multiple users in the GUI");
     }
 
     public function editTwoUsers()
@@ -155,7 +155,7 @@ class UsersTestSeleniumWorker extends SeleniumWorker implements IUsersTestWorker
 
     public function prepare_deleteUsermeta()
     {
-        throw new SkippedTestError("There is no way to delete one usermeta directly in the GUI");
+        throw new SkippedWithMessageException("There is no way to delete one usermeta directly in the GUI");
     }
 
     public function deleteUsermeta()

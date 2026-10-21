@@ -2,7 +2,7 @@
 
 namespace VersionPress\Tests\End2End\Pages;
 
-use PHPUnit\Framework\SkippedTestError;
+use PHPUnit\Framework\SkippedWithMessageException;
 use VersionPress\Tests\End2End\Utils\PostTypeTestSeleniumWorker;
 
 class PagesTestSeleniumWorker extends PostTypeTestSeleniumWorker
@@ -15,7 +15,7 @@ class PagesTestSeleniumWorker extends PostTypeTestSeleniumWorker
 
     public function prepare_createTagInEditationForm()
     {
-        throw new SkippedTestError("Pages don't have tags or categories to assign.");
+        throw new SkippedWithMessageException("Pages don't have tags or categories to assign.");
     }
 
     public function createTagInEditationForm()
@@ -24,7 +24,7 @@ class PagesTestSeleniumWorker extends PostTypeTestSeleniumWorker
 
     public function prepare_changePostFormat()
     {
-        throw new SkippedTestError("Pages don't have format to assign.");
+        throw new SkippedWithMessageException("Pages don't have format to assign.");
     }
 
     public function changePostFormat()

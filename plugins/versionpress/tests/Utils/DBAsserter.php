@@ -5,7 +5,7 @@ namespace VersionPress\Tests\Utils;
 // Standalone copy of WordPress's wpdb; excluded from the classmap so it can't shadow the real classes.
 require_once __DIR__ . '/../SynchronizerTests/Utils/WpdbCopy.php';
 
-use PHPUnit\Framework\AssertionFailedError;
+use PHPUnit\Framework\Assert;
 use VersionPress\Database\Database;
 use VersionPress\Database\DbSchemaInfo;
 use VersionPress\Database\ShortcodesInfo;
@@ -130,6 +130,7 @@ class DBAsserter
         $countOfentitiesInDb = count($dbEntities);
         $countOfentitiesInStorage = count($storageEntities);
 
+        $countMessage = '';
         if ($countOfentitiesInDb !== $countOfentitiesInStorage) {
             if ($countOfentitiesInStorage > $countOfentitiesInDb) {
                 $problematicEntities = self::findMissingEntities($entityName, $storageEntities, $dbEntities);
@@ -137,11 +138,10 @@ class DBAsserter
                 $problematicEntities = self::findExceedingEntities($entityName, $storageEntities, $dbEntities);
             }
 
-            throw new AssertionFailedError(
-                "Different count of synchronized entities ($entityName): DB = $countOfentitiesInDb, " .
-                "storage = $countOfentitiesInStorage\nProblematic entities: " . join(", ", $problematicEntities)
-            );
+            $countMessage = "Different count of synchronized entities ($entityName): DB = $countOfentitiesInDb, " .
+                "storage = $countOfentitiesInStorage\nProblematic entities: " . join(", ", $problematicEntities);
         }
+        Assert::assertSame($countOfentitiesInStorage, $countOfentitiesInDb, $countMessage);
 
         foreach ($dbEntities as $dbEntity) {
             $id = $dbEntity[$entityInfo->vpidColumnName];
@@ -153,11 +153,10 @@ class DBAsserter
                 if ($entityInfo->idColumnName === $column || isset($entityInfo->getIgnoredColumns()[$column])) {
                     continue;
                 }
-                if (!isset($storageEntity[$column])) {
-                    throw new AssertionFailedError(
-                        "{$entityName}[$column] with value = $value, ID = $id not found in storage"
-                    );
-                }
+                Assert::assertTrue(
+                    isset($storageEntity[$column]),
+                    "{$entityName}[$column] with value = $value, ID = $id not found in storage"
+                );
 
                 if (is_string($storageEntity[$column])) {
                     $storageEntity[$column] = str_replace("\r\n", "\n", $storageEntity[$column]);
@@ -167,11 +166,10 @@ class DBAsserter
                     $value = str_replace("\r\n", "\n", $value);
                 }
 
-                if ($storageEntity[$column] != $value) {
-                    throw new AssertionFailedError(
-                        "Different values ({$entityName}[$column]: $id): DB = $value, storage = $storageEntity[$column]"
-                    );
-                }
+                Assert::assertTrue(
+                    $storageEntity[$column] == $value,
+                    "Different values ({$entityName}[$column]: $id): DB = $value, storage = $storageEntity[$column]"
+                );
             }
         }
 
@@ -328,10 +326,6 @@ class DBAsserter
     private static function reportResultOfMnReferenceCheck($referenceResult, $verb)
     {
         foreach ($referenceResult as $junctionTable => $references) {
-            if (count($references) == 0) {
-                continue;
-            }
-
             $list = "";
             foreach ($references as $reference) {
                 $list .= "[";
@@ -341,7 +335,9 @@ class DBAsserter
                 $list .= "] ";
             }
 
-            throw new AssertionFailedError(
+            Assert::assertCount(
+                0,
+                $references,
                 sprintf($verb . " M:N reference in table %s %s", $junctionTable, $list)
             );
         }

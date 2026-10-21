@@ -1,11 +1,12 @@
 # Test configuration used by WpAutomation, parsed into `TestConfig`.
 #
-# ! Keep this in sync with docker-compose.yml
+# The sites below live inside the isolated test environment (`.wp-env.test.json`); tests run in its
+# `wordpress` container, see `pnpm run test:e2e`. Database credentials are wp-env's defaults.
 
 # Worker type to run the tests, 'selenium' or 'wp-cli'
 end2end-test-type: wp-cli
 
-# WP-CLI version used, e.g., '1.1.0' or 'latest-stable'
+# WP-CLI version used, e.g., '2.12.0' or 'latest-stable'
 wp-cli-version: latest-stable
 
 # Selenium configuration
@@ -25,7 +26,7 @@ common-site-config:
     admin-user: admin
     admin-email: admin@example.com
     admin-pass: adminpwd
-    wp-version: 4.9
+    wp-version: latest
     wp-locale: en_US
     wp-autoupdate: false
 
@@ -35,32 +36,31 @@ test-site: wptest
 # Test sites
 sites:
 
-  # Host names and paths must match those in docker-compose.yml
   wptest:
-    host: wordpress-for-tests
+    host: localhost
     installation-type: standard
     db:
-      host: mysql-for-tests
-      dbname: wordpress
+      host: mysql
+      dbname: vptests
       user: root
-      password: r00tpwd
+      password: password
     wp-site:
       # Path must always be a subfolder of /var/www/html for cloning & merging tests to work
       path: /var/www/html/wptest
-      url: http://wordpress-for-tests/wptest
+      url: http://localhost/wptest
       wp-admin-path: wp-admin
       title: "VersionPress Test"
 
   wptest-composer:
-    host: wordpress-for-tests
+    host: localhost
     installation-type: composer
     db:
-      host: mysql-for-tests
-      dbname: wordpress
+      host: mysql
+      dbname: vptests
       user: root
-      password: r00tpwd
+      password: password
     wp-site:
       path: /var/www/html/wptest
-      url: http://wordpress-for-tests/wptest/web # The site runs from subdirectory
+      url: http://localhost/wptest/web # The site runs from subdirectory
       wp-admin-path: wp/wp-admin
       title: "VersionPress Test (Composer)"

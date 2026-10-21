@@ -2,7 +2,7 @@
 
 namespace VersionPress\Tests\End2End\Posts;
 
-use PHPUnit\Framework\SkippedTestError;
+use PHPUnit\Framework\SkippedWithMessageException;
 use Nette\Utils\Random;
 use VersionPress\Tests\End2End\Utils\PostTypeTestWpCliWorker;
 
@@ -47,7 +47,7 @@ class PostsTestWpCliWorker extends PostTypeTestWpCliWorker
 
     public function prepare_changePostFormat()
     {
-        throw new SkippedTestError("Post format cannot be changed using WP-CLI.");
+        throw new SkippedWithMessageException("Post format cannot be changed using WP-CLI.");
     }
 
     public function changePostFormat()

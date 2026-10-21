@@ -257,7 +257,20 @@ class CommitAsserter
         $matchingPaths = array_filter($affectedFiles, function ($item) use ($type, $path) {
             return in_array($item["status"], (array)$type) && fnmatch($path, $item["path"]);
         });
-        Assert::assertNotEmpty($matchingPaths, "Commit didn't affect path '$path' with change of type '$type'");
+        $types = implode('|', (array)$type);
+        Assert::assertNotEmpty($matchingPaths, "Commit didn't affect path '$path' with change of type '$types'");
+    }
+
+    /**
+     * Asserts that the subject of the recorded commit contains the given text.
+     *
+     * @param string $text
+     * @param int $whichCommit See $whichCommitParameter documentation. "HEAD" by default.
+     */
+    public function assertCommitMessageContains($text, $whichCommit = 0)
+    {
+        $subject = $this->getCommit($whichCommit)->getMessage()->getSubject();
+        Assert::assertStringContainsString($text, $subject);
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace VersionPress\Tests\SynchronizerTests;
 
-use PHPUnit\Framework\SkippedTestError;
+use PHPUnit\Framework\SkippedWithMessageException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
 use VersionPress\Storages\DirectoryStorage;
@@ -28,7 +28,7 @@ class TermMetaSynchronizerTest extends SynchronizerTestCase
     protected function setUp(): void
     {
         if (!in_array('termmeta', self::$schemaInfo->getAllEntityNames())) {
-            throw new SkippedTestError("Termmeta are not supported in this version of WP");
+            throw new SkippedWithMessageException("Termmeta are not supported in this version of WP");
         }
 
         parent::setUp();

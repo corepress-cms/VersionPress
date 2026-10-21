@@ -24,6 +24,8 @@
     "analyse": "wp-env run wordpress --env-cwd=wp-content/plugins/versionpress vendor/bin/phpstan analyse --memory-limit=1G",
     "test": "pnpm run phpunit --testsuite Unit,StorageTests,GitRepositoryTests",
     "test:unit": "pnpm run phpunit --testsuite Unit",
+    "test:env": "wp-env start --config=.wp-env.test.json",
+    "test:wp": "wp-env run --config=.wp-env.test.json wordpress --env-cwd=wp-content/plugins/versionpress env VP_DIR=/var/www/html/wp-content/plugins/versionpress vendor/bin/phpunit -c tests/phpunit.xml --testsuite End2End,SynchronizerTests,Workflow",
     "phpunit": "wp-env run wordpress --env-cwd=wp-content/plugins/versionpress vendor/bin/phpunit -c tests/phpunit.xml"
   },
   "engines": {

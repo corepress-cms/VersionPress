@@ -56,12 +56,18 @@ class WpAutomation
     public function setUpSite($entityCounts = [])
     {
         FileSystem::remove($this->siteConfig->path);
+        FileSystem::mkdir($this->siteConfig->path); // WP-CLI commands run from inside the site directory
         if ($this->siteConfig->installationType === 'standard') {
             $this->prepareStandardWpInstallation();
         } elseif ($this->siteConfig->installationType === 'composer') {
             $this->createPedestalBasedSite();
         }
 
+        try {
+            $this->runWpCliCommand('db', 'create');
+        } catch (Exception $e) {
+            // The database already exists; `db reset` below empties it.
+        }
         $this->runWpCliCommand('db', 'reset', [ 'yes' => null]);
 
         $this->runWpCliCommand('core', 'install', [
@@ -549,7 +555,6 @@ class WpAutomation
             'core',
             'download',
             array_merge([
-                'path' => $this->siteConfig->path,
                 'version' => $this->siteConfig->wpVersion,
                 'force' => null,
             ], $this->siteConfig->wpLocale ? [ 'locale' => $this->siteConfig->wpLocale ] : [])
@@ -680,7 +685,11 @@ class WpAutomation
         }
 
         $command = substr($command, 3); // strip "wp " prefix
-        $command = "php " . ProcessUtils::escapeshellarg($this->getWpCli()) . " $command";
+        // WP-CLI needs more than PHP's default 128M, e.g. to extract the WordPress archive.
+        // The explicit --path prevents WP-CLI from walking up to another WordPress installation (e.g. the
+        // environment's own site) while the test site is not fully set up yet.
+        $command = "php -d memory_limit=512M " . ProcessUtils::escapeshellarg($this->getWpCli())
+            . " --path=" . ProcessUtils::escapeshellarg($this->siteConfig->path) . " $command";
 
         return $command;
     }
