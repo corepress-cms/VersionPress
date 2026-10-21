@@ -34,16 +34,19 @@ class Mutex
      */
     public function lock()
     {
-        clearstatcache();
+        // Without its parent directory (e.g. in a fresh clone of the site), the lock could never be created.
+        if (!is_dir($this->lockDir)) {
+            FileSystem::mkdir($this->lockDir);
+        }
+
         $lockname = $this->getLockName();
-        $dirCreated = @filectime($lockname);
 
         while (!@mkdir($lockname)) {
-            if ($dirCreated) {
-                if ((time() - $dirCreated) > $this->timeout) {
-                    rmdir($lockname);
-                    $dirCreated = false;
-                }
+            clearstatcache();
+            $lockCreated = @filectime($lockname);
+            if ($lockCreated && (time() - $lockCreated) > $this->timeout) {
+                // Stale lock of a process that didn't release it, e.g. because it was killed.
+                @rmdir($lockname);
             }
             usleep(rand(50000, 200000)); // wait random time
         }

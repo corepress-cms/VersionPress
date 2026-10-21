@@ -678,7 +678,9 @@ class VPCommand extends WP_CLI_Command
         $this->switchMaintenance('on');
 
         $branchToPullFrom = 'master'; // hardcoded until we support custom branches
-        $pullCommand = 'git pull ' . ProcessUtils::escapeshellarg($remote) . ' ' . $branchToPullFrom;
+        // VersionPress resolves divergent histories by merging (with its INI merge driver). Git 2.27+ refuses
+        // to pull divergent branches without an explicit strategy; --no-edit keeps Git from opening an editor.
+        $pullCommand = 'git pull --no-rebase --no-edit ' . ProcessUtils::escapeshellarg($remote) . ' ' . $branchToPullFrom;
         $process = VPCommandUtils::exec($pullCommand);
 
         if ($process->isSuccessful()) {
