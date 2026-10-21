@@ -9,6 +9,10 @@ post:
   ignored-entities:
     - 'post_type: revision'
     - 'post_type: customize_changeset'
+    # Cached oEmbed responses
+    - 'post_type: oembed_cache'
+    # Personal data export/erasure requests; contain e-mail addresses of the requesters
+    - 'post_type: user_request'
     - 'post_status: auto-draft'
     # Also ignored are:
     #  - Attachments without post_title
@@ -106,6 +110,10 @@ usermeta:
     - 'meta_key: nav_menu_recently_edited'
     - 'meta_key: wporg_favorites'
     - 'meta_key: *dashboard_quick_press_last_post_id'
+    # Location for the dashboard's events widget, derived from the user's IP address
+    - 'meta_key: community-events-location'
+    # Block editor UI preferences, rewritten on every toggle
+    - 'meta_key: *persisted_preferences'
   clean-cache:
     - user: user_id
 
@@ -155,6 +163,12 @@ option:
     # Fatal error recovery mode: one-time login keys and its notification throttle.
     - 'option_name: recovery_keys'
     - 'option_name: recovery_mode_email_last_sent'
+    # Runtime state and caches
+    - 'option_name: wp_calendar_block_has_published_posts'
+    - 'option_name: user_count'
+    - 'option_name: https_detection_errors'
+    - 'option_name: wp_force_deactivated_plugins'
+    - 'option_name: auto_plugin_theme_update_emails'
     # All {$taxonomy}_children are also ignored - see filter `vp_entity_should_be_saved_option`
   ignored-columns:
     - option_id

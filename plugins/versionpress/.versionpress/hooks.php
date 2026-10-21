@@ -140,8 +140,14 @@ add_filter('vp_entity_tags_post', function ($tags, $oldEntity, $newEntity) {
     $postVpid = isset($newEntity['vp_id']) ? $newEntity['vp_id'] : $oldEntity['vp_id'];
     $postId = $vpidRepository->getIdForVpid($postVpid);
 
+    // Core's internal post types of the block editor (`wp_template`, `wp_global_styles`, `wp_navigation`, ...)
+    // are described by their label, e.g. "template"; other post types keep their name like "page" or "product".
+    $postType = $tags['VP-Post-Type'];
+    $postTypeObject = str_starts_with($postType, 'wp_') ? get_post_type_object($postType) : null;
+    $postTypeDescription = $postTypeObject ? mb_strtolower($postTypeObject->labels->singular_name) : $postType;
+
     $postFormat = get_post_format($postId);
-    $tags['VP-Post-Format'] = $postFormat ?: $tags['VP-Post-Type'];
+    $tags['VP-Post-Format'] = $postFormat ?: $postTypeDescription;
 
     return $tags;
 }, 10, 3);
