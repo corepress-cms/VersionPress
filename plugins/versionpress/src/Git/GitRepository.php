@@ -260,6 +260,17 @@ class GitRepository
     }
 
     /**
+     * Moves HEAD to $commitHash and discards all uncommitted changes, including an unfinished revert.
+     *
+     * @param string $commitHash
+     */
+    public function resetHard($commitHash)
+    {
+        $this->runShellCommand("git reset --hard %s", $commitHash);
+        $this->runShellCommandWithErrorOutput("git revert --quit");
+    }
+
+    /**
      * Aborts a revert, e.g., if there was a conflict
      */
     public function abortRevert()

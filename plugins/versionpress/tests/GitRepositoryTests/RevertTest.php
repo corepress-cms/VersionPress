@@ -49,6 +49,22 @@ class RevertTest extends TestCase
     }
 
     #[Test]
+    public function resetHardDiscardsUnfinishedRevert()
+    {
+        $this->commitFile('some-file', 'Some commit');
+        $hash = self::$repository->getLastCommitHash();
+
+        self::$repository->revert($hash);
+        $this->assertFalse(self::$repository->isCleanWorkingDirectory());
+
+        self::$repository->resetHard($hash);
+
+        $this->assertTrue(self::$repository->isCleanWorkingDirectory());
+        $this->assertSame($hash, self::$repository->getLastCommitHash());
+        $this->assertFileExists(self::$repositoryPath . '/some-file');
+    }
+
+    #[Test]
     public function revertTakesBackChangesFromLastCommit()
     {
         $this->commitFile('some-file', 'Some commit');

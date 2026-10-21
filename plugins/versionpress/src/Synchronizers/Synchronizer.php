@@ -218,10 +218,15 @@ class Synchronizer
             $entities = [];
             foreach ($this->entitiesToSynchronize as $entityToSynchronize) {
                 if ($this->storage->exists($entityToSynchronize['vp_id'], $entityToSynchronize['parent'])) {
-                    $entities[] = $this->storage->loadEntity(
+                    $entity = $this->storage->loadEntity(
                         $entityToSynchronize['vp_id'],
                         $entityToSynchronize['parent']
                     );
+                    // Storages can report an entity as existing without being able to load it
+                    // (e.g. a meta entity whose parent no longer contains it).
+                    if ($entity) {
+                        $entities[] = $entity;
+                    }
                 }
             }
         } else {
@@ -483,7 +488,16 @@ class Synchronizer
             return false;
         }
 
-        foreach ($referencesToSave as $reference => $relations) {
+        $sql = sprintf(
+            "SELECT id FROM %s WHERE HEX(vp_id) IN ('%s')",
+            $this->database->vp_id,
+            join("', '", array_map(function ($entity) {
+                return $entity['vp_id'];
+            }, $this->entities))
+        );
+        $processedIds = array_merge($this->database->get_col($sql), $this->deletedIds);
+
+        foreach ($this->entityInfo->mnReferences as $reference => $referencedEntity) {
             if ($this->entityInfo->isVirtualReference($reference)) {
                 continue;
             }
@@ -493,21 +507,8 @@ class Synchronizer
             $sourceColumn = $referenceDetails['source-column'];
             $targetColumn = $referenceDetails['target-column'];
 
-            $valuesForInsert = array_map(function ($relation) use ($idMap) {
-                $sourceId = $idMap[$relation['vp_id']];
-                $targetId = $idMap[$relation['referenced_vp_id']];
-                return "($sourceId, $targetId)";
-            }, $relations);
-
-            $sql = sprintf(
-                "SELECT id FROM %s WHERE HEX(vp_id) IN ('%s')",
-                $this->database->vp_id,
-                join("', '", array_map(function ($entity) {
-                    return $entity['vp_id'];
-                }, $this->entities))
-            );
-            $processedIds = array_merge($this->database->get_col($sql), $this->deletedIds);
-
+            // Drop the current relations of all synchronized entities first, including deleted entities and
+            // entities that no longer have any relation of this kind; the storage is the source of truth.
             if ($this->isSelectiveSynchronization) {
                 if (count($processedIds) > 0) {
                     $this->database->query(
@@ -517,6 +518,17 @@ class Synchronizer
             } else {
                 $this->database->query("TRUNCATE TABLE $prefixedTable");
             }
+
+            $relations = $referencesToSave[$reference] ?? [];
+            if ($relations === []) {
+                continue;
+            }
+
+            $valuesForInsert = array_map(function ($relation) use ($idMap) {
+                $sourceId = $idMap[$relation['vp_id']];
+                $targetId = $idMap[$relation['referenced_vp_id']];
+                return "($sourceId, $targetId)";
+            }, $relations);
 
             $valuesString = join(", ", $valuesForInsert);
             $insertSql = "INSERT IGNORE INTO $prefixedTable ($sourceColumn, $targetColumn) VALUES $valuesString";

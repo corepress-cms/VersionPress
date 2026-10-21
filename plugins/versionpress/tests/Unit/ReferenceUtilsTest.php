@@ -1,6 +1,6 @@
 <?php
 
-namespace VersionPress\Tests\Utils;
+namespace VersionPress\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;

@@ -117,7 +117,7 @@ abstract class Storage
     /**
      * Returns true if the entity exists.
      *
-     * @param string $id VPID
+     * @param string|null $id VPID (an entity without VPID never exists)
      * @param string|null $parentId VPID of parent entity (for example post for postmeta)
      * @return bool
      */

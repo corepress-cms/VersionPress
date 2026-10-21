@@ -189,6 +189,10 @@ class DirectoryStorage extends Storage
 
     public function exists($id, $parentId = null)
     {
+        if ($id === null) {
+            return false;
+        }
+
         return file_exists($this->getEntityFilename($id));
     }
 

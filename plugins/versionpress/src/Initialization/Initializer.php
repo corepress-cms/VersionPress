@@ -396,12 +396,18 @@ class Initializer
         $dbRows = $this->getEntitiesFromDatabase($junctionTable);
 
         foreach ($dbRows as $row) {
-            $reference = [
-                "vp_$sourceEntity" => $this->idCache[$sourceEntity][intval($row[$sourceColumn])],
-                "vp_$targetEntity" => $this->idCache[$targetEntity][intval($row[$targetColumn])],
-            ];
+            $sourceVpid = $this->idCache[$sourceEntity][intval($row[$sourceColumn])] ?? null;
+            $targetVpid = $this->idCache[$targetEntity][intval($row[$targetColumn])] ?? null;
 
-            $storage->save($reference);
+            // Orphaned junction rows (pointing to deleted entities) have nothing to be stored with.
+            if ($sourceVpid === null || $targetVpid === null) {
+                continue;
+            }
+
+            $storage->save([
+                "vp_$sourceEntity" => $sourceVpid,
+                "vp_$targetEntity" => $targetVpid,
+            ]);
         }
     }
 

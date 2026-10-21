@@ -89,6 +89,22 @@ class Reverter
             return $this->repository->wasCreatedAfter($b, $a);
         });
 
+        // The working directory is clean at this point, so a failure before the revert commit is made can
+        // safely restore this state. Failures after it (during synchronization) keep the commit.
+        $initialCommit = $this->repository->getLastCommitHash();
+        try {
+            return $this->revertAndSynchronize($commits, $method);
+        } catch (\Throwable $e) {
+            if (!$this->repository->isCleanWorkingDirectory()) {
+                $this->committer->disableCommit();
+                $this->repository->resetHard($initialCommit);
+            }
+            throw $e;
+        }
+    }
+
+    private function revertAndSynchronize($commits, $method)
+    {
         $modifiedFiles = [];
         $vpIdsInModifiedFiles = [];
 
@@ -368,8 +384,6 @@ class Reverter
                             }
 
                             if ($pathInStructure) {
-                                $possiblyReferencingEntity[$valueColumn] =
-                                    unserialize($possiblyReferencingEntity[$valueColumn]);
                                 $paths = ReferenceUtils::getMatchingPathsInSerializedData(
                                     $possiblyReferencingEntity[$valueColumn],
                                     $pathInStructure
@@ -380,7 +394,7 @@ class Reverter
 
                             /** @var Cursor[] $cursors */
                             $cursors = array_map(function ($path) use (&$possiblyReferencingEntity, $valueColumn) {
-                                return new Cursor($possiblyReferencingEntity[$valueColumn], $path);
+                                return new SerializedDataCursor($possiblyReferencingEntity[$valueColumn], $path);
                             }, $paths);
 
                             foreach ($cursors as $cursor) {

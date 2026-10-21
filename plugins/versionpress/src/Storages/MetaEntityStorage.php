@@ -123,6 +123,10 @@ class MetaEntityStorage extends Storage
 
     public function exists($vpId, $parentId)
     {
+        if ($parentId === null) {
+            return false;
+        }
+
         $parentExists = $this->parentStorage->exists($parentId, null);
         if (!$parentExists) {
             return false;
