@@ -26,4 +26,4 @@ Please refer to these to pages for the specifics:
 
 ### Note for plugin developers
 
-If you're a plugin or a theme developer and would like to work with us on support for your plugin / theme, please contact us at info@versionpress.net.
+If you're a plugin or a theme developer and would like to work with us on support for your plugin / theme, please contact us at <info@versionpress.net>.

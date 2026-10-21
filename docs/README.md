@@ -70,7 +70,7 @@ If you want to lint all Markdown files in the repository, run `npm run lint:mark
 
 ## Deployment
 
-The docs site is automatically deployed to Netlify under info@versionpress.com account (credentials are in LastPass). It deploys a preview for PRs and updates the live site after merge to master.
+The docs site is automatically deployed to Netlify under <info@versionpress.com> account (credentials are in LastPass). It deploys a preview for PRs and updates the live site after merge to master.
 
 The deployment is configured directly in the Netlify's UI. Command used for build:
 

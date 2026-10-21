@@ -133,7 +133,7 @@ To sum up the previous text, here are the states that the site can be in:
 | State | Git repo exists? | VersionPress tracking changes? |
 | :------------- | :-----: | :-----: |
 | WP site without VersionPress | No<sup>1)</sup> | No |
-| VersionPress installed  | No | No |
+| VersionPress installed | No | No |
 | VersionPress activated on the *Plugins* screen | **Still no** | **Still no** |
 | Activation finished on VersionPress screen - the plugin is *active* | **Yes** | **Yes** |
 | Deactivated (on plugin admin screen) | Yes | **No** |

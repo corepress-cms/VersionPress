@@ -489,7 +489,7 @@ shortcode-locations:
     - comment_content
 ```
 
-Note that WordPress doesn't restrict shortcode *type* for various locations, so if some shortcode is supported in e.g. `comment_content`, all shortcodes are.
+Note that WordPress doesn't restrict shortcode _type_ for various locations, so if some shortcode is supported in e.g. `comment_content`, all shortcodes are.
 
 The `shortcodes` array holds the actual shortcodes, but only those that contain references to other entities so things like `[embed]` or `[audio]` are not present. Here's an example:
 

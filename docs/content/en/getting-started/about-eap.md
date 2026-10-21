@@ -137,6 +137,6 @@ Good luck and welcome to the dark side.
 ---
 
 !!! note "Note on 'Early Access' and 'EAP'"
-    Between January 2015 and March 2016, VersionPress used to be available through an *Early Access Program (EAP)*. It was discontinued when VersionPress [moved to an open-source model](https://blog.versionpress.net/2016/04/going-open-source/) in April 2016.
+    Between January 2015 and March 2016, VersionPress used to be available through an _Early Access Program (EAP)_. It was discontinued when VersionPress [moved to an open-source model](https://blog.versionpress.net/2016/04/going-open-source/) in April 2016.
 
     Between April 2016 and May 2017, the term _Early Access_ was used, eventually [replaced](https://github.com/versionpress/versionpress/issues/1201) by the current one.

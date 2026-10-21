@@ -10,7 +10,7 @@ WordPress site with VersionPress installed and activated contains three main par
 - **[Git](git.md) repository** that manages the historic revisions
 - **The VersionPress plugin** that translates WordPress data into the Git format and does all the other things like providing the admin pages, undo buttons etc.
 
-One important point here is that our code actually implements very little versioning logic itself. Instead, we depend heavily on Git which was an important strategic decision. This has many advantages but also poses some new challenges as described [here](git.md).
+One important point here is that our code actually implements very little versioning logic itself. Instead, we depend heavily on Git which was an important strategic decision. This has many advantages but also poses some new challenges as described in [Git](git.md).
 
 With regards to how VersionPress works, **it generally observes write operations** (e.g., updating a post, adding a comment etc.) and prepares the data in a format that will be suitable for version control in Git. The files in this format are stored in the `wp-content/vpdb` folder and later committed to the Git repository. In the opposite direction, they can be used to update the MySQL database on operations like Undo, Rollback or Clone.
 
