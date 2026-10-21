@@ -62,10 +62,10 @@ function describeName( change: Change ): string {
 
 function getLabel( scope: string, action: string, type: string ): string {
 	if ( scope === 'versionpress' && action === 'undo' ) {
-		return __( 'Reverted change', 'versionpress' );
+		return __( 'Reverted change', 'versionist' );
 	}
 	if ( scope === 'versionpress' && action === 'rollback' ) {
-		return __( 'Rolled back to', 'versionpress' );
+		return __( 'Rolled back to', 'versionist' );
 	}
 	return `${ capitalize( verbToPastTense( action ) ) } ${ type }`;
 }
@@ -123,7 +123,7 @@ export function formatChangeGroup( group: ChangeGroup ): string {
 		group.count > 1
 			? sprintf(
 					/* translators: 1: action and entity type, e.g. "Updated post"; 2: number of changes */
-					__( '%1$s (%2$d)', 'versionpress' ),
+					__( '%1$s (%2$d)', 'versionist' ),
 					group.label,
 					group.count
 				)
@@ -132,7 +132,7 @@ export function formatChangeGroup( group: ChangeGroup ): string {
 	const withContext = group.context
 		? sprintf(
 				/* translators: 1: action and entity type; 2: entity the change belongs to, e.g. "post Hello world" */
-				__( '%1$s for %2$s', 'versionpress' ),
+				__( '%1$s for %2$s', 'versionist' ),
 				label,
 				group.context
 			)
@@ -151,7 +151,7 @@ export function formatChangeGroup( group: ChangeGroup ): string {
 						'%1$s and %2$d more',
 						'%1$s and %2$d more',
 						hidden,
-						'versionpress'
+						'versionist'
 					),
 					group.names.slice( 0, MAX_NAMES ).join( ', ' ),
 					hidden
@@ -160,7 +160,7 @@ export function formatChangeGroup( group: ChangeGroup ): string {
 
 	return sprintf(
 		/* translators: 1: description of the change; 2: names of changed items */
-		__( '%1$s: %2$s', 'versionpress' ),
+		__( '%1$s: %2$s', 'versionist' ),
 		withContext,
 		names
 	);

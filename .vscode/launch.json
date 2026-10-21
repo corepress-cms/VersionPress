@@ -7,7 +7,7 @@
       "request": "launch",
       "port": 9003,
       "pathMappings": {
-        "/var/www/html/wp-content/plugins/versionpress": "${workspaceFolder}/plugins/versionpress"
+        "/var/www/html/wp-content/plugins/versionist": "${workspaceFolder}/plugins/versionist"
       }
     },
     {

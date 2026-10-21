@@ -16,7 +16,7 @@ import type { FileStatus } from '../api';
 import DiffView from './DiffView';
 
 /**
- * Files changed outside of VersionPress (e.g. edited via FTP), which can be committed or discarded.
+ * Files changed outside of Versionist (e.g. edited via FTP), which can be committed or discarded.
  *
  * @param root0
  * @param root0.onChange Called after the changes were committed or discarded.
@@ -49,7 +49,7 @@ export default function UncommittedChanges( {
 	};
 
 	return (
-		<Card className="versionpress-uncommitted">
+		<Card className="versionist-uncommitted">
 			<CardHeader>
 				<strong>
 					{ sprintf(
@@ -58,7 +58,7 @@ export default function UncommittedChanges( {
 							'%d file has uncommitted changes',
 							'%d files have uncommitted changes',
 							files.length,
-							'versionpress'
+							'versionist'
 						),
 						files.length
 					) }
@@ -74,7 +74,7 @@ export default function UncommittedChanges( {
 							)
 					}
 				>
-					{ __( 'Show changes', 'versionpress' ) }
+					{ __( 'Show changes', 'versionist' ) }
 				</Button>
 			</CardHeader>
 			<CardBody>
@@ -84,7 +84,7 @@ export default function UncommittedChanges( {
 							{ error }
 						</Notice>
 					) }
-					<ul className="versionpress-uncommitted__files">
+					<ul className="versionist-uncommitted__files">
 						{ files.map( ( [ status, path ] ) => (
 							<li key={ path }>
 								<code>{ status }</code> { path }
@@ -93,7 +93,7 @@ export default function UncommittedChanges( {
 					</ul>
 					<TextareaControl
 						__nextHasNoMarginBottom
-						label={ __( 'Commit message', 'versionpress' ) }
+						label={ __( 'Commit message', 'versionist' ) }
 						value={ message }
 						onChange={ setMessage }
 						rows={ 2 }
@@ -107,7 +107,7 @@ export default function UncommittedChanges( {
 								run( () => api.commitChanges( message ) )
 							}
 						>
-							{ __( 'Commit changes', 'versionpress' ) }
+							{ __( 'Commit changes', 'versionist' ) }
 						</Button>
 						<Button
 							variant="secondary"
@@ -115,14 +115,14 @@ export default function UncommittedChanges( {
 							disabled={ isBusy }
 							onClick={ () => setIsConfirmingDiscard( true ) }
 						>
-							{ __( 'Discard changes', 'versionpress' ) }
+							{ __( 'Discard changes', 'versionist' ) }
 						</Button>
 					</Flex>
 				</Flex>
 			</CardBody>
 			{ diff !== null && (
 				<Modal
-					title={ __( 'Uncommitted changes', 'versionpress' ) }
+					title={ __( 'Uncommitted changes', 'versionist' ) }
 					onRequestClose={ () => setDiff( null ) }
 					size="large"
 				>
@@ -131,13 +131,13 @@ export default function UncommittedChanges( {
 			) }
 			{ isConfirmingDiscard && (
 				<Modal
-					title={ __( 'Discard changes?', 'versionpress' ) }
+					title={ __( 'Discard changes?', 'versionist' ) }
 					onRequestClose={ () => setIsConfirmingDiscard( false ) }
 				>
 					<p>
 						{ __(
 							'The changed files will be restored to their last committed state. This cannot be undone.',
-							'versionpress'
+							'versionist'
 						) }
 					</p>
 					<Flex justify="flex-end">
@@ -145,7 +145,7 @@ export default function UncommittedChanges( {
 							variant="tertiary"
 							onClick={ () => setIsConfirmingDiscard( false ) }
 						>
-							{ __( 'Cancel', 'versionpress' ) }
+							{ __( 'Cancel', 'versionist' ) }
 						</Button>
 						<Button
 							variant="primary"
@@ -155,7 +155,7 @@ export default function UncommittedChanges( {
 								run( api.discardChanges );
 							} }
 						>
-							{ __( 'Discard changes', 'versionpress' ) }
+							{ __( 'Discard changes', 'versionist' ) }
 						</Button>
 					</Flex>
 				</Modal>

@@ -14,7 +14,7 @@ function Overview( { commit }: { commit: Commit } ) {
 			<p>
 				{ __(
 					'Merged changes from another environment.',
-					'versionpress'
+					'versionist'
 				) }
 			</p>
 		);
@@ -22,11 +22,11 @@ function Overview( { commit }: { commit: Commit } ) {
 
 	const groups = groupChanges( commit );
 	if ( groups.length === 0 ) {
-		return <p>{ __( 'No changes.', 'versionpress' ) }</p>;
+		return <p>{ __( 'No changes.', 'versionist' ) }</p>;
 	}
 
 	return (
-		<ul className="versionpress-changes">
+		<ul className="versionist-changes">
 			{ groups.map( ( group ) => (
 				<li key={ group.key }>{ formatChangeGroup( group ) }</li>
 			) ) }
@@ -63,7 +63,7 @@ export default function CommitDetails( {
 } ) {
 	return (
 		<Modal title={ commit.message } onRequestClose={ onClose } size="large">
-			<p className="versionpress-commit-meta">
+			<p className="versionist-commit-meta">
 				{ commit.author.name } ·{ ' ' }
 				{ dateI18n(
 					getSettings().formats.datetime,
@@ -79,9 +79,9 @@ export default function CommitDetails( {
 				tabs={ [
 					{
 						name: 'overview',
-						title: __( 'Overview', 'versionpress' ),
+						title: __( 'Overview', 'versionist' ),
 					},
-					{ name: 'diff', title: __( 'Raw diff', 'versionpress' ) },
+					{ name: 'diff', title: __( 'Raw diff', 'versionist' ) },
 				] }
 			>
 				{ ( tab ) =>

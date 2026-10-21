@@ -9,7 +9,7 @@ test.describe( 'Undo', () => {
 		const title = `Post to undo ${ Date.now() }`;
 		const post = await requestUtils.createPost( { title, status: 'publish' } );
 
-		await admin.visitAdminPage( 'admin.php', 'page=versionpress' );
+		await admin.visitAdminPage( 'admin.php', 'page=versionist' );
 		const row = page.getByRole( 'row', {
 			name: new RegExp( `post '${ title }'` ),
 		} );

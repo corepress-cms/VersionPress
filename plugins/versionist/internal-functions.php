@@ -1,0 +1,145 @@
+<?php
+
+// Global Versionist functions. Stored here and included from bootstrap.php because
+// versionist.php might not be always loaded (e.g., in WP-CLI commands).
+
+use Versionist\Database\Database;
+use Versionist\Database\DbSchemaInfo;
+use Versionist\Database\TableSchemaStorage;
+use Versionist\Database\WpdbMirrorBridge;
+use Versionist\DI\VersionistServices;
+use Versionist\Git\Committer;
+use Versionist\Storages\StorageFactory;
+use Versionist\Utils\FileSystem;
+use Versionist\Utils\QueryLanguageUtils;
+
+function vp_flush_regenerable_options()
+{
+    wp_cache_flush();
+    $taxonomies = get_taxonomies();
+    foreach ($taxonomies as $taxonomy) {
+        delete_option("{$taxonomy}_children");
+        // Regenerate {$taxonomy}_children
+        _get_term_hierarchy($taxonomy);
+    }
+}
+
+function vp_commit_all_frequently_written_entities()
+{
+    global $versionPressContainer;
+
+    /**
+     * @var DbSchemaInfo $dbSchemaInfo
+     * @var Committer $committer
+     */
+    $dbSchemaInfo = $versionPressContainer->resolve(VersionistServices::DB_SCHEMA);
+    $committer = $versionPressContainer->resolve(VersionistServices::COMMITTER);
+
+    $rules = $dbSchemaInfo->getRulesForFrequentlyWrittenEntities();
+
+    vp_save_frequently_written_entities($rules);
+
+    $committer->commit();
+}
+
+function vp_save_frequently_written_entities($rules)
+{
+    global $versionPressContainer;
+
+    /**
+     * @var DbSchemaInfo $dbSchemaInfo
+     * @var Database $database
+     * @var WpdbMirrorBridge $wpdbMirrorBridge
+     * @var StorageFactory $storageFactory
+     */
+    $dbSchemaInfo = $versionPressContainer->resolve(VersionistServices::DB_SCHEMA);
+    $database = $versionPressContainer->resolve(VersionistServices::DATABASE);
+    $wpdbMirrorBridge = $versionPressContainer->resolve(VersionistServices::WPDB_MIRROR_BRIDGE);
+    $storageFactory = $versionPressContainer->resolve(VersionistServices::STORAGE_FACTORY);
+
+    foreach ($rules as $entityName => $rulesWithInterval) {
+        $storageFactory->getStorage($entityName)->ignoreFrequentlyWrittenEntities = false;
+
+        $table = $dbSchemaInfo->getPrefixedTableName($entityName);
+
+        foreach ($rulesWithInterval as $ruleAndInterval) {
+            $restriction = QueryLanguageUtils::createSqlRestrictionFromRule($ruleAndInterval['rule']);
+            $sql = "SELECT * FROM $table WHERE $restriction";
+
+            $results = $database->get_results($sql, ARRAY_A);
+            foreach ($results as $data) {
+                $wpdbMirrorBridge->update($table, $data, $data);
+            }
+        }
+    }
+}
+
+function vp_enable_maintenance()
+{
+    $maintenance_string = '<?php define("VP_MAINTENANCE", true); $upgrading = ' . time() . '; ?>';
+    file_put_contents(ABSPATH . '.maintenance', $maintenance_string);
+}
+
+function vp_disable_maintenance()
+{
+    FileSystem::remove(ABSPATH . '.maintenance');
+}
+
+/**
+ * Function used by Synchronizer - see `schema.yml`. It restores the `wp_posts.comment_count` column after sync.
+ *
+ * @param Database $database
+ */
+function vp_fix_comments_count($database)
+{
+    $sql = "update {$database->prefix}posts set comment_count =
+     (select count(*) from {$database->prefix}comments
+      where comment_post_ID = {$database->prefix}posts.ID and comment_approved = 1
+     );";
+
+    $database->query($sql);
+}
+
+/**
+ * Function used by Synchronizer - see `schema.yml`. It restores the `wp_term_taxonomy.count` column after sync.
+ *
+ * @param Database $database
+ */
+function vp_fix_posts_count($database)
+{
+    $sql = "update {$database->term_taxonomy} tt set tt.count =
+          (select count(*) from {$database->term_relationships} tr where tr.term_taxonomy_id = tt.term_taxonomy_id);";
+    $database->query($sql);
+}
+
+function vp_update_table_ddl_scripts(DbSchemaInfo $dbSchemaInfo, TableSchemaStorage $tableSchemaStorage)
+{
+    $tableSchemaStorage->deleteAll();
+
+    $entityNames = $dbSchemaInfo->getAllEntityNames();
+    foreach ($entityNames as $entityName) {
+        $table = $dbSchemaInfo->getPrefixedTableName($entityName);
+        $tableSchemaStorage->saveSchema($table);
+    }
+
+    $referenceDetails = $dbSchemaInfo->getAllMnReferences();
+    foreach ($referenceDetails as $referenceDetail) {
+        $table = $dbSchemaInfo->getPrefixedTableName($referenceDetail['junction-table']);
+        $tableSchemaStorage->saveSchema($table);
+    }
+}
+
+function vp_load_hooks_files()
+{
+    $plugins = wp_get_active_and_valid_plugins();
+
+    foreach ($plugins as $pluginFile) {
+        $pluginDir = dirname($pluginFile);
+        $pluginName = basename($pluginDir);
+        $hooksFile = \Versionist\Actions\PluginDefinitionDiscovery::getPathForPlugin($pluginName, 'hooks.php');
+
+        if ($hooksFile) {
+            require_once $hooksFile;
+        }
+    }
+}

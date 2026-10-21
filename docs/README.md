@@ -1,6 +1,6 @@
-# VersionPress docs
+# Versionist docs
 
-The documentation at [`docs.versionpress.net`](https://docs.versionpress.net/) is authored in Markdown and built using [MkDocs](https://www.mkdocs.org/).
+The documentation is authored in Markdown and built using [MkDocs](https://www.mkdocs.org/).
 
 ## Updating documentation
 
@@ -58,7 +58,7 @@ See `mkdocs.yml` for a list of enabled extensions.
 
 Redirects are not handled very well by MkDocs at this point, just keep the old page and add a note about the new location, or use the `<meta http-equiv="refresh" content="0; url=new" />` tag.
 
-### Documenting different versions of VersionPress
+### Documenting different versions of Versionist
 
 We don't use a URL scheme like `/latest` or `/v2`, the documentation always reflects the current version and if something has been deprecated or added, just indicate it in the text.
 
@@ -70,9 +70,7 @@ If you want to lint all Markdown files in the repository, run `npm run lint:mark
 
 ## Deployment
 
-The docs site is automatically deployed to Netlify under <info@versionpress.com> account (credentials are in LastPass). It deploys a preview for PRs and updates the live site after merge to master.
-
-The deployment is configured directly in the Netlify's UI. Command used for build:
+Versionist's documentation site is not deployed yet. VersionPress built it like this:
 
 ```
 export PIPENV_IGNORE_VIRTUALENVS=1

@@ -1,7 +1,7 @@
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 
-const NAMESPACE = '/versionpress/v1';
+const NAMESPACE = '/versionist/v1';
 
 export interface Author {
 	name: string;
@@ -59,7 +59,7 @@ export interface FilterConfig {
 
 /**
  * @param page  Zero-based page number.
- * @param query Query in the VersionPress search syntax, e.g. `author:admin post/update`.
+ * @param query Query in the Versionist search syntax, e.g. `author:admin post/update`.
  */
 export const getCommits = ( page: number, query: string ) =>
 	apiFetch< CommitsPage >( {
@@ -143,7 +143,7 @@ export const getRequirements = () =>
 	apiFetch< RequirementsReport >( { path: `${ NAMESPACE }/requirements` } );
 
 /**
- * Initializes VersionPress; can take long on big sites.
+ * Initializes Versionist; can take long on big sites.
  *
  * @param environment Environment name, e.g. `production` or `staging`.
  */

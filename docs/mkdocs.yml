@@ -1,12 +1,8 @@
 # See https://www.mkdocs.org/user-guide/configuration/
 
-site_name: VersionPress Documentation
-site_description: 'User and developer documentation for VersionPress'
-copyright: 'Copyright &copy; 2018 VersionPress'
-
-repo_url: https://github.com/versionpress/versionpress
-repo_name: versionpress/versionpress
-edit_uri: edit/master/docs/content
+site_name: Versionist Documentation
+site_description: 'User and developer documentation for Versionist'
+copyright: 'Copyright &copy; Versionist and VersionPress contributors'
 
 docs_dir: 'content'
 
@@ -17,11 +13,11 @@ pages:
     - 'Basic Concepts': 'en/getting-started/concepts.md'
     - 'Installation and Uninstallation': 'en/getting-started/installation-uninstallation.md'
     - 'Configuration': 'en/getting-started/configuration.md'
-    - 'Using VersionPress': 'en/getting-started/using-versionpress.md'
+    - 'Using Versionist': 'en/getting-started/using-versionpress.md'
     - 'Developer Preview': 'en/getting-started/about-eap.md'
   - Feature Focus:
     - 'Feature Focus Home': 'en/feature-focus/index.md'
-    - 'How VersionPress Works': 'en/feature-focus/how-versionpress-works.md'
+    - 'How Versionist Works': 'en/feature-focus/how-versionpress-works.md'
     - 'Change Tracking': 'en/feature-focus/change-tracking.md'
     - 'Undo and Rollback': 'en/feature-focus/undo-and-rollback.md'
     - 'Searching History': 'en/feature-focus/searching-history.md'
@@ -114,15 +110,6 @@ theme:
 
 # Extras for material theme
 extra:
-  social:
-    - type: 'github'
-      link: 'https://github.com/versionpress'
-    - type: 'twitter'
-      link: 'https://twitter.com/versionpress'
-    - type: 'facebook'
-      link: 'https://facebook.com/VersionPress'
-    - type: 'wordpress'
-      link: 'https://blog.versionpress.net/'
   search:
     tokenizer: '[\s\-\.]+'
 

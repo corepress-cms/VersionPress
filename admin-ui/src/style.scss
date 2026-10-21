@@ -1,11 +1,11 @@
 // Bundled: DataViews is not provided by WordPress core.
 @use "@wordpress/dataviews/build-style/style";
 
-.versionpress-admin {
+.versionist-admin {
 	margin-right: 20px;
 
 	> .components-notice,
-	> .versionpress-uncommitted {
+	> .versionist-uncommitted {
 		margin: 16px 0;
 	}
 
@@ -15,11 +15,11 @@
 	}
 }
 
-.versionpress-message.is-disabled {
+.versionist-message.is-disabled {
 	color: #757575;
 }
 
-.versionpress-author {
+.versionist-author {
 	display: inline-flex;
 	align-items: center;
 	gap: 8px;
@@ -29,17 +29,17 @@
 	}
 }
 
-.versionpress-commit-meta {
+.versionist-commit-meta {
 	color: #757575;
 	margin-top: 0;
 }
 
-.versionpress-changes {
+.versionist-changes {
 	list-style: disc;
 	padding-left: 1.5em;
 }
 
-.versionpress-uncommitted__files {
+.versionist-uncommitted__files {
 	margin: 0;
 	max-height: 12em;
 	overflow: auto;
@@ -50,7 +50,7 @@
 	}
 }
 
-.versionpress-diff {
+.versionist-diff {
 	&__file {
 		margin-bottom: 16px;
 
@@ -89,7 +89,7 @@
 	}
 }
 
-.versionpress-activation {
+.versionist-activation {
 	max-width: 860px;
 
 	.components-card {
@@ -109,7 +109,7 @@
 	}
 }
 
-.versionpress-requirements {
+.versionist-requirements {
 	margin: 0;
 
 	li {

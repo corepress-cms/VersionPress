@@ -1,6 +1,6 @@
 # Searching History
 
-VersionPress has powerful search with syntax inspired by GitHub or Gmail. It lets you filter the main table by authors, post types, date ranges etc.
+Versionist has powerful search with syntax inspired by GitHub or Gmail. It lets you filter the main table by authors, post types, date ranges etc.
 
 !!! note
     Search is available since VersionPress 3.0
@@ -59,13 +59,13 @@ The `date:` operator has currently some limitations:
 
 ### `entity:`, `action:`, `vpid:`
 
-All actions tracked by VersionPress are done on some entity (`post`, `user`, `option`, `postmeta` etc.), the action is something like `create` or `delete` and every entity has a unique ID, something like `126BBC0541B14B528C623E32EE1B497C`. You can search for these using the operators above, most commonly by `entity` or `action`.
+All actions tracked by Versionist are done on some entity (`post`, `user`, `option`, `postmeta` etc.), the action is something like `create` or `delete` and every entity has a unique ID, something like `126BBC0541B14B528C623E32EE1B497C`. You can search for these using the operators above, most commonly by `entity` or `action`.
 
 We currently don't have a good way to generate the definitive list of supported entities, you can see them in the commit messages when using a standard Git client but it's not ideal. We'll have a better way to document this in the future.
 
 ### **`arbitrary-vp-tag:`**
 
-VP tags are pieces of metadata that VersionPress stores with each commit. For example, updating the site title creates a commit message like this:
+VP tags are pieces of metadata that Versionist stores with each commit. For example, updating the site title creates a commit message like this:
 
 ```
 [VP] Edited option 'blogname'

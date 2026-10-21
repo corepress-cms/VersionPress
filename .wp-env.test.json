@@ -6,9 +6,9 @@
 	"testsEnvironment": false,
 	"plugins": [],
 	"mappings": {
-		"wp-content/plugins/versionpress": "./plugins/versionpress"
+		"wp-content/plugins/versionist": "./plugins/versionist"
 	},
 	"lifecycleScripts": {
-		"afterStart": "wp-env run --config=.wp-env.test.json wordpress bash -c 'command -v mysql >/dev/null || (sudo apt-get update -qq && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq mariadb-client >/dev/null); command -v wp >/dev/null || (sudo curl -sSfL -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && sudo chmod +x /usr/local/bin/wp); git config --global user.name \"VersionPress Tests\"; git config --global user.email tests@example.com'"
+		"afterStart": "wp-env run --config=.wp-env.test.json wordpress bash -c 'command -v mysql >/dev/null || (sudo apt-get update -qq && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq mariadb-client >/dev/null); command -v wp >/dev/null || (sudo curl -sSfL -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && sudo chmod +x /usr/local/bin/wp); git config --global user.name \"Versionist Tests\"; git config --global user.email tests@example.com'"
 	}
 }

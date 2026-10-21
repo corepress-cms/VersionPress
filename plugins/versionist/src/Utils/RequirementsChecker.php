@@ -1,0 +1,367 @@
+<?php
+
+namespace Versionist\Utils;
+
+use Exception;
+use Symfony\Component\Filesystem\Exception\IOException;
+use Versionist\Database\Database;
+use Versionist\Database\DbSchemaInfo;
+use Versionist\Initialization\DbDropIn;
+use Versionist\Versionist;
+use wpdb;
+
+class RequirementsChecker
+{
+    private $requirements = [];
+    /**
+     * @var Database
+     */
+    private $database;
+    /**
+     * @var DbSchemaInfo
+     */
+    private $schema;
+
+    public const SITE = 'site';
+    public const ENVIRONMENT = 'environment';
+
+    /** @var string[] */
+    public static $compatiblePlugins = [
+        'akismet' => 'akismet/akismet.php',
+        'advanced-custom-fields' => 'advanced-custom-fields/acf.php',
+        'hello-dolly' => 'hello-dolly/hello.php',
+        '_hello-dolly' => 'hello.php',
+        'versionist' => 'versionist/versionist.php',
+        'backwards-compat' => 'backwards-compat/backwards-compat.php',
+        'file-editor' => 'file-editor/file-editor.php',
+    ];
+
+    public static $incompatiblePlugins = [
+        'wp-super-cache' => 'wp-super-cache/wp-cache.php'
+    ];
+
+    /** @var bool */
+    private $isWithoutCriticalErrors;
+    /** @var bool */
+    private $isEverythingFulfilled;
+
+    /**
+     * RequirementsChecker constructor.
+     * @param Database $database
+     * @param DbSchemaInfo $schema
+     * @param string $checkScope determines if all Versionist requirements need to be fulfilled or just some of them.
+     * Possible values are RequirementsChecker::SITE or RequirementsChecker::ENVIRONMENT
+     * Default value is RequirementsChecker::SITE which means that all requirements need to be matched.
+     * RequirementsChecker::ENVIRONMENT checks only requirements related to "runtime" environment.
+     */
+    public function __construct($database, $schema, $checkScope = RequirementsChecker::SITE)
+    {
+
+        $this->database = $database;
+        $this->schema = $schema;
+
+        // Markdown can be used in the 'help' field
+
+        $this->requirements[] = [
+            'name' => 'PHP 8.5+',
+            'level' => 'critical',
+            'fulfilled' => version_compare(PHP_VERSION, '8.5.0', '>='),
+            'help' => 'PHP 8.5+ is required.'
+        ];
+
+        $this->requirements[] = [
+            'name' => "'mbstring' extension",
+            'level' => 'critical',
+            'fulfilled' => extension_loaded('mbstring'),
+            'help' => 'Extension `mbstring` is required.'
+        ];
+
+        $this->requirements[] = [
+            'name' => 'Execute external commands',
+            'level' => 'critical',
+            'fulfilled' => $this->tryRunProcess(),
+            'help' => 'PHP function `proc_open()` must be enabled as Versionist uses it to execute Git commands. ' .
+                'Please update your php.ini.'
+        ];
+
+        $gitCheckResult = $this->tryGit();
+
+        switch ($gitCheckResult) {
+            case "no-git":
+                // @codingStandardsIgnoreLine
+                $gitHelpMessage = '[Git](http://git-scm.com/) must be installed on the server. If you think it is then it\'s probably not visible to the web server user – please update its PATH. Alternatively, [configure Versionist](' . Versionist::DOCS_URL . '/getting-started/configuration#git-binary) to use specific Git binary. [Learn more](' . Versionist::DOCS_URL . '/getting-started/installation-uninstallation#git).';
+                break;
+
+            case "wrong-version":
+                // @codingStandardsIgnoreLine
+                $gitHelpMessage = 'Git version ' . SystemInfo::getGitVersion() . ' detected with which there are known issues. Please install at least version ' . self::GIT_MINIMUM_REQUIRED_VERSION . ' (this can be done side-by-side and Versionist can be [configured](' . Versionist::DOCS_URL . '/getting-started/configuration#git-binary) to use that specific Git version). [Learn more](' . Versionist::DOCS_URL . '/getting-started/installation-uninstallation#git).';
+                break;
+
+            default:
+                $gitHelpMessage = "";
+        }
+
+        $this->requirements[] = [
+            'name' => 'Git ' . self::GIT_MINIMUM_REQUIRED_VERSION . '+ installed',
+            'level' => 'critical',
+            'fulfilled' => $gitCheckResult == "ok",
+            'help' => $gitHelpMessage
+        ];
+
+        $this->requirements[] = [
+            'name' => 'Write access on the filesystem',
+            'level' => 'critical',
+            'fulfilled' => $this->tryWrite(),
+            // @codingStandardsIgnoreLine
+            'help' => 'Versionist needs write access in the site root, its nested directories and the <abbr title="' . sys_get_temp_dir() . '" style="border-bottom: 1px dotted; border-color: inherit;">system temp directory</abbr>. Please update the permissions.'
+        ];
+
+        // The check requests a protected URL, which can't be determined in a partially loaded WordPress
+        // (e.g. `wp versionist restore-site` in a fresh clone).
+        if (defined('WPMU_PLUGIN_DIR')) {
+            $this->requirements[] = [
+                'name' => 'Access rules can be installed',
+                'level' => 'warning',
+                'fulfilled' => $this->tryAccessControlFiles(),
+                // @codingStandardsIgnoreLine
+                'help' => 'Versionist automatically tries to secure certain locations, like `wp-content/vpdb`. You either don\'t have a supported web server or rules cannot be enforced. [Learn more](' . Versionist::DOCS_URL . '/getting-started/installation-uninstallation#supported-web-servers).'
+            ];
+        }
+        if ($checkScope === RequirementsChecker::SITE) {
+            if (file_exists(VP_PROJECT_ROOT . '/composer.json')) {
+                $this->requirements[] = [
+                    'name' => 'Composer scripts',
+                    'level' => 'warning',
+                    'fulfilled' => $this->testComposerJson(),
+                    // @codingStandardsIgnoreLine
+                    'help' => 'Your project uses Composer but `pre-update-cmd` or `post-update-cmd` scripts in `composer.json` are already defined. Versionist needs to run a WP-CLI commands in these scripts to automatically commit changes of Composer packages. Please update your scripts to run [the WP-CLI commands](' . Versionist::DOCS_URL . '/feature-focus/composer).'
+                ];
+            }
+
+            $this->requirements[] = [
+                'name' => 'Database drop-in',
+                'level' => 'critical',
+                'fulfilled' => DbDropIn::canBeInstalled(),
+                'help' => DbDropIn::isOccupiedByAnotherDropIn()
+                    ? 'Versionist tracks database changes through the `wp-content/db.php` drop-in, which is ' .
+                        'already used by another plugin (for example, Query Monitor or a caching plugin). ' .
+                        'Only one drop-in can be active; please remove the other one.'
+                    : 'Versionist tracks database changes through a `wp-content/db.php` drop-in. ' .
+                        'It needs write access to the `wp-content` directory. Please update the permissions.'
+            ];
+
+            $this->requirements[] = [
+                'name' => 'Not multisite',
+                'level' => 'critical',
+                'fulfilled' => !is_multisite(),
+                'help' => 'Currently Versionist does not support multisites. Stay tuned!'
+            ];
+
+            $this->requirements[] = [
+                'name' => 'Standard directory layout',
+                'level' => 'warning',
+                'fulfilled' => $this->testDirectoryLayout(),
+                // @codingStandardsIgnoreLine
+                'help' => 'It seems like you use customized project structure. Versionist supports only some scenarios. [Learn more](' . Versionist::DOCS_URL . '/feature-focus/custom-project-structure).'
+            ];
+
+
+            $setTimeLimitEnabled = (false === strpos(ini_get("disable_functions"), "set_time_limit"));
+            $countOfEntities = $this->countEntities();
+
+            if ($setTimeLimitEnabled) {
+                // @codingStandardsIgnoreLine
+                $help = "The initialization will take a little longer. This website contains $countOfEntities entities.";
+            } else {
+                $help = "The initialization may not finish. This website contains $countOfEntities entities.";
+            }
+
+            $this->requirements[] = [
+                'name' => 'Web size',
+                'level' => 'warning',
+                'fulfilled' => $countOfEntities < 500,
+                'help' => $help
+            ];
+
+            $unsupportedPluginsCount = $this->testExternalPlugins();
+            $externalPluginsHelp = "You run $unsupportedPluginsCount external " .
+                ($unsupportedPluginsCount == 1 ? "plugin" : "plugins") .
+                ' we have not tested yet. <a href="' . Versionist::DOCS_URL . '/feature-focus/external-plugins">' .
+                'Read more about 3rd party plugins support.</a>';
+
+            $this->requirements[] = [
+                'name' => 'External plugins',
+                'level' => 'warning',
+                'fulfilled' => $unsupportedPluginsCount == 0,
+                'help' => $externalPluginsHelp
+            ];
+        }
+
+        $this->isWithoutCriticalErrors = array_reduce($this->requirements, function ($carry, $requirement) {
+            return $carry && ($requirement['fulfilled'] || $requirement['level'] === 'warning');
+        }, true);
+
+        $this->isEverythingFulfilled = array_reduce($this->requirements, function ($carry, $requirement) {
+            return $carry && $requirement['fulfilled'];
+        }, true);
+    }
+
+    /**
+     * Returns list of requirements and their fulfillment
+     *
+     * @return array
+     */
+    public function getRequirements()
+    {
+        return $this->requirements;
+    }
+
+    public function isWithoutCriticalErrors()
+    {
+        return $this->isWithoutCriticalErrors;
+    }
+
+    public function isEverythingFulfilled()
+    {
+        return $this->isEverythingFulfilled;
+    }
+
+    private function tryRunProcess()
+    {
+        try {
+            $process = Process::fromShellCommandline("echo test");
+            $process->run();
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * @return string "ok", "no-git" or "wrong-version"
+     */
+    private function tryGit()
+    {
+        try {
+            $gitVersion = SystemInfo::getGitVersion();
+            return self::gitMatchesMinimumRequiredVersion($gitVersion) ? "ok" : "wrong-version";
+        } catch (Exception $e) {
+            return "no-git";
+        }
+    }
+
+    private function tryWrite()
+    {
+        $filename = ".vp-try-write";
+        $testPaths = [
+            ABSPATH,
+            WP_CONTENT_DIR,
+            sys_get_temp_dir()
+        ];
+
+        $writable = true;
+
+        foreach ($testPaths as $directory) {
+            $filePath = $directory . '/' . $filename;
+            /** @noinspection PhpUsageOfSilenceOperatorInspection */
+            @file_put_contents($filePath, "");
+            $writable &= is_file($filePath);
+            FileSystem::remove($filePath);
+
+            // Trying to create file from process (issue #522)
+            $process = Process::fromShellCommandline(sprintf("echo test > %s", ProcessUtils::escapeshellarg($filePath)));
+            $process->run();
+            $writable &= is_file($filePath);
+
+            try {
+                FileSystem::remove($filePath);
+            } catch (IOException $ex) {
+                $writable = false; // the file could not be deleted - the permissions are wrong
+            }
+        }
+
+        return $writable;
+    }
+
+    private function tryAccessControlFiles()
+    {
+        $securedUrl = plugins_url('versionist-nginx.conf', VERSIONIST_PLUGIN_FILE);
+        /** @noinspection PhpUsageOfSilenceOperatorInspection */
+        return @file_get_contents($securedUrl) === false; // intentionally @
+    }
+
+    private function testDirectoryLayout()
+    {
+        $uploadDirInfo = wp_upload_dir();
+        $isStandardLayout = true;
+        $isStandardLayout &= ABSPATH . 'wp-content' === WP_CONTENT_DIR;
+        $isStandardLayout &= WP_CONTENT_DIR . '/plugins' === WP_PLUGIN_DIR;
+        $isStandardLayout &= WP_CONTENT_DIR . '/themes' === get_theme_root();
+        $isStandardLayout &= WP_CONTENT_DIR . '/uploads' === $uploadDirInfo['basedir'];
+        $isStandardLayout &= is_file(ABSPATH . 'wp-config.php');
+
+        return $isStandardLayout;
+    }
+
+    /**
+     * Minimum required Git version
+     */
+    public const GIT_MINIMUM_REQUIRED_VERSION = "1.9";
+
+    /**
+     * Returns true if git version matches the minimum required version. If minimum required version
+     * is not given, RequirementsChecker::GIT_MINIMUM_REQUIRED_VERSION is used by default.
+     *
+     * @param string $gitVersion
+     * @param string $minimumRequiredVersion
+     * @return bool
+     */
+    public static function gitMatchesMinimumRequiredVersion($gitVersion, $minimumRequiredVersion = null)
+    {
+        $minimumRequiredVersion = $minimumRequiredVersion ?: self::GIT_MINIMUM_REQUIRED_VERSION;
+        return version_compare($gitVersion, $minimumRequiredVersion, ">=");
+    }
+
+    private function countEntities()
+    {
+        $entities = $this->schema->getAllEntityNames();
+        $totalEntitiesCount = 0;
+
+        foreach ($entities as $entity) {
+            $table = $this->schema->getPrefixedTableName($entity);
+            $totalEntitiesCount += $this->database->get_var("SELECT COUNT(*) FROM $table");
+        }
+
+        return $totalEntitiesCount;
+    }
+
+    /**
+     * @return int Number of unsupported plugins.
+     */
+    private function testExternalPlugins()
+    {
+        $plugins = get_option('active_plugins');
+        $unsupportedPluginsCount = 0;
+        foreach ($plugins as $plugin) {
+            if (!in_array($plugin, self::$compatiblePlugins)) {
+                $unsupportedPluginsCount++;
+            }
+        }
+        return $unsupportedPluginsCount;
+    }
+
+    private function testComposerJson()
+    {
+        $composerJsonPath = VP_PROJECT_ROOT . '/composer.json';
+        $composerJson = json_decode(file_get_contents($composerJsonPath));
+        if (!isset($composerJson->scripts)) {
+            return true;
+        }
+
+        if (isset($composerJson->scripts->{'pre-update-cmd'}) || isset($composerJson->scripts->{'post-update-cmd'})) {
+            return false;
+        }
+
+        return true;
+    }
+}

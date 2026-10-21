@@ -1,10 +1,10 @@
-# VersionPress dev scripts
+# Versionist dev scripts
 
 Scripts that have outgrown the one-liners in `package.json`.
 
 ## Dev setup
 
-`npm install` is run as part of root's post-install script so you should be fine.
+`pnpm install` is run as part of root's post-install script so you should be fine.
 
 Scripts can be run during development like this:
 
@@ -44,4 +44,4 @@ The CLI output is directly paste-able to GitHub issues, however, if you want to 
 pnpm run changelog --format markdown 4.0-beta..master | pbcopy
 ```
 
-This will convert strings like `#123` to `[#123](https://github.com/versionpress/versionpress/issues/123)`, will handle newlines etc.
+This will convert strings like `#123` to `[#123](https://github.com/<owner>/<repo>/issues/123)` (the repository is taken from the `origin` remote), will handle newlines etc.

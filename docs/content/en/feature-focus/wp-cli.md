@@ -1,9 +1,9 @@
 # WP-CLI Commands
 
-For advanced usage, VersionPress comes with several [WP-CLI](http://wp-cli.org/) commands. They are useful in two main scenarios:
+For advanced usage, Versionist comes with several [WP-CLI](http://wp-cli.org/) commands. They are useful in two main scenarios:
 
 1. You prefer doing some actions from the command line
-2. You need to interact with VersionPress when the admin backed is not available for some reason, for example, after a failed update
+2. You need to interact with Versionist when the admin backed is not available for some reason, for example, after a failed update
 
 As a note, we absolutely love WP-CLI. If you haven't come across this project before we recommend you familiarize yourself with what it can do at [wp-cli.org](http://wp-cli.org/).
 
@@ -13,18 +13,18 @@ WP-CLI runs best on UNIX-like systems (Linux, Mac OS X, Cygwin..) but we test ou
 
 Here is an [overview of all the supported installation methods](https://github.com/wp-cli/wp-cli/wiki/Alternative-Install-Methods), we'll just assume for the rest of this page that the `wp` command is available in the console and executing `wp --info` prints a standard output.
 
-## Working with VersionPress commands
+## Working with Versionist commands
 
-When VersionPress is installed *and activated* on the plugins screen, `cd` into the site root and run:
+When Versionist is installed *and activated* on the plugins screen, `cd` into the site root and run:
 
 ```bash
-wp vp <command> <parameters>
+wp versionist <command> <parameters>
 ```
 
-If VersionPress is not active or cannot be active, for example, in case of a broken site, use `--require` to load a specific WP-CLI command. For example, `restore-site` will usually need this so it will be called like this:
+If Versionist is not active or cannot be active, for example, in case of a broken site, use `--require` to load a specific WP-CLI command. For example, `restore-site` will usually need this so it will be called like this:
 
 ```bash
-wp vp restore-site --siteurl='http://localhost/mysite' --require=wp-content/plugins/versionpress/src/Cli/vp.php
+wp versionist restore-site --siteurl='http://localhost/mysite' --require=wp-content/plugins/versionist/src/Cli/vp.php
 ```
 
 ## Command reference
@@ -33,7 +33,7 @@ Generally, **use `wp help` as the primary source of information** as that will a
 
 ### vp config
 
-Configures VersionPress. See [configuration](../getting-started/configuration.md).
+Configures Versionist. See [configuration](../getting-started/configuration.md).
 
 ### vp undo
 
@@ -46,7 +46,7 @@ Takes a commit SHA-1 as an argument and which can either be a full SHA1 like `4d
 *Examples:*
 
 ```bash
-wp vp undo a34bc28
+wp versionist undo a34bc28
 ```
 
 ### vp rollback
@@ -60,7 +60,7 @@ Takes a commit SHA-1 as an argument and which can either be a full SHA1 like `4d
 *Examples:*
 
 ```bash
-wp vp rollback a34bc28
+wp versionist rollback a34bc28
 ```
 
 ### vp restore-site
@@ -72,24 +72,24 @@ You will typically use this command in two main situations:
 1. Something **went really wrong with the database** and you want to restore it
 2. You want to restore a site **just from a Git repository**, e.g., after a fresh clone from GitHub on a new machine
 
-Let's focus on the first scenario now. In the worst case, you completely lost the database and running `wp vp restore-site` then will basically work like a restore of a backup, i.e., it will re-create the database tables (for tables that VersionPress can restore; it will leave other tables in the database alone so for example it will *not* do anything with tables that are not WordPress related) and fill it with the site's data. This is useful also when the database was not completely lost, just something went wrong with it, e.g. by some plugin bug, human error and so on. Again, `wp vp restore-site` will just bring it back to an OK state.
+Let's focus on the first scenario now. In the worst case, you completely lost the database and running `wp versionist restore-site` then will basically work like a restore of a backup, i.e., it will re-create the database tables (for tables that Versionist can restore; it will leave other tables in the database alone so for example it will *not* do anything with tables that are not WordPress related) and fill it with the site's data. This is useful also when the database was not completely lost, just something went wrong with it, e.g. by some plugin bug, human error and so on. Again, `wp versionist restore-site` will just bring it back to an OK state.
 
 Note that with this command, you will **need to include the `--require=...` parameter** because on a broken or non-existent site, WP-CLI will not be able to automatically detect the `vp` command. The complete command invocation will usually look like this:
 
 ```bash
-wp vp restore-site --siteurl='http://localhost/mysite' --require=wp-content/plugins/versionpress/src/Cli/vp.php
+wp versionist restore-site --siteurl='http://localhost/mysite' --require=wp-content/plugins/versionist/src/Cli/vp.php
 ```
 
-The other, **development scenario** assumes that the only thing you have is a Git clone of a site. That is quite extreme because not only you don't have a database at all but you also don't have these two vital things due to the fact that VersionPress doesn't store them in the Git repo (for good reasons [described here](../feature-focus/change-tracking.md#whats-not-tracked)):
+The other, **development scenario** assumes that the only thing you have is a Git clone of a site. That is quite extreme because not only you don't have a database at all but you also don't have these two vital things due to the fact that Versionist doesn't store them in the Git repo (for good reasons [described here](../feature-focus/change-tracking.md#whats-not-tracked)):
 
 - `wp-config.php`
-- VersionPress itself, i.e., `wp-content/plugins/versionpress`
+- Versionist itself, i.e., `wp-content/plugins/versionist`
 
-The second point means that you can't immediately run `wp vp restore-site` because there is no such thing as a `vp` command yet on the site. Follow these steps:
+The second point means that you can't immediately run `wp versionist restore-site` because there is no such thing as a `vp` command yet on the site. Follow these steps:
 
-1. Manually put VersionPress into to `wp-content/plugins/versionpress` folder.
+1. Manually put Versionist into to `wp-content/plugins/versionist` folder.
 2. Run `wp core config` from the site root to setup the database.
-3. Run `wp vp restore-site` with `siteurl` and `require` parameters.
+3. Run `wp versionist restore-site` with `siteurl` and `require` parameters.
 4. Enjoy your up and running site.
 
 ### vp clone
@@ -110,8 +110,8 @@ Applies changes found on the disk to the database. Useful e.g. after resolving m
 
 ### vp check-requirements
 
-Checks if all requirements for using VersionPress are met on the target environment.
+Checks if all requirements for using Versionist are met on the target environment.
 
-This command is useful when you make changes on the server and want to check whether VersionPress requirements are still met.
+This command is useful when you make changes on the server and want to check whether Versionist requirements are still met.
 
 Note that you will mostly **need to include the `--require=...` parameter**.

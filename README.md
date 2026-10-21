@@ -1,46 +1,39 @@
-# VersionPress
+# Versionist
 
-Combining the best of both worlds, VersionPress is a user-friendly versioning solution for WordPress powered by Git. You can:
+Versionist is Git-powered version control for WordPress. You can:
 
-- See history of your site
-- Undo anything, incl. database changes
+- See the history of your site, searchable and filterable
+- Undo anything, including database changes
 - Roll back to previous states
-- Create safe staging environments: `wp vp clone --name=staging`
-- Merge databases: `wp vp pull --from=staging`
+- Create safe staging environments: `wp versionist clone --name=staging`
+- Merge databases: `wp versionist pull --from=staging`
 - Push to GitHub or implement any workflow you like
 
-![image](https://user-images.githubusercontent.com/101152/27992357-15600e14-6493-11e7-8e19-1e85c858a1b8.png)
-
-[![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/versionpress/versionpress)
+Versionist is a fork of [VersionPress](https://github.com/versionpress/versionpress), modernized for current WordPress (7.1+) and PHP (8.5+): it tracks database changes through a `db.php` drop-in instead of patching WordPress core, has a new admin screen built with WordPress components, and is updated for the block editor. It keeps VersionPress's data format, so sites tracked by VersionPress and plugin definitions (`.versionpress/` folders) written for it keep working.
 
 ## Developer Preview
 
-VersionPress is young 🐣. It works fine on simpler sites and you're encouraged to try it in your development workflows but it is not production-ready yet. [Learn more](https://docs.versionpress.net/en/getting-started/about-eap).
+Versionist works fine on simpler sites and you're encouraged to try it in your development workflows, but it is not production-ready yet. Keep a backup of your site.
 
 ## Get started
 
-To **use** VersionPress:
+To **use** Versionist:
 
-1. Make sure you understand the [Developer Preview project status](https://docs.versionpress.net/en/getting-started/about-eap).
-2. Download the latest version from [GitHub releases](https://github.com/versionpress/versionpress/releases).
-3. Install to your WordPress site.
-4. Read the [quick start tutorial](https://blog.versionpress.net/2015/05/versionpress-1-0-walkthrough/) and [part 2 on staging](https://blog.versionpress.net/2015/09/versionpress-2-0-staging/).
-5. Enjoy!
+1. Download the plugin ZIP from the releases of this repository (or build it with `pnpm run build`).
+2. Install it on your WordPress site.
+3. Open the _Versionist_ screen in the WordPress administration and activate it, or run `wp versionist activate`.
 
-To **develop** VersionPress:
+To **develop** Versionist:
 
-1. Set up your development environment as per [Dev-Setup.md](docs/content/en/developer/dev-setup.md).
+1. Set up your development environment as per [dev-setup.md](docs/content/en/developer/dev-setup.md).
 2. Send pull requests.
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for more.
 
-## Useful resources
+## Documentation
 
-- Homepage: <https://versionpress.net/>
-- [User documentation](https://docs.versionpress.net/)
-- [Blog](https://blog.versionpress.net/)
-- Support repo: [`versionpress/support`](https://github.com/versionpress/support)
+The user documentation in [`docs/content`](docs/content/en) is inherited from VersionPress and is being updated for Versionist.
 
-## Contributing
+## License
 
-Please see [CONTRIBUTING.md](./CONTRIBUTING.md), thank you!
+GPL-3.0-or-later. Versionist is based on VersionPress, © VersionPress contributors.

@@ -6,9 +6,9 @@
 	"testsEnvironment": false,
 	"plugins": [],
 	"mappings": {
-		"wp-content/plugins/versionpress": "./plugins/versionpress"
+		"wp-content/plugins/versionist": "./plugins/versionist"
 	},
 	"lifecycleScripts": {
-		"afterStart": "wp-env run --config=.wp-env.e2e.json cli sh -c 'sudo apk add --no-cache --quiet git; git config --global user.name \"VersionPress E2E\"; git config --global user.email e2e@example.com; wp plugin is-active versionpress || (wp plugin activate versionpress && wp vp activate --yes)'"
+		"afterStart": "wp-env run --config=.wp-env.e2e.json cli sh -c 'sudo apk add --no-cache --quiet git; git config --global user.name \"Versionist E2E\"; git config --global user.email e2e@example.com; wp plugin is-active versionist || (wp plugin activate versionist && wp vp activate --yes)'"
 	}
 }

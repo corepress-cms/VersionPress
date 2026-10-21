@@ -47,7 +47,7 @@ export default function RevertConfirm( { method, commits, onCancel }: Props ) {
 						'%d selected change will be reverted. Later changes are kept.',
 						'%d selected changes will be reverted. Later changes are kept.',
 						commits.length,
-						'versionpress'
+						'versionist'
 					),
 					commits.length
 				)
@@ -55,7 +55,7 @@ export default function RevertConfirm( { method, commits, onCancel }: Props ) {
 					/* translators: %s: description of the change to roll back to */
 					__(
 						'The site will be rolled back to the state right after “%s”. All later changes are reverted in a new change, so this can be undone too.',
-						'versionpress'
+						'versionist'
 					),
 					commits[ 0 ].message
 				);
@@ -67,7 +67,7 @@ export default function RevertConfirm( { method, commits, onCancel }: Props ) {
 				<Notice status="warning" isDismissible={ false }>
 					{ __(
 						'There are uncommitted changes. Commit or discard them first.',
-						'versionpress'
+						'versionist'
 					) }
 				</Notice>
 			) }
@@ -83,7 +83,7 @@ export default function RevertConfirm( { method, commits, onCancel }: Props ) {
 					onClick={ onCancel }
 					disabled={ isBusy }
 				>
-					{ __( 'Cancel', 'versionpress' ) }
+					{ __( 'Cancel', 'versionist' ) }
 				</Button>
 				<Button
 					variant="primary"
@@ -92,8 +92,8 @@ export default function RevertConfirm( { method, commits, onCancel }: Props ) {
 					isBusy={ isBusy }
 				>
 					{ method === 'undo'
-						? __( 'Undo', 'versionpress' )
-						: __( 'Roll back', 'versionpress' ) }
+						? __( 'Undo', 'versionist' )
+						: __( 'Roll back', 'versionist' ) }
 				</Button>
 			</Flex>
 		</Flex>

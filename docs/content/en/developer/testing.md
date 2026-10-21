@@ -1,6 +1,6 @@
 # Testing
 
-Tests are a significant part of the VersionPress project; we care about writing and maintaining them. They live in `plugins/versionpress/tests` and there are several types of them, from unit to full end2end tests. They run with [PHPUnit](https://phpunit.de/) 12 inside the [wp-env](dev-setup.md#development-environment) environment.
+Tests are a significant part of the Versionist project; we care about writing and maintaining them. They live in `plugins/versionist/tests` and there are several types of them, from unit to full end2end tests. They run with [PHPUnit](https://phpunit.de/) 12 inside the [wp-env](dev-setup.md#development-environment) environment.
 
 Besides the PHP tests, the admin UI (`admin-ui/`) has unit tests (`pnpm run test:js`, [Vitest](https://vitest.dev/)) and the whole plugin has browser tests (`pnpm run test:e2e`, [Playwright](https://playwright.dev/)), see [Browser tests](#browser-tests).
 
@@ -41,10 +41,10 @@ The first run downloads WordPress and WP-CLI, so it takes a bit longer. The test
 
 ## Browser tests
 
-Playwright tests in `e2e/specs` drive the admin screen and the block editor in Chromium against a third environment (`.wp-env.e2e.json`, port 8890) where VersionPress is activated automatically:
+Playwright tests in `e2e/specs` drive the admin screen and the block editor in Chromium against a third environment (`.wp-env.e2e.json`, port 8890) where Versionist is activated automatically:
 
 ```sh
-pnpm --filter versionpress-e2e run install-browsers   # once
+pnpm --filter versionist-e2e run install-browsers   # once
 pnpm run build:admin
 pnpm run e2e:env
 pnpm run test:e2e
@@ -60,7 +60,7 @@ Unit tests are best suited for small pieces of algorithmic functionality. For ex
 
 ## End2end tests
 
-End2end tests exercise a WordPress site and check that VersionPress creates the right Git commits, that the database is in the correct state, etc. These tests are heavy and slow to run, but if they pass, there's a good chance that VersionPress works correctly.
+End2end tests exercise a WordPress site and check that Versionist creates the right Git commits, that the database is in the correct state, etc. These tests are heavy and slow to run, but if they pass, there's a good chance that Versionist works correctly.
 
 Run them as described in [Tests that need a WordPress site](#tests-that-need-a-wordpress-site).
 
@@ -73,7 +73,7 @@ The worker type is configured by the `end2end-test-type` key in `tests/test-conf
 
 ## Other tests
 
-The project has these other types of tests (folders in the `./plugins/versionpress/tests` folder and also test suite names in `phpunit.xml` so that you can run them using `--testsuite <SuiteName>`):
+The project has these other types of tests (folders in the `./plugins/versionist/tests` folder and also test suite names in `phpunit.xml` so that you can run them using `--testsuite <SuiteName>`):
 
 - `GitRepositoryTests` – test Git repository manipulation in `GitRepository`.
 - `StorageTests` – test that entities are stored correctly as INI files.

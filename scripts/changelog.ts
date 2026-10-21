@@ -29,6 +29,18 @@ if (args._.length === 0 || args['--help']) {
   process.exit();
 }
 
+// The GitHub repository whose PRs and issues are listed, taken from the `origin` remote
+const [repoOwner, repoName] = (() => {
+  const url = execa.sync('git', ['remote', 'get-url', 'origin']).stdout;
+  const match = url.match(/github\.com[:/]([^/]+)\/(.+?)(\.git)?$/);
+  if (!match) {
+    console.error(chalk.red(`The origin remote (${url}) is not a GitHub repository.`));
+    process.exit(1);
+  }
+  return [match[1], match[2]];
+})();
+const repoUrl = `https://github.com/${repoOwner}/${repoName}`;
+
 interface GitRange {
   oldCommit: string;
   newCommit: string;
@@ -42,7 +54,7 @@ interface GitHubIssueOrPr {
 
 interface PullRequest extends GitHubIssueOrPr {
   prNumber: string;
-  relatedIssues: string[]; // e.g., ['#123', 'versionpress/internal#12']
+  relatedIssues: string[]; // e.g., ['#123', 'owner/other-repo#12']
 }
 
 interface Issue extends GitHubIssueOrPr {
@@ -142,13 +154,13 @@ function formatTitle(title: string, isCli: boolean) {
 function formatCommit(sha1: string, commitMessage: string, isCli: boolean) {
   return isCli
     ? `${sha1} ${commitMessage}`
-    : `[\`${sha1.substring(0, 9)}\`](https://github.com/versionpress/versionpress/commit/${sha1}) ${commitMessage}`;
+    : `[\`${sha1.substring(0, 9)}\`](${repoUrl}/commit/${sha1}) ${commitMessage}`;
 }
 
 function formatIssueOrPr(issueOrPrNumber: string, kind: 'pr' | 'issue', isCli: boolean) {
   return isCli
     ? `#${issueOrPrNumber}`
-    : `[#${issueOrPrNumber}](https://github.com/versionpress/versionpress/${
+    : `[#${issueOrPrNumber}](${repoUrl}/${
         kind === 'issue' ? 'issues' : 'pull'
       }/${issueOrPrNumber})`;
 }
@@ -158,7 +170,7 @@ function formatEol(isCli: boolean) {
 }
 
 function formatRelatedIssues(str: string, isCli: boolean) {
-  return isCli ? str : str.replace(/#(\d+)/g, '[#$1](https://github.com/versionpress/versionpress/issues/$1)');
+  return isCli ? str : str.replace(/#(\d+)/g, `[#$1](${repoUrl}/issues/$1)`);
 }
 
 async function getData(range: GitRange): Promise<DiffBetweenVersions> {
@@ -216,7 +228,7 @@ async function getMergeCommitsAndRelatedGithubIssues(range: GitRange): Promise<M
 
   const query = gql`
     query {
-        repository(owner: "versionpress", name: "versionpress") {
+        repository(owner: "${repoOwner}", name: "${repoName}") {
             ${result.pullRequests.map(pr => {
               return `
                 pr${pr.prNumber}: pullRequest(number: ${pr.prNumber}) {
@@ -271,7 +283,7 @@ async function getMergeCommitsAndRelatedGithubIssues(range: GitRange): Promise<M
 
   const issueQuery = gql`
     query {
-        repository(owner: "versionpress", name: "versionpress") {
+        repository(owner: "${repoOwner}", name: "${repoName}") {
             ${issueNumbers.map(issue => {
               return `
                 issue${issue}: issue(number: ${issue}) {

@@ -1,12 +1,12 @@
 {
-  "name": "versionpress-admin-ui",
+  "name": "versionist-admin-ui",
   "version": "1.0.0",
   "private": true,
-  "description": "VersionPress admin screen",
+  "description": "Versionist admin screen",
   "license": "GPL-3.0-or-later",
   "scripts": {
-    "build": "wp-scripts build --output-path=../plugins/versionpress/admin/public/build",
-    "start": "wp-scripts start --output-path=../plugins/versionpress/admin/public/build",
+    "build": "wp-scripts build --output-path=../plugins/versionist/admin/public/build",
+    "start": "wp-scripts start --output-path=../plugins/versionist/admin/public/build",
     "lint": "wp-scripts lint-js src",
     "typecheck": "tsc --noEmit",
     "test": "wp-scripts test-unit-js"

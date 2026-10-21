@@ -1,14 +1,14 @@
-# Using VersionPress
+# Using Versionist
 
-VersionPress is used in three main ways:
+Versionist is used in three main ways:
 
 ## Auto-tracking (unattended mode)
 
-You can activate VersionPress and forget it. It will work behind the scenes, automatically tracking changes on the site. Learn more in the [change tracking](../feature-focus/change-tracking.md) topic.
+You can activate Versionist and forget it. It will work behind the scenes, automatically tracking changes on the site. Learn more in the [change tracking](../feature-focus/change-tracking.md) topic.
 
 ## Inspecting history of changes
 
-On the VersionPress admin screen, you can inspect the history of changes:
+On the Versionist admin screen, you can inspect the history of changes:
 
 <figure style="width: 90%;">
   <img src="https://cloud.githubusercontent.com/assets/101152/26038386/9ea8e4b4-3907-11e7-9eea-5393c6f0a300.png" alt="History overview" />

@@ -9,7 +9,7 @@ Currently, the cloning functionality is exposed via a WP-CLI command. You need t
 Cloning is started from the root of the site by executing the **vp clone** command. In its simplest form, it only needs the `--name` parameter:
 
 ```bash
-wp vp clone --name=staging
+wp versionist clone --name=staging
 ```
 
 If the site was `C:\www\mysite` and it was served as `http://localhost/mysite`, the command did the following:
@@ -18,12 +18,12 @@ If the site was `C:\www\mysite` and it was served as `http://localhost/mysite`, 
 - Created database tables prefixed with `wp_staging_...` and filled them with data
 - Made the site available at `http://localhost/staging`
 
-The original site also stored a named reference to the clone so for instance, you can later [pull](./merging.md) from the clone by executing a command like `wp vp pull --from=staging`.
+The original site also stored a named reference to the clone so for instance, you can later [pull](./merging.md) from the clone by executing a command like `wp versionist pull --from=staging`.
 
 The URL and database settings are all configurable so for example, you could run the command like this:
 
 ```bash
-wp vp clone --name=staging
+wp versionist clone --name=staging
             --dbname=staging_db
             --dbuser=...
             --siteurl=http://staging.mysite.dev/

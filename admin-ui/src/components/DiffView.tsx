@@ -12,16 +12,16 @@ export default function DiffView( { diff }: { diff: string } ) {
 	const files = parseDiff( diff );
 
 	if ( files.length === 0 ) {
-		return <p>{ __( 'No file changes.', 'versionpress' ) }</p>;
+		return <p>{ __( 'No file changes.', 'versionist' ) }</p>;
 	}
 
 	return (
-		<div className="versionpress-diff">
+		<div className="versionist-diff">
 			{ files.map( ( file ) => (
-				<section key={ file.path } className="versionpress-diff__file">
+				<section key={ file.path } className="versionist-diff__file">
 					<h3>{ file.path }</h3>
 					{ file.isBinary ? (
-						<p>{ __( 'Binary file changed.', 'versionpress' ) }</p>
+						<p>{ __( 'Binary file changed.', 'versionist' ) }</p>
 					) : (
 						<pre>
 							{ file.lines.map( ( line, i ) => (

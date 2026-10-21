@@ -1,0 +1,61 @@
+<?php
+
+namespace Versionist\Tests\StorageTests;
+
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use Versionist\ChangeInfos\ChangeInfoFactory;
+use Versionist\Database\Database;
+use Versionist\Database\DbSchemaInfo;
+use Versionist\Database\TableSchemaStorage;
+use Versionist\Storages\DirectoryStorage;
+use Versionist\Storages\MetaEntityStorage;
+use Versionist\Storages\StorageFactory;
+
+class StorageFactoryTest extends TestCase
+{
+
+    #[Test]
+    #[TestDox('Factory creates right storages')]
+    public function factoryCreatesRightStorages()
+    {
+        $storages = [
+            'post' => DirectoryStorage::class,
+            'comment' => DirectoryStorage::class,
+            'option' => DirectoryStorage::class,
+            'term' => DirectoryStorage::class,
+            'termmeta' => MetaEntityStorage::class,
+            'term_taxonomy' => DirectoryStorage::class,
+            'user' => DirectoryStorage::class,
+            'usermeta' => MetaEntityStorage::class,
+            'postmeta' => MetaEntityStorage::class,
+        ];
+
+        /** @var \wpdb $wpdbStub */
+
+        $wpdbStub = new \stdClass();
+        $wpdbStub->prefix = 'prefix_';
+
+        $database = new Database($wpdbStub);
+        $changeInfoFactory = $this->createStub(ChangeInfoFactory::class);
+        $tableSchemaStorage = $this->createStub(TableSchemaStorage::class);
+
+        $factory = new StorageFactory(
+            __DIR__ . '/vpdb',
+            new DbSchemaInfo(
+                [__DIR__ . '/../../.versionpress/schema.yml'],
+                'wp_',
+                PHP_INT_MAX
+            ),
+            $database,
+            [],
+            $changeInfoFactory,
+            $tableSchemaStorage
+        );
+
+        foreach ($storages as $entityName => $expectedClass) {
+            $this->assertInstanceOf($expectedClass, $factory->getStorage($entityName));
+        }
+    }
+}

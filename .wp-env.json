@@ -5,7 +5,7 @@
 	"testsEnvironment": false,
 	"plugins": [],
 	"mappings": {
-		"wp-content/plugins/versionpress": "./plugins/versionpress"
+		"wp-content/plugins/versionist": "./plugins/versionist"
 	},
 	"config": {
 		"WP_DEBUG": true,

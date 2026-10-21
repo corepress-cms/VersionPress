@@ -1,0 +1,359 @@
+<?php
+
+namespace Versionist\Tests\SynchronizerTests;
+
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestDox;
+use Versionist\Storages\DirectoryStorage;
+use Versionist\Synchronizers\Synchronizer;
+use Versionist\Tests\SynchronizerTests\Utils\EntityUtils;
+use Versionist\Tests\Utils\DBAsserter;
+use Versionist\Utils\AbsoluteUrlReplacer;
+use Versionist\Utils\WordPressMissingFunctions;
+
+class PostsSynchronizerTest extends SynchronizerTestCase
+{
+    /** @var DirectoryStorage */
+    private $storage;
+    /** @var DirectoryStorage */
+    private $userStorage;
+    /** @var DirectoryStorage */
+    private $termStorage;
+    /** @var DirectoryStorage */
+    private $termTaxonomyStorage;
+
+    /** @var Synchronizer */
+    private $synchronizer;
+    /** @var Synchronizer */
+    private $usersSynchronizer;
+    /** @var Synchronizer */
+    private $termsSynchronizer;
+    /** @var Synchronizer */
+    private $termTaxonomiesSynchronizer;
+
+    private static $authorVpId;
+    private static $vpId;
+    private static $categoryVpId;
+    private static $categoryTaxonomyVpId;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->storage = self::$storageFactory->getStorage('post');
+        $this->userStorage = self::$storageFactory->getStorage('user');
+        $this->termStorage = self::$storageFactory->getStorage('term');
+        $this->termTaxonomyStorage = self::$storageFactory->getStorage('term_taxonomy');
+
+        $this->synchronizer = new Synchronizer(
+            $this->storage,
+            self::$database,
+            self::$schemaInfo->getEntityInfo('post'),
+            self::$schemaInfo,
+            self::$vpidRepository,
+            self::$urlReplacer,
+            self::$shortcodesReplacer,
+            self::$tableSchemaRepository
+        );
+        $this->usersSynchronizer = new Synchronizer(
+            $this->userStorage,
+            self::$database,
+            self::$schemaInfo->getEntityInfo('user'),
+            self::$schemaInfo,
+            self::$vpidRepository,
+            self::$urlReplacer,
+            self::$shortcodesReplacer,
+            self::$tableSchemaRepository
+        );
+        $this->termsSynchronizer = new Synchronizer(
+            $this->termStorage,
+            self::$database,
+            self::$schemaInfo->getEntityInfo('term'),
+            self::$schemaInfo,
+            self::$vpidRepository,
+            self::$urlReplacer,
+            self::$shortcodesReplacer,
+            self::$tableSchemaRepository
+        );
+        $this->termTaxonomiesSynchronizer = new Synchronizer(
+            $this->termTaxonomyStorage,
+            self::$database,
+            self::$schemaInfo->getEntityInfo('term_taxonomy'),
+            self::$schemaInfo,
+            self::$vpidRepository,
+            self::$urlReplacer,
+            self::$shortcodesReplacer,
+            self::$tableSchemaRepository
+        );
+    }
+
+    #[Test]
+    #[TestDox('Synchronizer adds new post to the database')]
+    public function synchronizerAddsNewPostToDatabase()
+    {
+        $this->createPost();
+        $this->usersSynchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING);
+        $this->synchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING);
+
+        DBAsserter::assertFilesEqualDatabase();
+    }
+
+    #[Test]
+    #[TestDox('Synchronizer updates changed post in the database')]
+    public function synchronizerUpdatesChangedPostInDatabase()
+    {
+        $this->editPost();
+        $this->synchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING);
+        DBAsserter::assertFilesEqualDatabase();
+    }
+
+    #[Test]
+    #[TestDox('Synchronizer replaces absolute URLs')]
+    public function synchronizerReplacesAbsoluteUrls()
+    {
+        $this->editPost('post_content', AbsoluteUrlReplacer::PLACEHOLDER);
+        $this->synchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING);
+        DBAsserter::assertFilesEqualDatabase();
+    }
+
+    #[Test]
+    #[TestDox('Synchronizer removes deleted post from the database')]
+    public function synchronizerRemovesDeletedPostFromDatabase()
+    {
+        $this->deletePost();
+
+        $this->synchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING);
+        $this->usersSynchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING);
+        DBAsserter::assertFilesEqualDatabase();
+    }
+
+    #[Test]
+    #[TestDox('Synchronizer handles circular dependencies')]
+    public function synchronizerHandlesCircularDependencies()
+    {
+        $author = EntityUtils::prepareUser();
+        $this->userStorage->save($author);
+
+        $post1 = EntityUtils::preparePost(null, $author['vp_id']);
+        $post2 = EntityUtils::preparePost(null, $author['vp_id']);
+
+        $post1['vp_post_parent'] = $post2['vp_id'];
+        $post2['vp_post_parent'] = $post1['vp_id'];
+
+        $this->storage->save($post1);
+        $this->storage->save($post2);
+
+        $this->usersSynchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING);
+        $this->synchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING);
+        $this->synchronizer->synchronize(Synchronizer::FIX_REFERENCES);
+
+        try {
+            DBAsserter::assertFilesEqualDatabase();
+        } finally {
+            $this->storage->delete($post1);
+            $this->storage->delete($post2);
+            $this->userStorage->delete($author);
+
+            $this->synchronizer->reset();
+            $this->usersSynchronizer->reset();
+            $this->synchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING);
+            $this->usersSynchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING);
+        }
+    }
+
+    #[Test]
+    #[TestDox('Synchronizer adds new post to the database (selective synchronization)')]
+    public function synchronizerAddsNewPostToDatabase_selective()
+    {
+        $entitiesToSynchronize = $this->createPost();
+        $this->usersSynchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING, $entitiesToSynchronize);
+        $this->synchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING, $entitiesToSynchronize);
+
+        DBAsserter::assertFilesEqualDatabase();
+    }
+
+    #[Test]
+    #[TestDox('Synchronizer updates changed post in the database (selective synchronization)')]
+    public function synchronizerUpdatesChangedPostInDatabase_selective()
+    {
+        $entitiesToSynchronize = $this->editPost();
+        $this->synchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING, $entitiesToSynchronize);
+        DBAsserter::assertFilesEqualDatabase();
+    }
+
+    #[Test]
+    #[TestDox('Synchronizer removes deleted post from the database (selective synchronization)')]
+    public function synchronizerRemovesDeletedPostFromDatabase_selective()
+    {
+        $entitiesToSynchronize = $this->deletePost();
+        $this->synchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING, $entitiesToSynchronize);
+        $this->usersSynchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING, $entitiesToSynchronize);
+        DBAsserter::assertFilesEqualDatabase();
+    }
+
+    #[Test]
+    #[TestDox('Synchronizer synchronizes term relationships (changes category)')]
+    public function synchronizerSynchronizesTermRelationships_changeCategory()
+    {
+        $this->createPost();
+        $this->changeCategory();
+        $this->usersSynchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING);
+        $this->termsSynchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING);
+        $this->termTaxonomiesSynchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING);
+        $this->synchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING);
+        DBAsserter::assertFilesEqualDatabase();
+    }
+
+    #[Test]
+    #[TestDox('Synchronizer synchronizes term relationships (removes category)')]
+    public function synchronizerSynchronizesTermRelationships_removeCategory()
+    {
+        $this->removeCategory();
+        $this->synchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING);
+        $this->termTaxonomiesSynchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING);
+        $this->termsSynchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING);
+        $this->usersSynchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING);
+        DBAsserter::assertFilesEqualDatabase();
+    }
+
+    #[Test]
+    #[TestDox('Synchronizer synchronizes term relationships (changes category, selective synchronization)')]
+    public function synchronizerSynchronizesTermRelationships_changeCategory_selective()
+    {
+        $entitiesToSynchronize = $this->createPost();
+        $entitiesToSynchronize = array_merge($this->changeCategory(), $entitiesToSynchronize);
+        $this->usersSynchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING, $entitiesToSynchronize);
+        $this->termsSynchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING);
+        $this->termTaxonomiesSynchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING);
+        $this->synchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING, $entitiesToSynchronize);
+        DBAsserter::assertFilesEqualDatabase();
+    }
+
+    #[Test]
+    #[TestDox('Synchronizer synchronizes term relationships (removes category, selective synchronization)')]
+    public function synchronizerSynchronizesTermRelationships_removeCategory_selective()
+    {
+        $entitiesToSynchronize = $this->removeCategory();
+        $this->synchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING, $entitiesToSynchronize);
+        $this->termTaxonomiesSynchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING);
+        $this->termsSynchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING);
+        $this->usersSynchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING, $entitiesToSynchronize);
+        DBAsserter::assertFilesEqualDatabase();
+    }
+
+    #[Test]
+    #[TestDox('Synchronizer restores shortcodes')]
+    public function synchronizerRestoresShortcodes()
+    {
+        $this->createPostWithShortcode();
+        $this->usersSynchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING);
+
+        $synchronizationTasks = [Synchronizer::SYNCHRONIZE_EVERYTHING];
+        while (count($synchronizationTasks)) {
+            $task = array_shift($synchronizationTasks);
+            $remainingTasks = $this->synchronizer->synchronize($task);
+            $synchronizationTasks = array_merge($synchronizationTasks, $remainingTasks);
+        }
+
+        DBAsserter::assertFilesEqualDatabase();
+
+        $this->deletePost();
+
+        $this->synchronizer->reset();
+        $this->usersSynchronizer->reset();
+
+        $this->synchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING);
+        $this->usersSynchronizer->synchronize(Synchronizer::SYNCHRONIZE_EVERYTHING);
+        DBAsserter::assertFilesEqualDatabase();
+    }
+
+    private function createPost()
+    {
+        $author = EntityUtils::prepareUser();
+        self::$authorVpId = $author['vp_id'];
+        $this->userStorage->save($author);
+        $post = EntityUtils::preparePost(null, self::$authorVpId);
+        self::$vpId = $post['vp_id'];
+        $this->storage->save($post);
+
+        return [
+            ['vp_id' => self::$authorVpId, 'parent' => self::$authorVpId],
+            ['vp_id' => self::$vpId, 'parent' => self::$vpId],
+        ];
+    }
+
+    private function editPost($key = 'post_status', $value = 'trash')
+    {
+        $this->storage->save(EntityUtils::preparePost(self::$vpId, null, [$key => $value]));
+        return [
+            ['vp_id' => self::$vpId, 'parent' => self::$vpId],
+        ];
+    }
+
+    private function deletePost()
+    {
+        $this->storage->delete(EntityUtils::preparePost(self::$vpId));
+        $this->userStorage->delete(EntityUtils::prepareUser(self::$authorVpId));
+
+        return [
+            ['vp_id' => self::$authorVpId, 'parent' => self::$authorVpId],
+            ['vp_id' => self::$vpId, 'parent' => self::$vpId],
+        ];
+    }
+
+    private function changeCategory()
+    {
+        $categoryTerm = EntityUtils::prepareTerm(null, 'Some category', 'some-category');
+        self::$categoryVpId = $categoryTerm['vp_id'];
+        $categoryTaxonomy = EntityUtils::prepareTermTaxonomy(null, self::$categoryVpId, 'category', 'Some description');
+        self::$categoryTaxonomyVpId = $categoryTaxonomy['vp_id'];
+
+        $this->termStorage->save($categoryTerm);
+        $this->termTaxonomyStorage->save($categoryTaxonomy);
+
+        $this->storage->save(EntityUtils::preparePost(
+            self::$vpId,
+            null,
+            ['vp_term_taxonomy' => [self::$categoryTaxonomyVpId]]
+        ));
+
+        return [
+            ['vp_id' => self::$categoryVpId, 'parent' => self::$categoryVpId],
+            ['vp_id' => self::$categoryTaxonomyVpId, 'parent' => self::$categoryVpId],
+            ['vp_id' => self::$vpId, 'parent' => self::$vpId],
+        ];
+    }
+
+    private function removeCategory()
+    {
+        $this->storage->delete(EntityUtils::preparePost(self::$vpId));
+        $this->termTaxonomyStorage->delete(
+            EntityUtils::prepareTermTaxonomy(self::$categoryTaxonomyVpId, self::$categoryVpId)
+        );
+        $this->termStorage->delete(EntityUtils::prepareTerm(self::$categoryVpId));
+        $this->userStorage->delete(EntityUtils::prepareUser(self::$authorVpId));
+
+        return [
+            ['vp_id' => self::$vpId, 'parent' => self::$vpId],
+            ['vp_id' => self::$categoryTaxonomyVpId, 'parent' => self::$categoryVpId],
+            ['vp_id' => self::$categoryVpId, 'parent' => self::$categoryVpId],
+            ['vp_id' => self::$authorVpId, 'parent' => self::$authorVpId],
+        ];
+    }
+
+    private function createPostWithShortcode()
+    {
+        $author = EntityUtils::prepareUser();
+        self::$authorVpId = $author['vp_id'];
+        $this->userStorage->save($author);
+
+        $post = EntityUtils::preparePost(null, self::$authorVpId);
+        self::$vpId = $post['vp_id'];
+        $post['post_content'] = WordPressMissingFunctions::renderShortcode('gallery', ['id' => self::$vpId]);
+        $this->storage->save($post);
+
+        return [
+            ['vp_id' => self::$authorVpId, 'parent' => self::$authorVpId],
+            ['vp_id' => self::$vpId, 'parent' => self::$vpId],
+        ];
+    }
+}

@@ -1,6 +1,6 @@
 # Merging Sites
 
-After you [created a clone](./cloning.md) of a site and tested the changes, you want to merge them back. Merge is an operation that maintains changes from both environments (as opposed to a copy&paste / replace operation which is destructive by nature) and is achieved by a **pull** command in VersionPress. The result can then be **pushed** to another site instance, for example, the live site.
+After you [created a clone](./cloning.md) of a site and tested the changes, you want to merge them back. Merge is an operation that maintains changes from both environments (as opposed to a copy&paste / replace operation which is destructive by nature) and is achieved by a **pull** command in Versionist. The result can then be **pushed** to another site instance, for example, the live site.
 
 !!! note
     There is **no 'merge' command**. While the operation indeed does a merge, what you're really doing is pulling and pushing the changes between two environments. Git calls these commands `push` and `pull`, and so do we. `merge` in Git is used for merging between *branches*, not clones, and we might introduce such command in the future when/if we support branches as well.
@@ -28,7 +28,7 @@ Let's go through a couple of scenarios to see the commands in action.
 Let's start with the main site, e.g., "live", living in `<some path>/www/live` and served from `http://example.com/live`. We want to create a staging environment so we call:
 
 ```bash
-wp vp clone --name=staging
+wp versionist clone --name=staging
 ```
 
 That creates a clone in `www/staging`, running at `http://example.com/staging` (configurable, see [cloning](./cloning.md) for more). Then we do some changes in this staging environment via the web.
@@ -37,21 +37,21 @@ When done, we `cd` into the `staging` folder and run:
 
 ```bash
 # /www/staging
-wp vp pull
+wp versionist pull
 ```
 
-We don't need to provide any additional parameters because by default, VersionPress will pull from the environment where this clone originated (in Git's language, it's called the *origin*). If we wanted to be explicit, this would have the same effect:
+We don't need to provide any additional parameters because by default, Versionist will pull from the environment where this clone originated (in Git's language, it's called the *origin*). If we wanted to be explicit, this would have the same effect:
 
 ```bash
 # /www/staging
-wp vp pull --from=origin
+wp versionist pull --from=origin
 ```
 
 Here, the use of `origin` doesn't really add any value but sometimes, the `--from` parameter might be useful. For instance, if we wanted to pull changes from the staging environment into the live site, we would run this:
 
 ```bash
 # /www/live
-wp vp pull --from=staging
+wp versionist pull --from=staging
 ```
 
 In either case, the result is an updated site with both the local changes and the changes pulled from the other environment. A merge was performed here.
@@ -59,7 +59,7 @@ In either case, the result is an updated site with both the local changes and th
 The push command is useful when we performed the pull standing in the `staging` folder. In that case, we see the merged environment on the staging site but not on the live site yet. We need to push:
 
 ```bash
-wp vp push
+wp versionist push
 ```
 
 Again, there is no need to provide the `--to=origin` parameter as `origin` is the default target of our clone. After this command, the live site is updated and looks exactly like the staging clone.
@@ -79,7 +79,7 @@ To resolve the actual conflict, after you've chosen the first option above, do t
     1. Resolve the conflict by editing the text files (in your favorite editor or a merge tool like KDiff3, WinMerge etc.)
     2. Stage files
     3. Commit them
-2. Run the **apply-changes** command: `wp vp apply-changes`
+2. Run the **apply-changes** command: `wp versionist apply-changes`
 
 After this, the conflicts are resolved and the resulting state with all the changes applied is visible on the WordPress site.
 

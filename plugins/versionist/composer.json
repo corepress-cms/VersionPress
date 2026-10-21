@@ -1,0 +1,100 @@
+{
+  "name": "versionist/versionist",
+  "description": "Git-powered version control for WordPress: history, undo, rollback and environment sync. A fork of VersionPress.",
+  "type": "wordpress-plugin",
+  "license": "GPL-3.0-or-later",
+  "authors": [
+    {
+      "name": "Versionist contributors"
+    },
+    {
+      "name": "VersionPress contributors",
+      "homepage": "https://github.com/versionpress/versionpress"
+    }
+  ],
+  "config": {
+    "platform": {
+      "php": "8.5.0"
+    },
+    "sort-packages": true,
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "phpstan/extension-installer": true
+    }
+  },
+  "require": {
+    "php": ">=8.5",
+    "ext-ctype": "*",
+    "ext-mbstring": "*",
+    "michelf/php-markdown": "^2.0",
+    "phpmyadmin/sql-parser": "^5.11",
+    "symfony/filesystem": "^8.1",
+    "symfony/process": "^8.1",
+    "symfony/yaml": "^8.1"
+  },
+  "require-dev": {
+    "composer/semver": "^3.5",
+    "fakerphp/faker": "^1.24",
+    "mikey179/vfsstream": "^1.6.12",
+    "mockery/mockery": "^1.6.12",
+    "nette/utils": "^4.1",
+    "php-stubs/wordpress-stubs": "^7.1",
+    "phpcompatibility/phpcompatibility-wp": "^2.1.8",
+    "phpstan/extension-installer": "^1.4",
+    "phpstan/phpstan": "^2.3",
+    "phpunit/phpunit": "^12.5",
+    "rector/rector": "^2.7",
+    "squizlabs/php_codesniffer": "^3.13.5",
+    "szepeviktor/phpstan-wordpress": "^2.0",
+    "tracy/tracy": "^2.12",
+    "wp-cli/wp-cli": "^2.12",
+    "wp-coding-standards/wpcs": "^3.4",
+    "yoast/phpunit-polyfills": "^4.0"
+  },
+  "replace": {
+    "symfony/polyfill-ctype": "*",
+    "symfony/polyfill-mbstring": "*",
+    "symfony/polyfill-php80": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Versionist\\": "src/"
+    },
+    "files": [
+      "internal-functions.php",
+      "public-functions.php"
+    ]
+  },
+  "autoload-dev": {
+    "classmap": [
+      "tests/"
+    ],
+    "exclude-from-classmap": [
+      "tests/SynchronizerTests/Utils/WpdbCopy.php"
+    ]
+  },
+  "extra": {
+    "strauss": {
+      "target_directory": "vendor-prefixed",
+      "namespace_prefix": "Versionist\\Vendor\\",
+      "classmap_prefix": "Versionist_Vendor_",
+      "constant_prefix": "VERSIONIST_VENDOR_",
+      "packages": [
+        "michelf/php-markdown",
+        "phpmyadmin/sql-parser",
+        "symfony/deprecation-contracts",
+        "symfony/filesystem",
+        "symfony/process",
+        "symfony/yaml"
+      ],
+      "update_call_sites": false,
+      "delete_vendor_packages": false
+    }
+  },
+  "scripts": {
+    "lint": "phpcs",
+    "lint:fix": "phpcbf",
+    "analyse": "phpstan analyse --memory-limit=1G",
+    "test": "phpunit -c tests/phpunit.xml"
+  }
+}

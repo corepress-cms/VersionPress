@@ -30,9 +30,9 @@ function History() {
 	};
 
 	return (
-		<div className="versionpress-admin">
+		<div className="versionist-admin">
 			<h1 className="wp-heading-inline">
-				{ __( 'VersionPress', 'versionpress' ) }
+				{ __( 'Versionist', 'versionist' ) }
 			</h1>
 			{ showWelcome && <WelcomeNotice onDismiss={ dismissWelcome } /> }
 			{ isDirty && <UncommittedChanges onChange={ reload } /> }

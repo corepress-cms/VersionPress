@@ -12,7 +12,7 @@ import { viewToQuery } from '../query';
 import CommitDetails from './CommitDetails';
 import RevertConfirm from './RevertConfirm';
 
-/** Fixed on the server, see `VersionPressApi::getCommits()`. */
+/** Fixed on the server, see `VersionistApi::getCommits()`. */
 const PER_PAGE = 25;
 const UPDATE_CHECK_INTERVAL = 15_000;
 
@@ -113,15 +113,15 @@ export default function CommitHistory( { revision, onDirtyChange }: Props ) {
 		() => [
 			{
 				id: 'message',
-				label: __( 'Change', 'versionpress' ),
+				label: __( 'Change', 'versionist' ),
 				enableHiding: false,
 				enableGlobalSearch: true,
 				render: ( { item } ) => (
 					<span
 						className={
 							item.isEnabled
-								? 'versionpress-message'
-								: 'versionpress-message is-disabled'
+								? 'versionist-message'
+								: 'versionist-message is-disabled'
 						}
 					>
 						{ item.message }
@@ -130,10 +130,10 @@ export default function CommitHistory( { revision, onDirtyChange }: Props ) {
 			},
 			{
 				id: 'author',
-				label: __( 'Author', 'versionpress' ),
+				label: __( 'Author', 'versionist' ),
 				getValue: ( { item } ) => item.author.name,
 				render: ( { item } ) => (
-					<span className="versionpress-author">
+					<span className="versionist-author">
 						<img
 							src={ item.author.avatar }
 							alt=""
@@ -148,7 +148,7 @@ export default function CommitHistory( { revision, onDirtyChange }: Props ) {
 			},
 			{
 				id: 'date',
-				label: __( 'Date', 'versionpress' ),
+				label: __( 'Date', 'versionist' ),
 				type: 'datetime',
 				getValue: ( { item } ) => item.date,
 				render: ( { item } ) => (
@@ -167,12 +167,12 @@ export default function CommitHistory( { revision, onDirtyChange }: Props ) {
 			},
 			{
 				id: 'environment',
-				label: __( 'Environment', 'versionpress' ),
+				label: __( 'Environment', 'versionist' ),
 				getValue: ( { item } ) => item.environment,
 			},
 			{
 				id: 'action',
-				label: __( 'Action', 'versionpress' ),
+				label: __( 'Action', 'versionist' ),
 				getValue: ( { item } ) =>
 					item.changes.map( ( c ) => `${ c.type }/${ c.action }` ),
 				elements: listElements( filterConfig?.[ 'action:' ]?.content ),
@@ -180,7 +180,7 @@ export default function CommitHistory( { revision, onDirtyChange }: Props ) {
 			},
 			{
 				id: 'scope',
-				label: __( 'Scope', 'versionpress' ),
+				label: __( 'Scope', 'versionist' ),
 				getValue: ( { item } ) => item.changes.map( ( c ) => c.type ),
 				elements: listElements( filterConfig?.[ 'scope:' ]?.content ),
 				filterBy: { operators: [ 'isAny' ] },
@@ -193,11 +193,11 @@ export default function CommitHistory( { revision, onDirtyChange }: Props ) {
 		() => [
 			{
 				id: 'undo',
-				label: __( 'Undo', 'versionpress' ),
+				label: __( 'Undo', 'versionist' ),
 				icon: undo,
 				supportsBulk: true,
 				isEligible: ( item ) => item.canUndo,
-				modalHeader: __( 'Undo changes', 'versionpress' ),
+				modalHeader: __( 'Undo changes', 'versionist' ),
 				RenderModal: ( { items, closeModal } ) => (
 					<RevertConfirm
 						method="undo"
@@ -208,10 +208,10 @@ export default function CommitHistory( { revision, onDirtyChange }: Props ) {
 			},
 			{
 				id: 'rollback',
-				label: __( 'Roll back to this', 'versionpress' ),
+				label: __( 'Roll back to this', 'versionist' ),
 				icon: backup,
 				isEligible: ( item ) => item.canRollback,
-				modalHeader: __( 'Roll back the site', 'versionpress' ),
+				modalHeader: __( 'Roll back the site', 'versionist' ),
 				RenderModal: ( { items, closeModal } ) => (
 					<RevertConfirm
 						method="rollback"
@@ -228,12 +228,12 @@ export default function CommitHistory( { revision, onDirtyChange }: Props ) {
 		<>
 			{ hasNewerCommits && (
 				<Notice status="info" isDismissible={ false }>
-					{ __( 'There are newer changes.', 'versionpress' ) }{ ' ' }
+					{ __( 'There are newer changes.', 'versionist' ) }{ ' ' }
 					<Button
 						variant="link"
 						onClick={ () => setRefreshCount( ( c ) => c + 1 ) }
 					>
-						{ __( 'Refresh', 'versionpress' ) }
+						{ __( 'Refresh', 'versionist' ) }
 					</Button>
 				</Notice>
 			) }
@@ -253,7 +253,7 @@ export default function CommitHistory( { revision, onDirtyChange }: Props ) {
 				paginationInfo={ pagination }
 				onClickItem={ setDetailsOf }
 				isItemClickable={ () => true }
-				searchLabel={ __( 'Search history', 'versionpress' ) }
+				searchLabel={ __( 'Search history', 'versionist' ) }
 				defaultLayouts={ { table: {} } }
 				config={ { perPageSizes: [ PER_PAGE ] } }
 			/>

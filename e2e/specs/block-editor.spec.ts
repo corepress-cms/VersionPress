@@ -15,7 +15,7 @@ test.describe( 'Block editor', () => {
 		} );
 		await editor.publishPost();
 
-		await admin.visitAdminPage( 'admin.php', 'page=versionpress' );
+		await admin.visitAdminPage( 'admin.php', 'page=versionist' );
 		await expect(
 			page.getByRole( 'row', {
 				name: new RegExp( `(Created|Published) post '${ title }'` ),

@@ -1,6 +1,6 @@
 import type { View } from '@wordpress/dataviews';
 
-/** Filters that map 1:1 to a `key:value` term of the VersionPress search syntax. */
+/** Filters that map 1:1 to a `key:value` term of the Versionist search syntax. */
 const KEYED_FILTERS: Record< string, string > = {
 	action: 'action',
 	scope: 'scope',
@@ -18,7 +18,7 @@ const quote = ( value: string ) =>
 	/[\s"]/.test( value ) ? `"${ value.replace( /"/g, '\\"' ) }"` : value;
 
 /**
- * Converts the DataViews search and filters into a VersionPress search query,
+ * Converts the DataViews search and filters into a Versionist search query,
  * e.g. `author:admin action:post/update "hello world"`.
  *
  * @param view

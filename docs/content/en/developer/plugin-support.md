@@ -3,7 +3,7 @@
 !!! info "Work in progress"
     Plugin support is the main theme of [VersionPress 4.0](https://github.com/versionpress/versionpress/milestone/16) which is currently in development. If you're a plugin developer, we'd like your feedback on this – feel free to [open new issues](https://github.com/versionpress/versionpress/issues/new) or chat with us [on Gitter](https://gitter.im/versionpress/versionpress).
 
-VersionPress needs to understand plugin data, actions, shortcodes and other things to automatically provide version control for them. This document describes how to write plugin (and later, theme) definitions.
+Versionist needs to understand plugin data, actions, shortcodes and other things to automatically provide version control for them. This document describes how to write plugin (and later, theme) definitions.
 
 ## Introduction
 
@@ -24,7 +24,7 @@ Each plugin definition consists of these four files (all optional):
 
 If you like learning by example, these are some existing definitions:
 
-- [WordPress core](https://github.com/versionpress/versionpress/tree/master/plugins/versionpress/.versionpress) (shipped with VersionPress)
+- [WordPress core](https://github.com/versionpress/versionpress/tree/master/plugins/versionpress/.versionpress) (shipped with Versionist)
 - [WooCommerce](https://github.com/pavelevap/versionpress-for-woocommerce/tree/master/.versionpress) by **@pavelevap**.
 - [WPML](https://github.com/mkreckovic/versionpress-sitepress-multilingual-cms) by **@mkreckovic**.
 - [Divi Builder](https://github.com/mkreckovic/versionpress-divi-builder) by **@mkreckovic**.
@@ -33,7 +33,7 @@ The sections below provide an in-depth guide on writing the definition files.
 
 ## Actions
 
-Actions represent what the plugin does. For example, WordPress core has actions like "update option", "publish post" and many others. They are the smallest changes in a WordPress site and are eventually stored as Git commits by VersionPress.
+Actions represent what the plugin does. For example, WordPress core has actions like "update option", "publish post" and many others. They are the smallest changes in a WordPress site and are eventually stored as Git commits by Versionist.
 
 An action is identified by a string like `option/edit` or `post/publish`, commits some file(s) with it and has a human-readable message like "Updated option blogname", "Published post Hello World", etc.
 
@@ -43,7 +43,7 @@ Actions are described in the `actions.yml` file.
 
 ### `actions.yml`
 
-Here's an example from the [WordPress core `actions.yml` file](../../../../plugins/versionpress/.versionpress/actions.yml):
+Here's an example from the [WordPress core `actions.yml` file](../../../../plugins/versionist/.versionpress/actions.yml):
 
 ```yaml
 post:
@@ -81,7 +81,7 @@ These are the main elements:
     - An action has a **message** that can reference tags to make it more user-friendly. Messages use past tense.
     - Each action has a **priority** – 10 by default. Priorities behave like on WordPress filters and actions: the lower the number, the higher the priority. A more important action beats the less important one if both appear in the same commit. For example, `theme/switch` beats `option/edit` which means that the user will see a message about changing themes, not updating some internal option.
     - Priorities can be set dynamically using the `vp_action_priority_{$scope}` filter, see [WPLANG handling](https://github.com/versionpress/versionpress/blob/7a500248a363472127c93a2ffffaec11f486e6e5/plugins/versionpress/.versionpress/hooks.php#L160-L166) as an example.
-    - A combination of a scope and an action, e.g., `post/create` or `theme/install`, uniquely identifies the action and can be [searched for in the UI](https://docs.versionpress.net/en/feature-focus/searching-history).
+    - A combination of a scope and an action, e.g., `post/create` or `theme/install`, uniquely identifies the action and can be [searched for in the UI](../feature-focus/searching-history.md).
 - An action has a **message**, usually in past tense, and a **priority**. If priority is not set, the default value of 10 is used.
     - Priorities behave like on WordPress filters and actions: the lower the number, the higher the priority. A more important action beats the less important one if both appear in the same commit. For example, `theme/switch` beats `option/edit` which means that the user will see a message about changing themes, not updating some internal option.
 - **Meta entities** also contain **`parent-id-tag`** with the name of a tag containing ID of the parent entity.
@@ -110,7 +110,7 @@ makes sure that the message (defined as `Created post '%VP-Post-Title%'`) automa
 
 Tags can be altered (or created entirely if the YAML only uses `/` as a tag value) by filters [`vp_entity_tags_{$entityName}`](https://github.com/versionpress/versionpress/blob/0a29069de769841ed545556cecf4d2323a92741b/plugins/versionpress/src/Storages/DirectoryStorage.php#L226-L226) and [`vp_meta_entity_tags_{$entityName}`](https://github.com/versionpress/versionpress/blob/49fdc0ba737b40560c40129d791e0cf63b1031e0/plugins/versionpress/src/Storages/MetaEntityStorage.php#L167-L16).
 
-**Non-database actions** are tracked manually by calling a global [`vp_force_action()`](https://github.com/versionpress/versionpress/blob/3b0b242b11804d39c838b15a21ffbd7a27b404b4/plugins/versionpress/public-functions.php#L18-L18) function. This overwrites all other actions VersionPress might have collected during the request. For example, this is how `wordpress/update` action is tracked:
+**Non-database actions** are tracked manually by calling a global [`vp_force_action()`](https://github.com/versionpress/versionpress/blob/3b0b242b11804d39c838b15a21ffbd7a27b404b4/plugins/versionpress/public-functions.php#L18-L18) function. This overwrites all other actions Versionist might have collected during the request. For example, this is how `wordpress/update` action is tracked:
 
 ```php
 vp_force_action('wordpress', 'update', $version, [], $wpFiles);
@@ -122,9 +122,9 @@ vp_force_action('wordpress', 'update', $version, [], $wpFiles);
 
 Every action has a message and some content. It's this content that is undone when the user clicks the Undo button in the UI.
 
-For **database actions**, VersionPress automatically commits the corresponding INI file. For example, for a `post/edit` action, a post's INI file is committed.
+For **database actions**, Versionist automatically commits the corresponding INI file. For example, for a `post/edit` action, a post's INI file is committed.
 
-> Side note: VersionPress stores database entities in the `wp-content/vpdb` folder as a set of INI files.
+> Side note: Versionist stores database entities in the `wp-content/vpdb` folder as a set of INI files.
 
 This behavior is sufficient most of the time, however, some changes should commit more files. For example, when the post is an attachment, the uploaded file should also be committed. For this, the list of files to commit can be filtered using the `vp_entity_files_{$entityName}` or `vp_meta_entity_files_{$entityName}` filters.
 
@@ -144,7 +144,7 @@ The array of files to commit can contain three different types of items:
     ]
     ```
 
-    VersionPress automatically calculates the right path to the file.
+    Versionist automatically calculates the right path to the file.
 
 2. All files of an entity type:
 
@@ -218,11 +218,11 @@ Again, this is prefix-less; `wp_` or another prefix will be added automatically.
 
 ### Identifying entities
 
-VersionPress needs to know how to identify entities. There are two approaches and they are represented by either using a `id` or `vpid` property in the schema:
+Versionist needs to know how to identify entities. There are two approaches and they are represented by either using a `id` or `vpid` property in the schema:
 
-- **`id`** points to a standard WordPress auto-increment primary key. **VersionPress will generate VPIDs** (globally unique IDs) for such entities. Most entities are of this type – posts, comments, users etc.
+- **`id`** points to a standard WordPress auto-increment primary key. **Versionist will generate VPIDs** (globally unique IDs) for such entities. Most entities are of this type – posts, comments, users etc.
 
-- **`vpid`** points VersionPress directly to use the given column as a unique identifier and skip the whole VPID generation and maintenance process. Entities of this type **will not have artificial VPIDs**. The `options` table is an example of this – even though it has an `option_id` auto-increment primary key, from VersionPress' point of view the unique identifier is `option_name`.
+- **`vpid`** points Versionist directly to use the given column as a unique identifier and skip the whole VPID generation and maintenance process. Entities of this type **will not have artificial VPIDs**. The `options` table is an example of this – even though it has an `option_id` auto-increment primary key, from Versionist' point of view the unique identifier is `option_name`.
 
 Examples:
 
@@ -239,7 +239,7 @@ option:
 
 ### References
 
-VersionPress needs to understand relationships between entities so that it can update their IDs between environments. There are several types of references, each using a slightly different notation in the schema file.
+Versionist needs to understand relationships between entities so that it can update their IDs between environments. There are several types of references, each using a slightly different notation in the schema file.
 
 #### Basic references
 
@@ -275,7 +275,7 @@ If the entity type needs to be **determined dynamically** it can reference a PHP
 postmeta:
   value-references:
     meta_key@meta_value:
-      _menu_item_object_id: '@\VersionPress\Database\VpidRepository::getMenuReference'
+      _menu_item_object_id: '@\Versionist\Database\VpidRepository::getMenuReference'
 ```
 
 Note that there are no parenthesis at the end of this (it's a method reference, not a call) and that it is prefixed with `@`. The function gets the entity as a parameter and returns a target entity name. For example, for `_menu_item_object_id`, the function looks for a related DB row with `_menu_item_type` and returns its value.
@@ -349,7 +349,7 @@ post:
     term_relationships.term_taxonomy_id: term_taxonomy
 ```
 
-One entity is considered the main one which is kind of arbitrary as technically, VersionPress treats them equally. Here, we decided that posts will store tags and categories in them, not the other way around.
+One entity is considered the main one which is kind of arbitrary as technically, Versionist treats them equally. Here, we decided that posts will store tags and categories in them, not the other way around.
 
 The syntax is:
 
@@ -389,7 +389,7 @@ This references one of the basic reference column names, not the final entity. T
 
 ### Frequently written entities
 
-Some entities are changed very often, e.g., view counters, Akismet spam count, etc. VersionPress only saves them once in a while and the `frequently-written` section influences this:
+Some entities are changed very often, e.g., view counters, Akismet spam count, etc. Versionist only saves them once in a while and the `frequently-written` section influences this:
 
 ```yaml
 entity:
@@ -427,13 +427,13 @@ entity:
     - computed_column_name: '@functionReference'
 ```
 
-The function is called whenever VersionPress does its INI files => DB synchronization. The function will get an instance of `VersionPress\Database\Database` as an argument and is expected to update the database appropriately. The `Database` class has the same methods as `wpdb` but the changes it make are not tracked by VersionPress itself.
+The function is called whenever Versionist does its INI files => DB synchronization. The function will get an instance of `Versionist\Database\Database` as an argument and is expected to update the database appropriately. The `Database` class has the same methods as `wpdb` but the changes it make are not tracked by Versionist itself.
 
 ### Cache invalidation
 
-WordPress uses cache for posts, comments, users, terms, etc. This cache needs to be invalidated when VersionPress updates database (on undo, rollback, pull, etc.). It is possible to tell VersionPress which cache to invalidate and where to find the related IDs.
+WordPress uses cache for posts, comments, users, terms, etc. This cache needs to be invalidated when Versionist updates database (on undo, rollback, pull, etc.). It is possible to tell Versionist which cache to invalidate and where to find the related IDs.
 
-For example, when some post is deleted using the Undo functionality, it is necessary to call `clean_post_cache(<post-id>)`. VersionPress will do it automatically based on following piece of schema:
+For example, when some post is deleted using the Undo functionality, it is necessary to call `clean_post_cache(<post-id>)`. Versionist will do it automatically based on following piece of schema:
 
 ```yaml
 post:
@@ -443,7 +443,7 @@ post:
     - post: id
 ```
 
-It tells VersionPress to delete the post cache (VP resolves the function name as `clean_<cache-type>_cache`). You can use `id` as the source of IDs for invalidation or a reference. For example like this:
+It tells Versionist to delete the post cache (VP resolves the function name as `clean_<cache-type>_cache`). You can use `id` as the source of IDs for invalidation or a reference. For example like this:
 
 ```yaml
 post:
@@ -458,7 +458,7 @@ post:
 
 ## Shortcodes
 
-Similarly to database schema, VersionPress needs to understand shortcodes as they can also contain entity references. `shortcodes.yml` describes this, here is an example:
+Similarly to database schema, Versionist needs to understand shortcodes as they can also contain entity references. `shortcodes.yml` describes this, here is an example:
 
 ```yaml
 shortcode-locations:
@@ -478,7 +478,7 @@ shortcodes:
     exclude: post
 ```
 
-The **`shortcode-locations`** array tells VersionPress where the shortcodes can appear. By default, WordPress only allows shortcodes in post content but here's an example of how it could look if it also supported them in post titles and comments:
+The **`shortcode-locations`** array tells Versionist where the shortcodes can appear. By default, WordPress only allows shortcodes in post content but here's an example of how it could look if it also supported them in post titles and comments:
 
 ```yaml
 shortcode-locations:
@@ -509,7 +509,7 @@ shortcodes:
 
 For example the `[gallery]` shortcode has four attributes that can contain references, and they all point to the `post` entity (it's an entity, not a table; the table will eventually be something like `wp_posts`).
 
-Note that you don't have to worry about the attribute type, whether it contains a single ID or a list of IDs. VersionPress handles both cases automatically:
+Note that you don't have to worry about the attribute type, whether it contains a single ID or a list of IDs. Versionist handles both cases automatically:
 
 ```php
 [gallery id="1"]
@@ -518,17 +518,17 @@ Note that you don't have to worry about the attribute type, whether it contains 
 
 ## Hooks
 
-If something cannot be described statically, VersionPress offers several filters, actions and functions to define behavior through code. Implement them in the `hooks.php` file.
+If something cannot be described statically, Versionist offers several filters, actions and functions to define behavior through code. Implement them in the `hooks.php` file.
 
 Most of the filters have already been discussed in the text above, you can find the full API reference below.
 
 ## Ignored folders
 
-Feel free to use custom `.gitignore` for files in the plugin directory. You can also ignore files / directories outside the plugin directory. There will be a filter to let VersionPress know which files / directories you want to ignore.
+Feel free to use custom `.gitignore` for files in the plugin directory. You can also ignore files / directories outside the plugin directory. There will be a filter to let Versionist know which files / directories you want to ignore.
 
 ## Discovery mechanism
 
-VersionPress looks for plugin definitions in these locations, in this order:
+Versionist looks for plugin definitions in these locations, in this order:
 
 1. `WP_CONTENT_DIR/.versionpress/plugins/<plugin-slug>` (user-editable definitions in the `wp-content` directory)
 2. `WP_PLUGIN_DIR/<plugin-slug>/.versionpress` (definitions bundled with plugins)

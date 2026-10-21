@@ -1,8 +1,8 @@
 {
-  "name": "versionpress-docs",
+  "name": "versionist-docs",
   "version": "1.0.0",
-  "description": "VersionPress documentation",
-  "author": "VersionPress",
+  "description": "Versionist documentation",
+  "author": "Versionist contributors",
   "license": "GPL",
   "scripts": {
     "start": "docker run --rm -it -p 8000:8000 -v `pwd`:/docs squidfunk/mkdocs-material:2.7.3",

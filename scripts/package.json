@@ -1,8 +1,8 @@
 {
-  "name": "versionpress-scripts",
+  "name": "versionist-scripts",
   "version": "1.0.0",
-  "description": "Scripts for VersionPress development",
-  "author": "VersionPress",
+  "description": "Scripts for Versionist development",
+  "author": "Versionist contributors",
   "license": "GPL",
   "scripts": {
     "tsc": "tsc",

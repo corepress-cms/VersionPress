@@ -4,9 +4,9 @@ If you want to contribute, this is an overview of how we manage the project.
 
 ## Workflow on GitHub
 
-All usually starts with a [GitHub issue](https://github.com/versionpress/versionpress/issues) which is [labeled](https://github.com/versionpress/versionpress/labels) and put to a certain [milestone](https://github.com/versionpress/versionpress/milestones). [GitHub projects](https://github.com/versionpress/versionpress/projects) are used to more granularly track issue states.
+All usually starts with a GitHub issue which is labeled and put to a certain milestone.
 
-[Pull requests](https://github.com/versionpress/versionpress/pulls) implement the functionality. We use [the GitHub flow](https://guides.github.com/introduction/flow/):
+Pull requests implement the functionality. We use [the GitHub flow](https://guides.github.com/introduction/flow/):
 
 ![GitHub Flow](https://guides.github.com/activities/hello-world/branching.png)
 
@@ -19,7 +19,7 @@ Guidelines we follow:
 
 ## Release process
 
-It evolves over time, it's best to find the most recent issue with the [`release`](https://github.com/versionpress/versionpress/labels/release) label and start from there. General steps involve:
+It evolves over time, it's best to find the most recent issue with the `release` label and start from there. General steps involve:
 
 - Generate a list of pull requests between the latest released version and `master` by running e.g. `pnpm run changelog 4.0..master`, see `scripts/README.md`.
     - Review the pull requests, possibly update their titles, add 'noteworthy' label to those that should be highlighted, etc.
@@ -41,4 +41,4 @@ A sequence of releases might look like this:
 
 ### Writing release notes
 
-Release notes are primarily written in `docs/content/en/release-notes` and [published here](http://docs.versionpress.net/en/release-notes/). They are also copied to [GitHub releases](https://github.com/versionpress/versionpress/releases) with some slight formatting modifications.
+Release notes are primarily written in `docs/content/en/release-notes` and also copied to GitHub releases with some slight formatting modifications.

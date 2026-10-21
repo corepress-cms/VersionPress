@@ -18,7 +18,7 @@ import type { RequirementsReport } from '../api';
 const ENVIRONMENT_PATTERN = /^[a-zA-Z0-9_-]+$/;
 
 /**
- * Shown until VersionPress is initialized: requirements check and the one-time initialization.
+ * Shown until Versionist is initialized: requirements check and the one-time initialization.
  */
 export default function ActivationScreen() {
 	const [ report, setReport ] = useState< RequirementsReport | null >( null );
@@ -41,7 +41,7 @@ export default function ActivationScreen() {
 		api.initialize( environment )
 			.then( ( result ) => {
 				setProgress( result.progress );
-				// Reload into the history; VersionPress now tracks the site.
+				// Reload into the history; Versionist now tracks the site.
 				window.location.reload();
 			} )
 			.catch( ( e ) => {
@@ -52,12 +52,12 @@ export default function ActivationScreen() {
 	};
 
 	return (
-		<div className="versionpress-admin versionpress-activation">
-			<h1>{ __( 'Welcome to VersionPress!', 'versionpress' ) }</h1>
-			<p className="versionpress-activation__intro">
+		<div className="versionist-admin versionist-activation">
+			<h1>{ __( 'Welcome to Versionist!', 'versionist' ) }</h1>
+			<p className="versionist-activation__intro">
 				{ __(
-					'VersionPress needs a one-time initialization that stores the whole site in a Git repository. This is resource-intensive and might take a while on sites with many posts, comments etc. The site is in maintenance mode until it finishes.',
-					'versionpress'
+					'Versionist needs a one-time initialization that stores the whole site in a Git repository. This is resource-intensive and might take a while on sites with many posts, comments etc. The site is in maintenance mode until it finishes.',
+					'versionist'
 				) }
 			</p>
 
@@ -70,13 +70,13 @@ export default function ActivationScreen() {
 			<Card>
 				<CardHeader>
 					<strong>
-						{ __( 'System requirements', 'versionpress' ) }
+						{ __( 'System requirements', 'versionist' ) }
 					</strong>
 				</CardHeader>
 				<CardBody>
 					{ ! report && ! error && <Spinner /> }
 					{ report && (
-						<ul className="versionpress-requirements">
+						<ul className="versionist-requirements">
 							{ report.requirements.map( ( requirement ) => (
 								<li
 									key={ requirement.name }
@@ -108,8 +108,8 @@ export default function ActivationScreen() {
 					{ report?.isVersioned && (
 						<Notice status="info" isDismissible={ false }>
 							{ __(
-								'This site is already versioned in Git. VersionPress will add some rules to .gitignore and install a merge driver for its own files.',
-								'versionpress'
+								'This site is already versioned in Git. Versionist will add some rules to .gitignore and install a merge driver for its own files.',
+								'versionist'
 							) }
 						</Notice>
 					) }
@@ -118,38 +118,33 @@ export default function ActivationScreen() {
 
 			<Card>
 				<CardHeader>
-					<strong>
-						{ __( 'Before you start', 'versionpress' ) }
-					</strong>
+					<strong>{ __( 'Before you start', 'versionist' ) }</strong>
 				</CardHeader>
 				<CardBody>
-					<ul className="versionpress-activation__notes">
+					<ul className="versionist-activation__notes">
 						<li>
 							{ __(
-								'VersionPress is a Developer Preview. Some workflows, third-party plugins or hosts might not be fully supported.',
-								'versionpress'
+								'Versionist is a Developer Preview. Some workflows, third-party plugins or hosts might not be fully supported.',
+								'versionist'
 							) }
 						</li>
 						<li>
-							{ __(
-								'Have a backup. Seriously.',
-								'versionpress'
-							) }
+							{ __( 'Have a backup. Seriously.', 'versionist' ) }
 						</li>
 					</ul>
 					<TextControl
 						__next40pxDefaultSize
 						__nextHasNoMarginBottom
-						label={ __( 'Environment name', 'versionpress' ) }
+						label={ __( 'Environment name', 'versionist' ) }
 						help={
 							isValidEnvironment
 								? __(
 										'E.g. production, staging or my-machine; helps to tell this environment apart later. Letters, numbers, - and _ only.',
-										'versionpress'
+										'versionist'
 									)
 								: __(
 										'Please use letters, numbers, - and _ only.',
-										'versionpress'
+										'versionist'
 									)
 						}
 						value={ environment }
@@ -160,7 +155,7 @@ export default function ActivationScreen() {
 
 			<Flex
 				justify="flex-start"
-				className="versionpress-activation__actions"
+				className="versionist-activation__actions"
 			>
 				<Button
 					variant="primary"
@@ -176,14 +171,14 @@ export default function ActivationScreen() {
 					{ isInitializing
 						? __(
 								'Activating… this may take a while',
-								'versionpress'
+								'versionist'
 							)
-						: __( 'Activate VersionPress', 'versionpress' ) }
+						: __( 'Activate Versionist', 'versionist' ) }
 				</Button>
 			</Flex>
 
 			{ progress.length > 0 && (
-				<ol className="versionpress-activation__progress">
+				<ol className="versionist-activation__progress">
 					{ progress.map( ( message, i ) => (
 						<li key={ i }>{ message }</li>
 					) ) }

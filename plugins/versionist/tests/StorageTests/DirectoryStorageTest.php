@@ -1,0 +1,215 @@
+<?php
+
+namespace Versionist\Tests\StorageTests;
+
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Versionist\Storages\DirectoryStorage;
+use Versionist\Utils\FileSystem;
+
+class DirectoryStorageTest extends StorageTestCase
+{
+    /** @var DirectoryStorage */
+    private $storage;
+
+    /** @var string */
+    private $storageDir;
+
+    private $testingEntity = [
+        "comment_author" => "Mr WordPress",
+        "comment_author_email" => "",
+        "comment_author_url" => "https://wordpress.org/",
+        "comment_author_IP" => "",
+        "comment_date" => "2015-02-02 14:19:59",
+        "comment_date_gmt" => "2015-02-02 14:19:59",
+        "comment_content" => "Hi, this is a comment.",
+        "comment_karma" => 0,
+        "comment_approved" => 1,
+        "comment_agent" => "",
+        "comment_type" => "",
+        "vp_id" => "927D63C187164CA1BCEAB2B13B29C8F0",
+        "vp_comment_post_ID" => "F0E1B6313B7A48E49A1B38DF382B350D",
+    ];
+
+    #[Test]
+    public function savedEntityEqualsLoadedEntity()
+    {
+        $this->storage->save($this->testingEntity);
+        $loadedEntity = $this->storage->loadEntity($this->testingEntity['vp_id']);
+        $this->assertEquals($this->testingEntity, $loadedEntity);
+    }
+
+
+    #[Test]
+    public function loadAllReturnsOnlyOriginalEntities()
+    {
+        $this->storage->save($this->testingEntity);
+        $loadedComments = $this->storage->loadAll();
+        $this->assertTrue(count($loadedComments) === 1);
+        $this->assertTrue($this->testingEntity == reset($loadedComments));
+    }
+
+    #[Test]
+    public function storageDoesNotContainDeletedEntities()
+    {
+        $anotherTestingEntity = $this->testingEntity;
+        $anotherTestingEntity['another_field'] = 'value';
+        $anotherTestingEntity['vp_id'] = '0123456789ABCDEFFEDCBA9876543210';
+
+        $this->storage->save($this->testingEntity);
+        $this->storage->save($anotherTestingEntity);
+
+        $loadedEntities = $this->storage->loadAll();
+        $this->assertTrue(count($loadedEntities) === 2);
+
+        $this->storage->delete($this->testingEntity);
+
+        $loadedEntities = $this->storage->loadAll();
+        $this->assertTrue(count($loadedEntities) === 1);
+        $this->assertEquals($anotherTestingEntity, reset($loadedEntities));
+    }
+
+    #[Test]
+    public function savedEntityDoesNotContainVpIdKey()
+    {
+        $this->storage->save($this->testingEntity);
+        $fileName = $this->storage->getEntityFilename($this->testingEntity['vp_id']);
+        $content = file_get_contents($fileName);
+        $this->assertFalse(strpos($content, 'vp_id'), 'Entity contains a vp_id key');
+    }
+
+    #[Test]
+    public function savedEntityDoesNotContainPrimaryKey()
+    {
+        $testingEntity = $this->testingEntity;
+        $testingEntity['comment_id'] = 123;
+
+        $this->storage->save($testingEntity);
+        $loadedEntity = $this->storage->loadEntity($this->testingEntity['vp_id']);
+        $this->assertEquals($this->testingEntity, $loadedEntity);
+    }
+
+    #[Test]
+    public function savedEntityDoesNotContainIgnoredColumns()
+    {
+        $testingEntity = $this->testingEntity;
+        $testingEntity['ignored_column'] = 123;
+
+        $this->storage->save($testingEntity);
+        $loadedEntity = $this->storage->loadEntity($this->testingEntity['vp_id']);
+        $this->assertEquals($this->testingEntity, $loadedEntity);
+    }
+
+    #[Test]
+    public function typesOfSavedAndLoadedEntityMatch()
+    {
+        $testingEntity = [
+            'field_1' => 'some option',
+            'field_2' => null,
+            'field_3' => 1,
+            'vp_id' => '1234ABCD'
+        ];
+        $this->storage->save($testingEntity);
+        $loadedEntity = $this->storage->loadEntity($testingEntity['vp_id']);
+        $this->assertSame($testingEntity, $loadedEntity);
+    }
+
+    #[Test]
+    #[DataProvider('specialIdsProvider')]
+    public function naturalIdCanContainSpecialChars($id)
+    {
+        $idColumnName = 'entity_id';
+
+        $entity = [
+            $idColumnName => $id,
+            'some_field' => 'foo',
+            'other_field' => 'bar',
+        ];
+
+        $entityInfo = $this->createEntityInfoMock([
+            'usesGeneratedVpids' => false,
+            'vpidColumnName' => $idColumnName,
+        ], [
+            'getIgnoredColumns' => [],
+        ]);
+
+        $changeInfoFactory = $this->createChangeInfoFactoryMock();
+
+        $storage = new DirectoryStorage($this->storageDir, $entityInfo, 'prefix_', $changeInfoFactory);
+
+        $storage->save($entity);
+        $loadedEntity = $storage->loadEntity($id);
+        $this->assertEquals($entity, $loadedEntity);
+    }
+
+    public static function specialIdsProvider()
+    {
+        return [
+            ['name_with_<'],
+            ['name_with_>'],
+            ['name_with_:'],
+            ['name_with_?'],
+            ['name_with_*'],
+            ['name_with_|'],
+            ['name_with_"'],
+            ['name_with_/'],
+            ['name_with_\\'],
+            ['.'],
+            ['..'],
+            [' '],
+            ['+'],
+            ['%2B'],
+        ];
+    }
+
+    /**
+     * Test covers part of for WP-428
+     */
+    #[Test]
+    public function vpidShouldBeReplaceableWithZero()
+    {
+        $updatedEntity = $this->testingEntity;
+
+        $updatedEntity['vp_comment_post_ID'] = 0;
+
+        $this->storage->save($this->testingEntity);
+        $this->storage->save($updatedEntity);
+
+        $loadedOption = $this->storage->loadEntity($updatedEntity['vp_id']);
+        $this->assertEquals($updatedEntity, $loadedOption);
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->storageDir = sys_get_temp_dir() . '/vp-storage-dir';
+
+        $entityInfo = $this->createEntityInfoMock([
+            'vpidColumnName' => 'vp_id',
+            'usesGeneratedVpids' => true,
+            'idColumnName' => 'comment_id',
+        ], [
+            'getIgnoredColumns' => ['ignored_column' => null],
+        ]);
+
+
+        if (file_exists($this->storageDir)) {
+            FileSystem::remove($this->storageDir);
+        }
+        mkdir($this->storageDir);
+
+        if (!file_exists($this->storageDir)) {
+            throw new \Exception('wat?');
+        }
+
+        $changeInfoFactory = $this->createChangeInfoFactoryMock();
+        $this->storage = new DirectoryStorage($this->storageDir, $entityInfo, 'prefix_', $changeInfoFactory);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        FileSystem::remove($this->storageDir);
+    }
+}
