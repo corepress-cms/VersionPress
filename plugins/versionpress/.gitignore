@@ -1,2 +1,3 @@
 # Copied from 'frontend' by build scripts
 /admin/public/gui
+.phpunit.cache

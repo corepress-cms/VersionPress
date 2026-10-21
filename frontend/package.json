@@ -8,10 +8,11 @@
     "loglevel": "warn"
   },
   "scripts": {
-    "start": "node webpack/webpack-dev-server.js --config webpack/webpack.dev.js --env.port 8888",
-    "build": "tsc --noEmit && webpack --config webpack/webpack.prod.js",
-    "tsc": "tsc --noEmit",
-    "clean": "rimraf build/* && git clean -fx -- \"src/**.js\" \"src/**.map\""
+    "start": "pnpm run ensure-local-config && node webpack/webpack-dev-server.js --config webpack/webpack.dev.js --env.port 8080",
+    "build": "pnpm run ensure-local-config && tsc --noEmit && webpack --config webpack/webpack.prod.js",
+    "tsc": "pnpm run ensure-local-config && tsc --noEmit",
+    "clean": "rimraf build/* && git clean -fx -- \"src/**.js\" \"src/**.map\"",
+    "ensure-local-config": "node -e \"try{require('fs').copyFileSync('src/config/config.local.sample.ts','src/config/config.local.ts',require('fs').constants.COPYFILE_EXCL)}catch(e){if(e.code!=='EEXIST')throw e}\""
   },
   "engines": {
     "node": ">=8.0.0",

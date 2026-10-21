@@ -2,6 +2,15 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Listen for Xdebug (wp-env)",
+      "type": "php",
+      "request": "launch",
+      "port": 9003,
+      "pathMappings": {
+        "/var/www/html/wp-content/plugins/versionpress": "${workspaceFolder}/plugins/versionpress"
+      }
+    },
+    {
       "type": "node",
       "request": "attach",
       "name": "Node attach",

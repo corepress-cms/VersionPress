@@ -3,7 +3,7 @@
   "description": "Git + WordPress = ♡",
   "homepage": "https://versionpress.net/",
   "type": "wordpress-plugin",
-  "license": "GPL",
+  "license": "GPL-3.0-or-later",
   "authors": [
     {
       "name": "VersionPress",
@@ -12,26 +12,40 @@
   ],
   "config": {
     "platform": {
-      "php": "8.1.2"
+      "php": "8.5.0"
+    },
+    "sort-packages": true,
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "phpstan/extension-installer": true
     }
   },
   "require": {
-    "php": "^8.0",
-    "nette/utils": "^4.0",
-    "symfony/yaml": "^6.3",
-    "symfony/process": "^6.3",
+    "php": ">=8.5",
     "michelf/php-markdown": "^2.0",
-    "symfony/filesystem": "^6.3",
-    "phpmyadmin/sql-parser": "^5.8",
-    "tracy/tracy": "^2.10"
+    "nette/utils": "^4.1",
+    "phpmyadmin/sql-parser": "^5.11",
+    "symfony/filesystem": "^8.1",
+    "symfony/process": "^8.1",
+    "symfony/yaml": "^8.1"
   },
   "require-dev": {
-    "phpunit/phpunit": "^9.6",
-    "squizlabs/php_codesniffer": "^3.7",
-    "mikey179/vfsstream": "^1.6",
-    "10up/wp_mock": "^1.0",
-    "phpunit/phpunit-selenium": "^9.0",
-    "composer/semver": "^3.4"
+    "composer/semver": "^3.5",
+    "fakerphp/faker": "^1.24",
+    "mikey179/vfsstream": "^1.6.12",
+    "mockery/mockery": "^1.6.12",
+    "php-stubs/wordpress-stubs": "^7.1",
+    "phpcompatibility/phpcompatibility-wp": "^2.1.8",
+    "phpstan/extension-installer": "^1.4",
+    "phpstan/phpstan": "^2.3",
+    "phpunit/phpunit": "^12.5",
+    "rector/rector": "^2.7",
+    "squizlabs/php_codesniffer": "^3.13.5",
+    "szepeviktor/phpstan-wordpress": "^2.0",
+    "tracy/tracy": "^2.12",
+    "wp-cli/wp-cli": "^2.12",
+    "wp-coding-standards/wpcs": "^3.4",
+    "yoast/phpunit-polyfills": "^4.0"
   },
   "autoload": {
     "psr-4": {
@@ -43,6 +57,17 @@
     ]
   },
   "autoload-dev": {
-    "classmap":  ["tests/"]
+    "classmap": [
+      "tests/"
+    ],
+    "exclude-from-classmap": [
+      "tests/SynchronizerTests/Utils/WpdbCopy.php"
+    ]
+  },
+  "scripts": {
+    "lint": "phpcs",
+    "lint:fix": "phpcbf",
+    "analyse": "phpstan analyse --memory-limit=1G",
+    "test": "phpunit -c tests/phpunit.xml"
   }
 }

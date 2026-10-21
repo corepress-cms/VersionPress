@@ -1,41 +1,33 @@
 {
   "name": "versionpress-dev-workspace",
   "version": "1.0.0",
+  "private": true,
   "description": "VersionPress development workspace",
   "author": "VersionPress",
-  "license": "GPL",
+  "license": "GPL-3.0-or-later",
+  "packageManager": "pnpm@12.3.4",
   "scripts": {
-    "init-dev": "node -r ./scripts/node_modules/ts-node/register scripts/init-dev.ts",
-    "refresh-dev": "git clean -fxd && npm i",
-    "init-phpstorm": "node -r ./scripts/node_modules/ts-node/register scripts/init-phpstorm.ts",
+    "prepare": "husky",
     "build": "node -r ./scripts/node_modules/ts-node/register scripts/build.ts",
+    "build:frontend": "pnpm --filter versionpress-frontend run build && node -e \"require('fs').cpSync('frontend/build', 'plugins/versionpress/admin/public/gui', {recursive: true})\"",
     "changelog": "node -r ./scripts/node_modules/ts-node/register scripts/changelog.ts",
-    "start": "docker-compose up -d wordpress",
-    "stop": "docker-compose stop",
-    "stop-and-cleanup": "docker-compose down -v && rm -rf dev-env/wp",
-    "tests:unit": "node -r ./scripts/node_modules/ts-node/register scripts/run-tests.ts --testsuite Unit",
-    "tests": "node -r ./scripts/node_modules/ts-node/register scripts/run-tests.ts",
-    "tests:cleanup": "docker-compose -f docker-compose-tests.yml down && rm -rf dev-env/wp-for-tests dev-env/test-logs",
-    "tests:copy-files-to-host": "rm -rf dev-env/wp-for-tests dev-env/test-logs && docker-compose -f docker-compose-tests.yml run --rm copy-files-to-host",
-    "build-images": "npm-run-all -s _build-image-*",
-    "_build-image-wp": "docker build --pull -t versionpress/wordpress:php7.2-apache dev-env/wordpress-image",
-    "_build-image-cli": "docker build --pull -t versionpress/wordpress:cli dev-env/wordpress-cli-image",
-    "push-images": "npm-run-all -s _push-image-*",
-    "_push-image-wp": "docker push versionpress/wordpress:php7.2-apache",
-    "_push-image-cli": "docker push versionpress/wordpress:cli",
-    "get-image-digests": "node -r ./scripts/node_modules/ts-node/register scripts/get-dockerhub-digests.ts versionpress/wordpress",
-    "postinstall": "(cd scripts && npm install) && npm run init-dev",
-    "lint:markdown": "markdownlint -i '{**/vendor/**,**/node_modules/**,ext-libs/**,dev-env/**}' .",
-    "lint:php": "./plugins/versionpress/vendor/bin/phpcs --standard=./plugins/versionpress/ruleset.xml"
+    "env": "wp-env",
+    "start": "wp-env start",
+    "stop": "wp-env stop",
+    "destroy": "wp-env destroy",
+    "composer": "wp-env run wordpress --env-cwd=wp-content/plugins/versionpress composer",
+    "wp": "wp-env run cli wp",
+    "lint": "pnpm run lint:php && pnpm run lint:markdown",
+    "lint:php": "wp-env run wordpress --env-cwd=wp-content/plugins/versionpress vendor/bin/phpcs",
+    "lint:php:fix": "wp-env run wordpress --env-cwd=wp-content/plugins/versionpress vendor/bin/phpcbf",
+    "lint:markdown": "markdownlint -i '{**/vendor/**,**/node_modules/**}' .",
+    "analyse": "wp-env run wordpress --env-cwd=wp-content/plugins/versionpress vendor/bin/phpstan analyse --memory-limit=1G",
+    "test": "pnpm run phpunit --testsuite Unit,StorageTests,GitRepositoryTests",
+    "test:unit": "pnpm run phpunit --testsuite Unit",
+    "phpunit": "wp-env run wordpress --env-cwd=wp-content/plugins/versionpress vendor/bin/phpunit -c tests/phpunit.xml"
   },
   "engines": {
-    "node": ">= 18",
-    "npm": ">= 9"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
+    "node": ">= 24"
   },
   "lint-staged": {
     "*.md": [
@@ -43,9 +35,9 @@
     ]
   },
   "devDependencies": {
-    "husky": "^8.0.3",
-    "lint-staged": "^15.0.2",
-    "markdownlint-cli": "^0.37.0",
-    "npm-run-all": "^4.1.5"
+    "@wordpress/env": "^12.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
+    "markdownlint-cli": "^0.49.1"
   }
 }

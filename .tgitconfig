@@ -1,4 +1,0 @@
-[bugtraq]
-	url = https://github.com/versionpress/versionpress/issues/%BUGID%
-	warnifnoissue = true
-	logregex = "\\[?#(\\d+)\\]?"

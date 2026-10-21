@@ -2,8 +2,8 @@
 
 const config = {
   api: {
-    root: 'http://localhost:8088',
-    adminUrl: 'http://localhost:8088/wp-admin',
+    root: 'http://localhost:8888',
+    adminUrl: 'http://localhost:8888/wp-admin',
   },
 };
 

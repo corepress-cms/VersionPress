@@ -8,7 +8,7 @@ const argv = require('minimist')(process.argv.slice(2));
 process.env.NODE_ENV = 'development';
 
 let env = argv.env;
-env.port = env.port || 8888;
+env.port = env.port || 8080;
 const config = require(path.join(process.cwd(), argv.config))(env);
 
 new WebpackDevServer(webpack(config), {

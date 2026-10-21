@@ -1,0 +1,7 @@
+packages:
+  - frontend
+  - scripts
+
+# Only needed by wp-env's Playground runtime; we use the Docker runtime.
+allowBuilds:
+  fs-ext-extra-prebuilt: false
