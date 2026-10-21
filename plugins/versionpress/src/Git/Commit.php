@@ -6,7 +6,6 @@ use DateTime;
 
 class Commit
 {
-
     /** @var string */
     private $hash;
 

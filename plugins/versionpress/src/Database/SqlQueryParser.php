@@ -11,7 +11,6 @@ use PhpMyAdmin\SqlParser\Statements\UpdateStatement;
 
 class SqlQueryParser
 {
-
     /**
      * @var DbSchemaInfo
      */
@@ -180,8 +179,10 @@ class SqlQueryParser
                     return $whereFragments;
                 }
             }
-        } elseif ($parser->errors != null && $primarySqlStatement->where == null
-            && strpos($sqlQuery, 'WHERE') === false) {
+        } elseif (
+            $parser->errors != null && $primarySqlStatement->where == null
+            && strpos($sqlQuery, 'WHERE') === false
+        ) {
             $whereFragments = ['1=1'];
             return $whereFragments;
         }

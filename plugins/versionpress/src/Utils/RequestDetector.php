@@ -4,7 +4,6 @@ namespace VersionPress\Utils;
 
 class RequestDetector
 {
-
     private $isWpCli;
     private $wpCliArguments;
 
@@ -102,7 +101,8 @@ class RequestDetector
         foreach ($arguments as $name) {
             // code from WP_CLI\Fetchers\Plugin\get()
             foreach (get_plugins() as $file => $_) {
-                if ($file === "$name.php" ||
+                if (
+                    $file === "$name.php" ||
                     ($name && $file === $name) ||
                     (dirname($file) === $name && $name !== '.')
                 ) {

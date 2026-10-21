@@ -4,8 +4,6 @@ namespace VersionPress\Utils;
 
 class JsRedirect
 {
-
-
     /**
      * Echoes window.location JavaScript that redirects the browser
      *

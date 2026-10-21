@@ -11,8 +11,7 @@ use VersionPress\Utils\QueryLanguageUtils;
  */
 class EntityInfo
 {
-
-    const FREQUENTLY_WRITTEN_DEFAULT_INTERVAL = 'hourly';
+    public const FREQUENTLY_WRITTEN_DEFAULT_INTERVAL = 'hourly';
 
     /**
      * Name of the entity, e.g. 'post' or 'comment'.

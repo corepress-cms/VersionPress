@@ -1,6 +1,5 @@
 <?php
 
-
 namespace VersionPress\Utils;
 
 use Nette\Utils\Strings;
@@ -12,7 +11,6 @@ use Nette\Utils\Strings;
  */
 class StringUtils
 {
-
     /**
      * Converts given verb to past sense. E.g., "install" -> "installed",
      * "activate" -> "activated" etc.

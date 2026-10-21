@@ -10,7 +10,6 @@ use VersionPress\ChangeInfos\PostChangeInfo;
 
 class PostChangeInfoPreprocessor implements ChangeInfoPreprocessor
 {
-
     /**
      * @var ChangeInfoFactory
      */

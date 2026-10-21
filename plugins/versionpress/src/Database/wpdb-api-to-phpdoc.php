@@ -1,4 +1,5 @@
 <?php
+
 // Generates wpdb API description as PhpDoc. Used by `Database`.
 // Run this file as `php wpdb-api-to-phpdoc.php`.
 

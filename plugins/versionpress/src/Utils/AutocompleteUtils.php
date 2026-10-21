@@ -7,7 +7,6 @@ use VersionPress\Actions\ActionsInfoProvider;
 
 class AutocompleteUtils
 {
-
     /**
      * @param $actionsInfoProvider ActionsInfoProvider
      *

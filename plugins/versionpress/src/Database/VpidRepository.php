@@ -10,7 +10,7 @@ use VersionPress\Utils\SerializedDataCursor;
 
 class VpidRepository
 {
-    const UNKNOWN_VPID_MARK = '<unknown-vpid>';
+    public const UNKNOWN_VPID_MARK = '<unknown-vpid>';
 
     /** @var Database */
     private $database;
@@ -63,9 +63,11 @@ class VpidRepository
             list($sourceColumn, $sourceValue, $valueColumn, $pathInStructure) =
                 array_values(ReferenceUtils::getValueReferenceDetails($referenceName));
 
-            if (isset($entity[$sourceColumn]) && ($entity[$sourceColumn] === $sourceValue ||
-                    ReferenceUtils::valueMatchesWildcard($sourceValue, $entity[$sourceColumn]))
-                && isset($entity[$valueColumn])
+            if (
+                isset($entity[$sourceColumn]) &&
+                ($entity[$sourceColumn] === $sourceValue ||
+                    ReferenceUtils::valueMatchesWildcard($sourceValue, $entity[$sourceColumn])) &&
+                isset($entity[$valueColumn])
             ) {
                 if ($this->isNullReference($entity[$valueColumn])) {
                     continue;
@@ -125,7 +127,8 @@ class VpidRepository
             list($sourceColumn, $sourceValue, $valueColumn, $pathInStructure) =
                 array_values(ReferenceUtils::getValueReferenceDetails($referenceName));
 
-            if (isset($entity[$sourceColumn]) && ($entity[$sourceColumn] === $sourceValue ||
+            if (
+                isset($entity[$sourceColumn]) && ($entity[$sourceColumn] === $sourceValue ||
                     ReferenceUtils::valueMatchesWildcard($sourceValue, $entity[$sourceColumn])) &&
                 isset($entity[$valueColumn])
             ) {

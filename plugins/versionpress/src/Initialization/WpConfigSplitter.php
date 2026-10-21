@@ -13,8 +13,7 @@ use Nette\Utils\Strings;
  */
 class WpConfigSplitter
 {
-
-    const COMMON_CONFIG_NAME = 'wp-config.common.php';
+    public const COMMON_CONFIG_NAME = 'wp-config.common.php';
 
     private static $constantsForExtraction = [
         'WP_CONTENT_DIR',

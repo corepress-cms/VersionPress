@@ -4,7 +4,6 @@ namespace VersionPress\Utils;
 
 class ArrayUtils
 {
-
     public static function parametrize($array)
     {
         $out = [];

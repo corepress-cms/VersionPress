@@ -7,8 +7,7 @@ namespace VersionPress\Utils;
  */
 class AbsoluteUrlReplacer
 {
-
-    const PLACEHOLDER = "<<[site-url]>>";
+    public const PLACEHOLDER = "<<[site-url]>>";
     private $siteUrl;
     private $replacedObjects = [];
 

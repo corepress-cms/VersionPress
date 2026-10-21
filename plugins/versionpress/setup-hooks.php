@@ -430,7 +430,8 @@ function vp_register_hooks()
         do_action('vp_theme_changed', 'update', $stylesheet, $themeName);
     }
 
-    if (basename($_SERVER['PHP_SELF']) === 'plugin-editor.php' &&
+    if (
+        basename($_SERVER['PHP_SELF']) === 'plugin-editor.php' &&
         ((isset($_POST['action']) && $_POST['action'] === 'update') || isset($_GET['liveupdate'])
         )
     ) {
@@ -645,7 +646,8 @@ add_action('admin_notices', 'vp_activation_nag', 4 /* WP update nag is 3, we are
 function vp_activation_nag()
 {
 
-    if (VersionPress::isActive() ||
+    if (
+        VersionPress::isActive() ||
         get_current_screen()->id == "toplevel_page_versionpress" ||
         get_current_screen()->id == "versionpress/admin/index" ||
         get_current_screen()->id == "versionpress/admin/deactivate"

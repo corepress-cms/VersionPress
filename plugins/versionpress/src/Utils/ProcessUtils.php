@@ -4,7 +4,6 @@ namespace VersionPress\Utils;
 
 class ProcessUtils
 {
-
     /**
      * `escapeshellarg()` reimplementation that is custom-coded for both Linux and Windows. This fixes some
      * bugs on Windows (quotes not escaped properly) and allows you to force the escaping type

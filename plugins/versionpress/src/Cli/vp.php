@@ -1,4 +1,5 @@
 <?php
+
 // NOTE: VersionPress must be fully activated for these commands to be available
 
 // WORD-WRAPPING of the doc comments: 75 chars for option description, 90 chars for everything else,
@@ -36,7 +37,6 @@ use WP_CLI_Command;
  */
 class VPCommand extends WP_CLI_Command
 {
-
     /**
      * Configures VersionPress. See options for details.
      *

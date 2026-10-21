@@ -1,4 +1,5 @@
 <?php
+
 namespace VersionPress\Synchronizers;
 
 use Nette\Utils\Strings;
@@ -25,12 +26,11 @@ use VersionPress\Utils\WordPressCacheUtils;
  */
 class Synchronizer
 {
-
-    const SYNCHRONIZE_EVERYTHING = 'everything';
-    const FIX_REFERENCES = 'fix-references';
-    const SYNCHRONIZE_MN_REFERENCES = 'mn-references';
-    const COMPUTE_COLUMN_VALUES = 'compute-column-values';
-    const REPLACE_SHORTCODES = 'replace-shortcodes';
+    public const SYNCHRONIZE_EVERYTHING = 'everything';
+    public const FIX_REFERENCES = 'fix-references';
+    public const SYNCHRONIZE_MN_REFERENCES = 'mn-references';
+    public const COMPUTE_COLUMN_VALUES = 'compute-column-values';
+    public const REPLACE_SHORTCODES = 'replace-shortcodes';
 
     private $entityName;
     private $idColumnName;
@@ -559,7 +559,6 @@ class Synchronizer
     {
         $cleanCache = $this->entityInfo->cleanCache;
         foreach ($cleanCache as $cacheType => $idColumn) {
-
             if (is_array($idColumn)) {
                 $cacheType = key($idColumn);
                 $idColumn = $idColumn[$cacheType];

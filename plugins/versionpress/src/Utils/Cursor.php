@@ -9,7 +9,6 @@ namespace VersionPress\Utils;
  */
 class Cursor
 {
-
     private $data;
     private $path;
 

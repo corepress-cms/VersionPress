@@ -19,7 +19,6 @@ use VersionPress\Git\CommitMessage;
  */
 interface ChangeInfo
 {
-
     /**
      * Creates a commit message from this ChangeInfo. Used by Committer.
      *

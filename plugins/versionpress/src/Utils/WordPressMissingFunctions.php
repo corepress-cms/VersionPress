@@ -4,7 +4,6 @@ namespace VersionPress\Utils;
 
 class WordPressMissingFunctions
 {
-
     public static function getWpConfigPath()
     {
         $defaultWpConfigPath = realpath(ABSPATH . 'wp-config.php');

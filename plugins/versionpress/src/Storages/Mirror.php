@@ -1,4 +1,5 @@
 <?php
+
 namespace VersionPress\Storages;
 
 use VersionPress\ChangeInfos\TrackedChangeInfo;
@@ -10,7 +11,6 @@ use VersionPress\Utils\AbsoluteUrlReplacer;
  */
 class Mirror
 {
-
     /** @var StorageFactory */
     private $storageFactory;
 

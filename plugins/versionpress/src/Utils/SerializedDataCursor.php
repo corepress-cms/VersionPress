@@ -11,7 +11,6 @@ namespace VersionPress\Utils;
  */
 class SerializedDataCursor
 {
-
     private $data;
     private $paths;
 

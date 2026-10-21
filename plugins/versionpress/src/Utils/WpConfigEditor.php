@@ -9,7 +9,6 @@ namespace VersionPress\Utils;
  */
 class WpConfigEditor
 {
-
     private $wpConfigPath;
     private $isCommonConfig;
 

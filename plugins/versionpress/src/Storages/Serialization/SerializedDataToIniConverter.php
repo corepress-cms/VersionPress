@@ -11,8 +11,7 @@ use VersionPress\Utils\StringUtils;
  */
 class SerializedDataToIniConverter
 {
-
-    const SERIALIZED_MARKER = '<<<serialized>>>';
+    public const SERIALIZED_MARKER = '<<<serialized>>>';
 
     // Variables used for parsing PHP-serialized string
     private $index = 0;
@@ -190,7 +189,7 @@ class SerializedDataToIniConverter
         switch ($type) {
             case 'string':
                 if (StringUtils::isSerializedValue($parsingResult['value'])) {
-                    return (new self)->toIniLines($key, $parsingResult['value']);
+                    return (new self())->toIniLines($key, $parsingResult['value']);
                 }
 
                 return $this->createFirstLine($key, null, $parsingResult['value']);

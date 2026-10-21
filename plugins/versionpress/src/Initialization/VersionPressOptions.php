@@ -8,9 +8,8 @@ namespace VersionPress\Initialization;
  */
 class VersionPressOptions
 {
-
     /**
      * Similar to WP's show_welcome_panel. If `1`, show welcome panel above the main VersionPress table.
      */
-    const USER_META_SHOW_WELCOME_PANEL = 'vp_show_welcome_panel';
+    public const USER_META_SHOW_WELCOME_PANEL = 'vp_show_welcome_panel';
 }

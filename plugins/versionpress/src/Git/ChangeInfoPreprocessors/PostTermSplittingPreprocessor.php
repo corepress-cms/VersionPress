@@ -8,7 +8,6 @@ use VersionPress\Utils\ArrayUtils;
 
 class PostTermSplittingPreprocessor implements ChangeInfoPreprocessor
 {
-
     public function __construct(ChangeInfoFactory $changeInfoFactory)
     {
     }
@@ -16,7 +15,6 @@ class PostTermSplittingPreprocessor implements ChangeInfoPreprocessor
     public function process($changeInfoList)
     {
         if ($this->containsPostChangeInfo($changeInfoList) && $this->containsTermChangeInfo($changeInfoList)) {
-
             $filterFn = function ($changeInfo) {
                 return ChangeInfoUtils::changeInfoRepresentsEntity($changeInfo, 'term') ||
                 ChangeInfoUtils::changeInfoRepresentsEntity($changeInfo, 'term_taxonomy');

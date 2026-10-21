@@ -19,7 +19,6 @@ use Nette\Utils\Strings;
  */
 class CommitMessage
 {
-
     /**
      * @var string
      */

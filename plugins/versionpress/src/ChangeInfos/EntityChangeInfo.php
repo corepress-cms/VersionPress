@@ -22,7 +22,6 @@ use VersionPress\Database\EntityInfo;
  */
 class EntityChangeInfo extends TrackedChangeInfo
 {
-
     /** @var EntityInfo */
     private $entityInfo;
     /** @var ActionsInfo */

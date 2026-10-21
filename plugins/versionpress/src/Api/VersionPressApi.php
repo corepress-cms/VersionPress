@@ -31,7 +31,6 @@ use WP_REST_Server;
 
 class VersionPressApi
 {
-
     /** @var GitRepository */
     private $gitRepository;
     /** @var Reverter */
@@ -39,7 +38,7 @@ class VersionPressApi
     /** @var SynchronizationProcess */
     private $synchronizationProcess;
 
-    const NAMESPACE_VP = 'versionpress';
+    public const NAMESPACE_VP = 'versionpress';
 
     /** @var CommitMessageParser */
     private $commitMessageParser;
@@ -307,7 +306,8 @@ class VersionPressApi
         if (!preg_match('/^[0-9a-f]+$/', $commitHash) || count($log) === 0) {
             return new WP_Error('error', 'Invalid commit hash', ['status' => 404]);
         }
-        if (!$this->gitRepository->wasCreatedAfter($commitHash, $initialCommitHash) &&
+        if (
+            !$this->gitRepository->wasCreatedAfter($commitHash, $initialCommitHash) &&
             $log[0]->getHash() !== $initialCommitHash
         ) {
             return new WP_Error('error', 'Cannot roll back before initial commit', ['status' => 403]);
@@ -474,10 +474,11 @@ class VersionPressApi
         $this->gitRepository->stageAll();
 
         $status = $this->gitRepository->getStatus(true);
-        if (ArrayUtils::any($status, function ($fileStatus) {
-            $vpdbName = basename(VP_VPDB_DIR);
-            return Strings::contains($fileStatus[1], $vpdbName);
-        })
+        if (
+            ArrayUtils::any($status, function ($fileStatus) {
+                $vpdbName = basename(VP_VPDB_DIR);
+                return Strings::contains($fileStatus[1], $vpdbName);
+            })
         ) {
             $this->updateDatabase($status);
         }

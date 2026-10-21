@@ -7,7 +7,6 @@ namespace VersionPress\Utils;
  */
 final class IdUtil
 {
-
     /**
      * Generates and returns a new ID that is suitable as a globally unique identifier
      * of any VersionPress entity (post, comment, user, etc.). The format is basically

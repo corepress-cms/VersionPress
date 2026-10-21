@@ -8,7 +8,6 @@ use VersionPress\Utils\StringUtils;
 
 class BulkChangeInfo implements ChangeInfo
 {
-
     /** @var TrackedChangeInfo[] */
     protected $changeInfos;
     /** @var int */

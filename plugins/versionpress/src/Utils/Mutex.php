@@ -7,7 +7,6 @@ namespace VersionPress\Utils;
  */
 class Mutex
 {
-
     /** @var string Name of the mutex */
     private $name;
     /** @var int Timeout for release (in seconds) */

@@ -1,4 +1,5 @@
 <?php
+
 namespace VersionPress\Git;
 
 use Nette\Utils\Strings;
@@ -7,10 +8,9 @@ use VersionPress\Utils\StringUtils;
 
 class MergeDriverInstaller
 {
-
-    const DRIVER_BASH = 'bash';
-    const DRIVER_PHP = 'php';
-    const DRIVER_AUTO = 'auto';
+    public const DRIVER_BASH = 'bash';
+    public const DRIVER_PHP = 'php';
+    public const DRIVER_AUTO = 'auto';
 
     /**
      * Installs a merge driver.
@@ -91,14 +91,18 @@ class MergeDriverInstaller
         $gitconfigContents = file_get_contents($pluginDir . '/src/Initialization/gitconfig.tpl');
 
         $mergeDriverScript = '';
-        if ($driver == MergeDriverInstaller::DRIVER_BASH
-            || ($driver == MergeDriverInstaller::DRIVER_AUTO && DIRECTORY_SEPARATOR == '/')) {
+        if (
+            $driver == MergeDriverInstaller::DRIVER_BASH
+            || ($driver == MergeDriverInstaller::DRIVER_AUTO && DIRECTORY_SEPARATOR == '/')
+        ) {
             $mergeDriverScript = $pluginDir . '/src/Git/merge-drivers/ini-merge.sh';
             @chmod($mergeDriverScript, 0750); // Catching warning in case of read-only FS. However, it should already be 0750.
         }
 
-        if ($driver == MergeDriverInstaller::DRIVER_PHP
-            || ($driver == MergeDriverInstaller::DRIVER_AUTO && DIRECTORY_SEPARATOR == '\\')) {
+        if (
+            $driver == MergeDriverInstaller::DRIVER_PHP
+            || ($driver == MergeDriverInstaller::DRIVER_AUTO && DIRECTORY_SEPARATOR == '\\')
+        ) {
             // Finding the PHP binary is a bit tricky because web server requests don't use the main PHP binary at all
             // (they either use `mod_php` or call `php-cgi`). PHP_BINARY is only correct when the process
             // is initiated from the command line, e.g., via WP-CLI when cloning.

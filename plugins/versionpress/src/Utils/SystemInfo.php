@@ -8,7 +8,6 @@ use VersionPress\VersionPress;
 
 class SystemInfo
 {
-
     public static function getAllInfo()
     {
         $output = [];

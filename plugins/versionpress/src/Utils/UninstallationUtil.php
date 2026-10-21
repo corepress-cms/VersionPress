@@ -1,4 +1,5 @@
 <?php
+
 namespace VersionPress\Utils;
 
 use VersionPress\ChangeInfos\CommitMessageParser;
@@ -11,7 +12,6 @@ use VersionPress\Git\GitRepository;
  */
 class UninstallationUtil
 {
-
     /**
      * Returns true if VP uninstallation should remove the Git repo from the root folder (and back it
      * up somewhere). This is true if the first commit is VersionPress commit. Otherwise, the Git repo

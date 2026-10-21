@@ -4,7 +4,6 @@ namespace VersionPress\Utils;
 
 class SecurityUtils
 {
-
     /**
      * Installs .htaccess and web.config to the given path
      *

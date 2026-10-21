@@ -4,7 +4,6 @@ namespace VersionPress\Synchronizers;
 
 class SynchronizationProcess
 {
-
     /**
      * @var SynchronizerFactory
      */

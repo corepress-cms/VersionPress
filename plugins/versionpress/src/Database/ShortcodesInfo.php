@@ -11,7 +11,6 @@ use Symfony\Component\Yaml\Yaml;
  */
 class ShortcodesInfo
 {
-
     private $shortcodeSchema = [];
 
     public function __construct($shortcodeFiles)

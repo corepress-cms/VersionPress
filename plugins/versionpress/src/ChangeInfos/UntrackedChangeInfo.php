@@ -1,4 +1,5 @@
 <?php
+
 namespace VersionPress\ChangeInfos;
 
 use VersionPress\Git\CommitMessage;
@@ -12,7 +13,6 @@ use VersionPress\Git\CommitMessage;
  */
 class UntrackedChangeInfo implements ChangeInfo
 {
-
     /** @var CommitMessage */
     private $commitMessage;
 

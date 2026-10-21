@@ -9,7 +9,6 @@ namespace VersionPress\Utils;
  */
 class EntityUtils
 {
-
     /**
      * Used by storages to determine a diff between two entity data. Note that the data might
      * not be complet - for example, the $oldEntityData might be the previous, full state

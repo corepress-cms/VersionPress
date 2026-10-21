@@ -8,7 +8,6 @@ use VersionPress\ChangeInfos\TrackedChangeInfo;
 
 class TermTaxonomyPreprocessor implements ChangeInfoPreprocessor
 {
-
     /** @var ChangeInfoFactory */
     private $changeInfoFactory;
 

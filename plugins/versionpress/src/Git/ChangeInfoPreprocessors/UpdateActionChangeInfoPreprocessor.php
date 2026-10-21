@@ -1,4 +1,5 @@
 <?php
+
 namespace VersionPress\Git\ChangeInfoPreprocessors;
 
 use VersionPress\ChangeInfos\ChangeInfo;
@@ -7,7 +8,6 @@ use VersionPress\ChangeInfos\EntityChangeInfo;
 
 class UpdateActionChangeInfoPreprocessor implements ChangeInfoPreprocessor
 {
-
     public function __construct(ChangeInfoFactory $changeInfoFactory)
     {
     }

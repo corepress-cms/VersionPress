@@ -1,4 +1,5 @@
 <?php
+
 // Global VersionPress functions. Stored here and included from bootstrap.php because
 // versionpress.php might not be always loaded (e.g., in WP-CLI commands).
 

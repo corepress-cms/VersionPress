@@ -1,4 +1,5 @@
 <?php
+
 namespace VersionPress\Database;
 
 use DateTime;
@@ -14,7 +15,6 @@ use VersionPress\Utils\ReferenceUtils;
  */
 class DbSchemaInfo
 {
-
     /**
      * Parsed YAML schema - to see what it looks like
      * paste the YAML into {@link http://yaml-online-parser.appspot.com/}).

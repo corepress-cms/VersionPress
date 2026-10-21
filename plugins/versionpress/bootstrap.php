@@ -1,10 +1,12 @@
 <?php
+
 use Tracy\Debugger;
 use VersionPress\DI\DIContainer;
 
 /**
  * Absolute path to the directory containing VersionPress (wp-content/versionpress).
  */
+
 define('VERSIONPRESS_PLUGIN_DIR', __DIR__);
 
 if (!defined('VP_VPDB_DIR')) {

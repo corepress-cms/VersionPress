@@ -6,7 +6,6 @@ use Nette\Utils\Strings;
 
 class WpdbReplacer
 {
-
     private static $methodPrefix = '__wp_';
     private static $vpFirstLineComment = '// Enhanced by VersionPress';
     private static $bootstrapRequire = "

@@ -35,9 +35,8 @@ namespace VersionPress\Utils;
  */
 class QueryLanguageUtils
 {
-
-    const VALUE_WILDCARD = 'VALUE_WILDCARD';
-    const VALUE_STRING = 'VALUE_STRING';
+    public const VALUE_WILDCARD = 'VALUE_WILDCARD';
+    public const VALUE_STRING = 'VALUE_STRING';
 
     // https://regex101.com/r/wT6zG3/6 (query language)
     private static $queryRegex = "/(-)?(?:(\\S+):\\s*)?(?:'((?:[^'\\\\]|\\\\.)*)'|\"((?:[^\"\\\\]|\\\\.)*)\"|(\\S+))/";
@@ -67,7 +66,6 @@ class QueryLanguageUtils
 
             $ruleParts = [];
             foreach ($matches as $match) {
-
                 // If a match is for an `operator:value` query, $match[2] is the operator
                 $key = empty($match[2]) ? 'text' : $match[2];
 

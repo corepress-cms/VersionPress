@@ -1,4 +1,5 @@
 <?php
+
 namespace VersionPress\Database;
 
 /**
@@ -105,7 +106,6 @@ namespace VersionPress\Database;
  */
 class Database
 {
-
     /**
      * @var \wpdb
      */

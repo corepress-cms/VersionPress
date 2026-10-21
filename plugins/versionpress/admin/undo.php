@@ -1,4 +1,5 @@
 <?php
+
 use VersionPress\ChangeInfos\CommitMessageParser;
 use VersionPress\DI\VersionPressServices;
 use VersionPress\Git\GitRepository;

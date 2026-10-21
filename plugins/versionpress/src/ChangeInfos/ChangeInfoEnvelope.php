@@ -1,4 +1,5 @@
 <?php
+
 namespace VersionPress\ChangeInfos;
 
 use Nette\Utils\Strings;
@@ -11,18 +12,17 @@ use VersionPress\VersionPress;
  */
 class ChangeInfoEnvelope implements ChangeInfo
 {
-
     /**
      * VP meta tag that says the version of VersionPress in which was the commit made.
      * It's parsed into {@link version} field.
      */
-    const VP_VERSION_TAG = "X-VP-Version";
+    public const VP_VERSION_TAG = "X-VP-Version";
 
     /**
      * VP meta tag that says the name of current environment. For clone it's the name of clone,
      * for original site it's 'default'. It's based on constant {@link VP_ENVIRONMENT}.
      */
-    const VP_ENVIRONMENT_TAG = "X-VP-Environment";
+    public const VP_ENVIRONMENT_TAG = "X-VP-Environment";
 
     /** @var TrackedChangeInfo[] */
     private $changeInfoList;

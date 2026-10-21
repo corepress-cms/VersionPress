@@ -28,7 +28,6 @@ use VersionPress\Utils\StringUtils;
  */
 class IniSerializer
 {
-
     private static $sanitizedChars = [
         "[" => "<<<lbrac>>>",
         "]" => "<<<rbrac>>>",

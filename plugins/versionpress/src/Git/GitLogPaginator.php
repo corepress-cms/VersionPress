@@ -1,4 +1,5 @@
 <?php
+
 namespace VersionPress\Git;
 
 /**
@@ -6,7 +7,6 @@ namespace VersionPress\Git;
  */
 class GitLogPaginator
 {
-
     /**
      * @var GitRepository
      */

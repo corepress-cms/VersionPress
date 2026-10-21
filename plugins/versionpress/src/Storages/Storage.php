@@ -1,4 +1,5 @@
 <?php
+
 namespace VersionPress\Storages;
 
 use Nette\Utils\Strings;
@@ -13,8 +14,7 @@ use VersionPress\Storages\Serialization\IniSerializer;
  */
 abstract class Storage
 {
-
-    const PREFIX_PLACEHOLDER = "<<table-prefix>>";
+    public const PREFIX_PLACEHOLDER = "<<table-prefix>>";
 
     /** @var bool */
     protected $isTransaction;

@@ -24,13 +24,15 @@ add_filter('vp_entity_should_be_saved_post', function ($shouldBeSaved, $data, $s
     }
 
     // ignoring ajax autosaves for drafts - WP saves them using Heartbeat API
-    if ($isExistingEntity && isset($data['post_status']) && ($data['post_status'] === 'draft' &&
+    if (
+        $isExistingEntity && isset($data['post_status']) && ($data['post_status'] === 'draft' &&
         defined('DOING_AJAX') && DOING_AJAX === true && $_POST['action'] === 'heartbeat')
     ) {
         return false;
     }
 
-    if (!$isExistingEntity && isset($data['post_type']) && $data['post_type'] === 'attachment' &&
+    if (
+        !$isExistingEntity && isset($data['post_type']) && $data['post_type'] === 'attachment' &&
         !isset($data['post_title'])
     ) {
         return false;
@@ -72,7 +74,6 @@ add_filter('vp_entity_should_be_saved_option', function ($shouldBeSaved, $data, 
 add_filter('vp_entity_action_post', function ($action, $oldEntity, $newEntity) {
 
     if ($action === 'update') { // determine more specific action
-
         $diff = EntityUtils::getDiff($oldEntity, $newEntity);
 
         if (isset($diff['post_status']) && $diff['post_status'] === 'trash') {
@@ -181,7 +182,8 @@ add_filter('vp_entity_action_comment', function ($action, $oldEntity, $newEntity
         return $action;
     }
 
-    if (($oldEntity['comment_approved'] === 'trash' && $newEntity['comment_approved'] === 'post-trashed') ||
+    if (
+        ($oldEntity['comment_approved'] === 'trash' && $newEntity['comment_approved'] === 'post-trashed') ||
         ($oldEntity['comment_approved'] === 'post-trashed' && $newEntity['comment_approved'] === 'trash')
     ) {
         return 'update'; // trash -> post-trashed and post-trashed -> trash are not interesting action for us
@@ -352,7 +354,6 @@ add_filter('vp_meta_entity_files_postmeta', function ($files, $oldEntity, $newEn
 add_filter('vp_action_description_postmeta', function ($message, $action, $vpid, $tags) {
 
     if ($tags['VP-PostMeta-Key'] === "_thumbnail_id") { // featured image
-
         $verbs = [
             'create' => 'Set',
             'update' => 'Changed',

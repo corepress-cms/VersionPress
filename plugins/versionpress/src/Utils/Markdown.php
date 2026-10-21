@@ -7,7 +7,6 @@ namespace VersionPress\Utils;
  */
 class Markdown
 {
-
     /**
      * Transforms Markdown to HTML using {@link https://michelf.ca/projects/php-markdown/ PHP Markdown}.
      * One special feature is single line detection - if the passed $text is single line, this function

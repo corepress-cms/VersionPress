@@ -7,7 +7,6 @@ use VersionPress\ChangeInfos\ChangeInfoFactory;
 
 interface ChangeInfoPreprocessor
 {
-
     public function __construct(ChangeInfoFactory $changeInfoFactory);
 
     /**

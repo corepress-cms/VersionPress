@@ -1,4 +1,5 @@
 <?php
+
 /*
 Plugin Name: VersionPress
 Plugin URI: http://versionpress.net/

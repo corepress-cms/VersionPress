@@ -14,7 +14,6 @@ use Traversable;
  */
 class FileSystem
 {
-
     /**
      * Renames (moves) origin to target.
      *

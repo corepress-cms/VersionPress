@@ -9,7 +9,6 @@ use VersionPress\Database\TableSchemaStorage;
 
 class StorageFactory
 {
-
     private $vpdbDir;
     private $dbSchemaInfo;
 

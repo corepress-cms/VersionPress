@@ -9,7 +9,6 @@ namespace VersionPress\Utils;
  */
 class Process extends \Symfony\Component\Process\Process
 {
-
     private $consoleOutput;
 
     public function __construct(

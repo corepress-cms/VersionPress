@@ -1,4 +1,5 @@
 <?php
+
 namespace VersionPress\Git;
 
 use VersionPress\ChangeInfos\ChangeInfo;
@@ -21,7 +22,6 @@ use VersionPress\Utils\Mutex;
  */
 class Committer
 {
-
     /**
      * @var Mirror
      */

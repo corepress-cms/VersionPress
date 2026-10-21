@@ -19,7 +19,6 @@ use VersionPress\Utils\SerializedDataCursor;
 
 class Reverter
 {
-
     /** @var SynchronizationProcess */
     private $synchronizationProcess;
 
@@ -42,7 +41,7 @@ class Reverter
     private $commitMessageParser;
 
     /** @var int */
-    const DELETE_ORPHANED_POSTS_SECONDS = 60;
+    public const DELETE_ORPHANED_POSTS_SECONDS = 60;
 
     public function __construct(
         SynchronizationProcess $synchronizationProcess,
@@ -176,7 +175,8 @@ class Reverter
         }
 
         foreach ($changeInfo->getChangeInfoList() as $subChangeInfo) {
-            if ($subChangeInfo instanceof EntityChangeInfo &&
+            if (
+                $subChangeInfo instanceof EntityChangeInfo &&
                 !$this->checkEntityReferences(
                     $subChangeInfo->getScope(),
                     $subChangeInfo->getId(),
@@ -244,15 +244,18 @@ class Reverter
             list($sourceColumn, $sourceValue, $valueColumn, $pathInStructure) =
                 array_values(ReferenceUtils::getValueReferenceDetails($reference));
 
-            if (!isset($entity[$sourceColumn]) || ($entity[$sourceColumn] !== $sourceValue
+            if (
+                !isset($entity[$sourceColumn]) || ($entity[$sourceColumn] !== $sourceValue
                     && !ReferenceUtils::valueMatchesWildcard($sourceValue, $entity[$sourceColumn]))
                 || !isset($entity[$valueColumn])
             ) {
                 continue;
             }
 
-            if ((is_numeric($entity[$valueColumn]) && intval($entity[$valueColumn]) === 0)
-                || $entity[$valueColumn] === '') {
+            if (
+                (is_numeric($entity[$valueColumn]) && intval($entity[$valueColumn]) === 0)
+                || $entity[$valueColumn] === ''
+            ) {
                 continue;
             }
 
@@ -337,8 +340,10 @@ class Reverter
                 } elseif (isset($otherEntityMnReferences[$reference])) { // M:N reference
                     $vpReference = "vp_$otherEntityName";
                     foreach ($possiblyReferencingEntities as $possiblyReferencingEntity) {
-                        if (isset($possiblyReferencingEntity[$vpReference])
-                            && array_search($entityId, $possiblyReferencingEntity[$vpReference]) !== false) {
+                        if (
+                            isset($possiblyReferencingEntity[$vpReference])
+                            && array_search($entityId, $possiblyReferencingEntity[$vpReference]) !== false
+                        ) {
                             return true;
                         }
                     }
@@ -347,7 +352,8 @@ class Reverter
                         array_values(ReferenceUtils::getValueReferenceDetails($reference));
 
                     foreach ($possiblyReferencingEntities as $possiblyReferencingEntity) {
-                        if (isset($possiblyReferencingEntity[$sourceColumn])
+                        if (
+                            isset($possiblyReferencingEntity[$sourceColumn])
                             && ($possiblyReferencingEntity[$sourceColumn] === $sourceValue
                                 || ReferenceUtils::valueMatchesWildcard(
                                     $sourceValue,
@@ -355,9 +361,11 @@ class Reverter
                                 ))
                             && isset($possiblyReferencingEntity[$valueColumn])
                         ) {
-                            if ((is_numeric($possiblyReferencingEntity[$valueColumn])
+                            if (
+                                (is_numeric($possiblyReferencingEntity[$valueColumn])
                                     && intval($possiblyReferencingEntity[$valueColumn]) === 0)
-                                || $possiblyReferencingEntity[$valueColumn] === '') {
+                                || $possiblyReferencingEntity[$valueColumn] === ''
+                            ) {
                                 continue;
                             }
 

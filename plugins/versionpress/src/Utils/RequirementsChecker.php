@@ -20,8 +20,8 @@ class RequirementsChecker
      */
     private $schema;
 
-    const SITE = 'site';
-    const ENVIRONMENT = 'environment';
+    public const SITE = 'site';
+    public const ENVIRONMENT = 'environment';
 
     /** @var string[] */
     public static $compatiblePlugins = [
@@ -297,7 +297,7 @@ class RequirementsChecker
     /**
      * Minimum required Git version
      */
-    const GIT_MINIMUM_REQUIRED_VERSION = "1.9";
+    public const GIT_MINIMUM_REQUIRED_VERSION = "1.9";
 
     /**
      * Returns true if git version matches the minimum required version. If minimum required version

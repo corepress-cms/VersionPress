@@ -6,7 +6,6 @@ use VersionPress\Database\DbSchemaInfo;
 
 class ReferenceUtils
 {
-
     /**
      * Returns complex info about the M:N reference. The source is always the given entity, target is the second one.
      *
@@ -161,7 +160,8 @@ class ReferenceUtils
         $paths = [];
 
         foreach ($value as $key => $subTree) {
-            if (($currentLevelKey['type'] === 'exact-value' && $currentLevelKey['value'] === $key) ||
+            if (
+                ($currentLevelKey['type'] === 'exact-value' && $currentLevelKey['value'] === $key) ||
                 ($currentLevelKey['type'] === 'regex' && preg_match($currentLevelKey['value'], $key))
             ) {
                 if (count($pathParts) > 0) {

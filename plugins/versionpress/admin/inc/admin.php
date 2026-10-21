@@ -1,4 +1,5 @@
 <?php
+
 use VersionPress\ChangeInfos\CommitMessageParser;
 use VersionPress\DI\VersionPressServices;
 use VersionPress\Git\GitLogPaginator;
@@ -200,7 +201,7 @@ if ($showWelcomePanel === "") {
 
             foreach ($pageNumbers as $pageNumber) {
                 $divider = "";
-                if ($i > 0 && $lastNumber != $pageNumber-1) {
+                if ($i > 0 && $lastNumber != $pageNumber - 1) {
                     $divider = "&hellip;";
                 } elseif ($i > 0) {
                     $divider = "|";

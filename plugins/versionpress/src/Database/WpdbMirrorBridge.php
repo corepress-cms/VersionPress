@@ -1,4 +1,5 @@
 <?php
+
 namespace VersionPress\Database;
 
 use VersionPress\Storages\Mirror;
@@ -9,7 +10,6 @@ use VersionPress\Storages\Mirror;
  */
 class WpdbMirrorBridge
 {
-
     /** @var Mirror */
     private $mirror;
 
@@ -479,7 +479,8 @@ class WpdbMirrorBridge
                 continue; // already deleted - deleting postmeta is sometimes called twice
             }
 
-            if ($this->dbSchemaInfo->isChildEntity($entityName)
+            if (
+                $this->dbSchemaInfo->isChildEntity($entityName)
                 && !isset($where["vp_{$entityInfo->parentReference}"])
             ) {
                 $where["vp_{$entityInfo->parentReference}"] = $parentIds[$id];

@@ -1,4 +1,5 @@
 <?php
+
 namespace VersionPress\Storages;
 
 use Nette\Utils\Strings;
@@ -23,7 +24,6 @@ use VersionPress\Utils\FileSystem;
  */
 class DirectoryStorage extends Storage
 {
-
     /** @var string */
     private $directory;
 

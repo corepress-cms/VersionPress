@@ -33,7 +33,6 @@ use wpdb;
  */
 class VPInternalCommand extends WP_CLI_Command
 {
-
     /**
      * Finishes clone operation
      *

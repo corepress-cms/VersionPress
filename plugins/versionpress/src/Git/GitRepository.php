@@ -12,7 +12,6 @@ use VersionPress\Utils\ProcessUtils;
  */
 class GitRepository
 {
-
     private $workingDirectoryRoot;
     private $tempDirectory;
     private $commitMessagePrefix;

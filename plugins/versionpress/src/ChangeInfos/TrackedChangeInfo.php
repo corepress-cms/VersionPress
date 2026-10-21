@@ -1,4 +1,5 @@
 <?php
+
 namespace VersionPress\ChangeInfos;
 
 use VersionPress\Actions\ActionsInfo;
@@ -19,7 +20,6 @@ use VersionPress\Git\CommitMessage;
  */
 class TrackedChangeInfo implements ChangeInfo
 {
-
     /** @var string */
     private $scope;
 
@@ -47,7 +47,7 @@ class TrackedChangeInfo implements ChangeInfo
     /**
      * VP tag common to all tracked change infos. It is the only required tag for them.
      */
-    const ACTION_TAG = "VP-Action";
+    public const ACTION_TAG = "VP-Action";
 
     public function __construct($scope, $actionsInfo, $action, $id, $customTags = [], $customFiles = [], $priority = 10)
     {

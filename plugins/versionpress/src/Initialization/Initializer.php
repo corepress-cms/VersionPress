@@ -1,4 +1,5 @@
 <?php
+
 namespace VersionPress\Initialization;
 
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
@@ -35,8 +36,7 @@ use VersionPress\VersionPress;
  */
 class Initializer
 {
-
-    const TIME_FOR_ABORTION = 5;
+    public const TIME_FOR_ABORTION = 5;
 
     /**
      * Array of functions to call when the progress changes. Implements part of the Observer pattern.
@@ -638,7 +638,8 @@ class Initializer
             $composerJson->scripts = new \stdClass();
         }
 
-        if ((!isset($composerJson->scripts->{'pre-update-cmd'}) || $composerJson->scripts->{'pre-update-cmd'} === '') &&
+        if (
+            (!isset($composerJson->scripts->{'pre-update-cmd'}) || $composerJson->scripts->{'pre-update-cmd'} === '') &&
             (!isset($composerJson->scripts->{'post-update-cmd'}) || $composerJson->scripts->{'post-update-cmd'} === '')
         ) {
             $composerJson->scripts->{'pre-update-cmd'} = VP_WP_CLI_BINARY . ' vp-composer prepare-for-composer-changes';

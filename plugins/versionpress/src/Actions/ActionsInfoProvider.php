@@ -9,7 +9,7 @@ use Symfony\Component\Yaml\Yaml;
  */
 class ActionsInfoProvider
 {
-    const DEFAULT_PRIORITY = 10;
+    public const DEFAULT_PRIORITY = 10;
 
     /** @var ActionsInfo[] */
     private $actionsInfoMap = [];
