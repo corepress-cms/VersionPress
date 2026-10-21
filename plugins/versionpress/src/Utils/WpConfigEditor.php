@@ -98,6 +98,10 @@ class WpConfigEditor
         ];
 
         foreach ($configFiles as $configFile) {
+            if (!is_file($configFile)) {
+                continue;
+            }
+
             $constantsForRegex = join('|', $vpConstants);
             // https://regex101.com/r/zD3mJ4/2
             $defineRegexPattern = "/(define\\s*\\(\\s*['\"]($constantsForRegex)['\"]\\s*,.*\\)\\s*;)/m";

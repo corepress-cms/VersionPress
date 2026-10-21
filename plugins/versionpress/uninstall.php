@@ -11,6 +11,7 @@
  */
 
 use VersionPress\DI\VersionPressServices;
+use VersionPress\Initialization\DbDropIn;
 use VersionPress\Initialization\VersionPressOptions;
 use VersionPress\Initialization\WpConfigSplitter;
 use VersionPress\Utils\FileSystem;
@@ -42,11 +43,13 @@ foreach ($queries as $query) {
 delete_option('vp_rest_api_plugin_version');
 
 FileSystem::remove(VP_VPDB_DIR);
+FileSystem::remove(VERSIONPRESS_TEMP_DIR);
+DbDropIn::uninstall(); // normally already removed on deactivation
 
 $wpConfigPath = \VersionPress\Utils\WordPressMissingFunctions::getWpConfigPath();
 \VersionPress\Utils\WpConfigEditor::removeVersionPressConstants([
     $wpConfigPath,
-    dirname($wpConfigPath . '/' . WpConfigSplitter::COMMON_CONFIG_NAME),
+    dirname($wpConfigPath) . '/' . WpConfigSplitter::COMMON_CONFIG_NAME,
 ]);
 
 if (UninstallationUtil::uninstallationShouldRemoveGitRepo()) {
