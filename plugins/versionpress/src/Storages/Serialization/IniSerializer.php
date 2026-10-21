@@ -448,7 +448,7 @@ class IniSerializer
             if (is_array($value)) {
                 $deserialized[$key] = self::restorePhpSerializedData($value);
             } else {
-                if (Strings::startsWith($value, SerializedDataToIniConverter::SERIALIZED_MARKER)) {
+                if (is_string($value) && Strings::startsWith($value, SerializedDataToIniConverter::SERIALIZED_MARKER)) {
                     $keysToRestore[] = $key;
                 }
             }

@@ -107,8 +107,9 @@ function vp_register_hooks()
 
     vp_load_hooks_files();
 
-    add_filter('update_feedback', function () {
+    add_filter('update_feedback', function ($feedback) {
         touch(ABSPATH . 'versionpress.maintenance');
+        return $feedback;
     });
 
     WordPressMissingFunctions::pipeAction('_core_updated_successfully', 'vp_wordpress_updated');
@@ -161,15 +162,15 @@ function vp_register_hooks()
         }
     }, 10, 2);
 
-    add_filter('upgrader_pre_install', function ($_, $hook_extra) {
+    add_filter('upgrader_pre_install', function ($response, $hook_extra) {
         if (!(isset($hook_extra['type']) && $hook_extra['type'] === 'plugin' && $hook_extra['action'] === 'install')) {
-            return;
+            return $response;
         }
 
         $pluginsBeforeInstallation = get_plugins();
-        $postInstallHook = function ($_, $hook_extra) use ($pluginsBeforeInstallation, &$postInstallHook) {
+        $postInstallHook = function ($response, $hook_extra) use ($pluginsBeforeInstallation, &$postInstallHook) {
             if (!($hook_extra['type'] === 'plugin' && $hook_extra['action'] === 'install')) {
-                return;
+                return $response;
             }
 
             wp_cache_delete('plugins', 'plugins');
@@ -181,9 +182,11 @@ function vp_register_hooks()
             }
 
             remove_filter('upgrader_post_install', $postInstallHook);
+            return $response;
         };
 
         add_filter('upgrader_post_install', $postInstallHook, 10, 2);
+        return $response;
     }, 10, 2);
 
     add_filter('upgrader_pre_download', function ($reply, $_, $upgrader) use ($committer) {
@@ -193,9 +196,9 @@ function vp_register_hooks()
 
         $languages = get_available_languages();
 
-        $postInstallHook = function ($_, $hook_extra) use ($committer, $languages, &$postInstallHook) {
+        $postInstallHook = function ($response, $hook_extra) use ($committer, $languages, &$postInstallHook) {
             if (!isset($hook_extra['language_update_type'])) {
-                return;
+                return $response;
             }
 
             $type = $hook_extra['language_update_type'];
@@ -206,10 +209,11 @@ function vp_register_hooks()
             do_action('vp_translation_changed', $action, $languageCode, $type, $name);
 
             remove_filter('upgrader_post_install', $postInstallHook);
+            return $response;
         };
 
         add_filter('upgrader_post_install', $postInstallHook, 10, 2);
-        return false;
+        return $reply;
     }, 10, 3);
 
     add_action('switch_theme', function () use ($committer) {
@@ -278,6 +282,7 @@ function vp_register_hooks()
 
         $changeInfo = new EntityChangeInfo($dbSchemaInfo->getEntityInfo('post'), $actionsInfo, 'update', $vpid, ['VP-Post-Type' => $post->post_type, 'VP-Post-Title' => $post->post_title]);
         $committer->forceChangeInfo($changeInfo);
+        return $saved;
     }, 10, 5);
 
     add_filter('plugin_install_action_links', function ($links, $plugin) {

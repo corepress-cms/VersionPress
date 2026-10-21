@@ -1,12 +1,8 @@
 <?php
 
-use Tracy\Debugger;
 use VersionPress\DI\DIContainer;
 
-/**
- * Absolute path to the directory containing VersionPress (wp-content/versionpress).
- */
-
+// Absolute path to the directory containing VersionPress (wp-content/plugins/versionpress).
 define('VERSIONPRESS_PLUGIN_DIR', __DIR__);
 
 if (!defined('VP_VPDB_DIR')) {
@@ -77,8 +73,9 @@ if (defined('DOING_AJAX')) {
     $_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
 }
 
-if (defined('VP_DEBUG') && VP_DEBUG) {
-    Debugger::enable(Debugger::DEVELOPMENT, VERSIONPRESS_PLUGIN_DIR . '/log');
+// Tracy is a dev dependency, so it is only available in development checkouts.
+if (defined('VP_DEBUG') && VP_DEBUG && class_exists(\Tracy\Debugger::class)) {
+    \Tracy\Debugger::enable(\Tracy\Debugger::DEVELOPMENT, VERSIONPRESS_PLUGIN_DIR . '/log');
 }
 
 global $versionPressContainer;

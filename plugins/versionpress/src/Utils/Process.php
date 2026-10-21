@@ -12,14 +12,23 @@ class Process extends \Symfony\Component\Process\Process
     private $consoleOutput;
 
     public function __construct(
-        $commandline,
-        $cwd = null,
-        array $env = null,
-        $input = null,
-        $timeout = 3600,
-        array $options = []
+        array $command,
+        ?string $cwd = null,
+        ?array $env = null,
+        mixed $input = null,
+        ?float $timeout = 3600
     ) {
-        parent::__construct($commandline, $cwd, $env, $input, $timeout, $options);
+        parent::__construct($command, $cwd, $env, $input, $timeout);
+    }
+
+    public static function fromShellCommandline(
+        string $command,
+        ?string $cwd = null,
+        ?array $env = null,
+        mixed $input = null,
+        ?float $timeout = 3600
+    ): static {
+        return parent::fromShellCommandline($command, $cwd, $env, $input, $timeout);
     }
 
     /**
@@ -38,10 +47,10 @@ class Process extends \Symfony\Component\Process\Process
     }
 
 
-    public function start(callable $callback = null, array $env = array())
+    public function start(?callable $callback = null, array $env = []): void
     {
         $this->consoleOutput = '';
-        parent::start($callback);
+        parent::start($callback, $env);
     }
 
     public function addOutput(string $line): void

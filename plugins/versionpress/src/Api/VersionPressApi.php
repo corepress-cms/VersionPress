@@ -64,7 +64,8 @@ class VersionPressApi
                     'default' => '0'
                 ],
                 'query' => [
-                    'default' => []
+                    'type' => 'string',
+                    'default' => ''
                 ]
             ]
         ]);

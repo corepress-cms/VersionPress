@@ -142,6 +142,11 @@ class StringUtils
      */
     public static function isSerializedValue($value)
     {
+        // Entity fields can already hold arrays (e.g. meta values); unserialize() only accepts strings since PHP 8.
+        if (!is_string($value)) {
+            return false;
+        }
+
         /** @noinspection PhpUsageOfSilenceOperatorInspection */
         $test = @unserialize(($value)); // it throws an error and returns false if $value is not a serialized object
         return $test !== false || $value === 'b:0;';

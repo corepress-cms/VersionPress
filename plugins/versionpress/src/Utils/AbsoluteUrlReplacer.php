@@ -100,7 +100,6 @@ class AbsoluteUrlReplacer
                     $r = new \ReflectionObject($value);
                     $p = $r->getProperties();
                     foreach ($p as $prop) {
-                        $prop->setAccessible(true);
                         $prop->setValue($value, $this->replaceRecursively($prop->getValue($value), $replaceFn));
                     }
                     return $value;
