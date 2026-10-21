@@ -6,6 +6,7 @@ use Exception;
 use Symfony\Component\Filesystem\Exception\IOException;
 use VersionPress\Database\Database;
 use VersionPress\Database\DbSchemaInfo;
+use VersionPress\Initialization\DbDropIn;
 use wpdb;
 
 class RequirementsChecker
@@ -133,12 +134,15 @@ class RequirementsChecker
             }
 
             $this->requirements[] = [
-                'name' => 'wpdb hook',
+                'name' => 'Database drop-in',
                 'level' => 'critical',
-                'fulfilled' => is_writable(ABSPATH . WPINC . '/class-wpdb.php'),
-                // @codingStandardsIgnoreLine
-                'help' => 'For VersionPress to do its magic, it needs to change the `wpdb` class and put some code there. ' .
-                    'To do so it needs write access to the `wp-includes/class-wpdb.php` file. Please update the permissions.'
+                'fulfilled' => DbDropIn::canBeInstalled(),
+                'help' => DbDropIn::isOccupiedByAnotherDropIn()
+                    ? 'VersionPress tracks database changes through the `wp-content/db.php` drop-in, which is ' .
+                        'already used by another plugin (for example, Query Monitor or a caching plugin). ' .
+                        'Only one drop-in can be active; please remove the other one.'
+                    : 'VersionPress tracks database changes through a `wp-content/db.php` drop-in. ' .
+                        'It needs write access to the `wp-content` directory. Please update the permissions.'
             ];
 
             $this->requirements[] = [

@@ -449,7 +449,7 @@ class Initializer
 
     private function activateVersionPress()
     {
-        WpdbReplacer::replaceMethods();
+        DbDropIn::install();
         touch(VERSIONPRESS_ACTIVATION_FILE);
         $this->reportProgressChange(InitializerStates::VERSIONPRESS_ACTIVATED);
     }

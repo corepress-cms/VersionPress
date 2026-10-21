@@ -44,7 +44,7 @@ The environment is configured in [`.wp-env.json`](https://github.com/versionpres
 
 `pnpm stop` stops the environment, `pnpm run destroy` removes it including the database for a fresh start.
 
-> **Note**: Activating VersionPress currently modifies `wp-includes/class-wpdb.php` of the environment's WordPress; this is planned to be replaced by a `db.php` drop-in. Run `pnpm run destroy` to get a pristine WordPress again.
+VersionPress tracks database changes through the `wp-content/db.php` drop-in; WordPress core files stay untouched (`pnpm run wp core verify-checksums` passes).
 
 ## Plugin development
 

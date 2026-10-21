@@ -13,7 +13,7 @@ use VersionPress\Git\Reverter;
 use VersionPress\Git\RevertStatus;
 use VersionPress\Initialization\VersionPressOptions;
 use VersionPress\Initialization\WpConfigSplitter;
-use VersionPress\Initialization\WpdbReplacer;
+use VersionPress\Initialization\DbDropIn;
 use VersionPress\Storages\Mirror;
 use VersionPress\Utils\CompatibilityChecker;
 use VersionPress\Utils\CompatibilityResult;
@@ -52,13 +52,25 @@ if (VersionPress::isActive()) {
     add_action('init', 'vp_register_hooks');
 
 //----------------------------------
-// Replacing wpdb
+// Database drop-in
 //----------------------------------
     register_shutdown_function(function () {
-        if (!WpdbReplacer::isReplaced() && !defined('VP_DEACTIVATING') && VersionPress::isActive()) {
-            WpdbReplacer::replaceMethods();
+        if (
+            !DbDropIn::isInstalled() && !DbDropIn::isOccupiedByAnotherDropIn()
+            && !defined('VP_DEACTIVATING') && VersionPress::isActive()
+        ) {
+            // Typically the first request after updating from a version that patched class-wpdb.php.
+            // Runs before the committer's shutdown function, so the change is committed in this request.
+            DbDropIn::install();
+            vp_force_action('versionpress', 'update', VersionPress::getVersion(), [], [
+                ["type" => "path", "path" => DbDropIn::getPath()],
+                ["type" => "path", "path" => ABSPATH . WPINC . "/class-wpdb.php"],
+                ["type" => "path", "path" => ABSPATH . WPINC . "/class-wpdb.php.original"],
+            ]);
         }
     });
+
+    add_action('admin_notices', 'vp_db_dropin_conflict_notice');
 
 //----------------------------------
 // Flushing rewrite rules after clone / pull / push
@@ -609,9 +621,7 @@ function vp_admin_post_confirm_deactivation()
 
     define('VP_DEACTIVATING', true);
 
-    if (WpdbReplacer::isReplaced()) {
-        WpdbReplacer::restoreOriginal();
-    }
+    DbDropIn::uninstall();
 
     if (file_exists(VERSIONPRESS_ACTIVATION_FILE)) {
         FileSystem::remove(VERSIONPRESS_ACTIVATION_FILE);
@@ -619,8 +629,7 @@ function vp_admin_post_confirm_deactivation()
 
     $filesChangedByDeactivation = [
         ["type" => "path", "path" => VP_VPDB_DIR . "/*"],
-        ["type" => "path", "path" => ABSPATH . WPINC . "/class-wpdb.php"],
-        ["type" => "path", "path" => ABSPATH . WPINC . "/class-wpdb.php.original"],
+        ["type" => "path", "path" => DbDropIn::getPath()],
         ["type" => "path", "path" => ABSPATH . "/.gitattributes"],
     ];
 
@@ -666,6 +675,29 @@ function vp_activation_nag()
 
     // @codingStandardsIgnoreLine
     echo "<div class='update-nag vp-activation-nag'>VersionPress is installed but not yet tracking this site. <a href='" . menu_page_url('versionpress', false) . "'>Please finish the activation.</a></div>";
+}
+
+/**
+ * Another plugin's `wp-content/db.php` means that VersionPress cannot track database changes.
+ */
+function vp_db_dropin_conflict_notice()
+{
+    if (!DbDropIn::isOccupiedByAnotherDropIn() || !current_user_can('manage_options')) {
+        return;
+    }
+
+    wp_admin_notice(
+        sprintf(
+            /* translators: %s: path to the db.php drop-in file */
+            esc_html__(
+                'VersionPress is not tracking database changes because %s belongs to another plugin. ' .
+                'Remove that drop-in to resume tracking.',
+                'versionpress'
+            ),
+            '<code>' . esc_html(DbDropIn::getPath()) . '</code>'
+        ),
+        ['type' => 'error']
+    );
 }
 
 add_action("after_plugin_row_versionpress/versionpress.php", 'vp_display_activation_notice', 10, 2);

@@ -8,7 +8,7 @@ use VersionPress\Database\DbSchemaInfo;
 use VersionPress\Database\VpidRepository;
 use VersionPress\DI\VersionPressServices;
 use VersionPress\Git\GitRepository;
-use VersionPress\Initialization\WpdbReplacer;
+use VersionPress\Initialization\DbDropIn;
 use VersionPress\Storages\DirectoryStorage;
 use VersionPress\Utils\EntityUtils;
 use VersionPress\Utils\StringUtils;
@@ -431,10 +431,6 @@ add_action('vp_wordpress_updated', function ($version) {
     vp_update_table_ddl_scripts($dbSchema, $tableSchemaStorage);
 
     vp_force_action('wordpress', 'update', $version, [], $wpFiles);
-
-    if (!WpdbReplacer::isReplaced()) {
-        WpdbReplacer::replaceMethods();
-    }
 });
 
 add_action('vp_plugin_changed', function ($action, $pluginFile, $pluginName) {
@@ -536,8 +532,7 @@ add_action('vp_versionpress_changed', function ($action, $version) {
     if ($action === 'deactivate') {
         $files = [
             ["type" => "path", "path" => VP_VPDB_DIR . "/*"],
-            ["type" => "path", "path" => ABSPATH . WPINC . "/class-wpdb.php"],
-            ["type" => "path", "path" => ABSPATH . WPINC . "/class-wpdb.php.original"],
+            ["type" => "path", "path" => DbDropIn::getPath()],
             ["type" => "path", "path" => ABSPATH . "/.gitattributes"],
         ];
     } else {

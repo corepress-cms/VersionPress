@@ -36,7 +36,7 @@ class SqlQueryParser
     /**
      * Parses Sql query called. If not parseable, returns null
      * @param string $query
-     * @return ParsedQueryData
+     * @return ParsedQueryData|null
      */
     public function parseQuery($query)
     {
@@ -59,7 +59,7 @@ class SqlQueryParser
      * @param DbSchemaInfo $schema
      * @param string $query
      * @param Database $database
-     * @return ParsedQueryData
+     * @return ParsedQueryData|null
      */
     private function parseUpdateQuery($parser, $query, $schema, $database)
     {
@@ -91,7 +91,7 @@ class SqlQueryParser
      * @param Parser $parser
      * @param string $query
      * @param DbSchemaInfo $schema
-     * @return ParsedQueryData
+     * @return ParsedQueryData|null
      */
     private function parseInsertQuery($parser, $query, $schema)
     {
@@ -131,7 +131,7 @@ class SqlQueryParser
      * @param string $query
      * @param DbSchemaInfo $schema
      * @param $database Database
-     * @return ParsedQueryData
+     * @return ParsedQueryData|null
      */
     private function parseDeleteQuery($parser, $query, $schema, $database)
     {

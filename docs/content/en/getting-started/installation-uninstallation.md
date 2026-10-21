@@ -21,13 +21,14 @@ The server environment must match certain requirements, some of which are checke
 
 Minimum system requirements are (as a general rule, **we recommend using the latest versions of everything**):
 
-- WordPress 4.8 or higher
-- PHP 5.6 or higher
+- WordPress 7.1 or higher
+- PHP 8.5 or higher
 - Git 1.9 or higher (2.13 or newer recommended)
 - Apache, nginx or IIS 7+ web server
 - `proc_open()` enabled
 - Write permissions in the site root and everywhere under it
 - Standard WordPress configuration system (`wp-config.php`)
+- No other plugin using the `wp-content/db.php` drop-in
 
 On top of that, if you want to use the [multi-instance / sync features](../sync/index.md) of VersionPress 2.0, probably even more control over the requirement will be required. In practice, this means that a custom server / VPS is your best bet. See also the section on [hosting providers](../integrations/hosts.md).
 
@@ -56,11 +57,15 @@ The sensitive locations are:
 
 We ship `.htaccess` rules for Apache, `web.config` rules for IIS and `wp-content/plugins/versionpress/versionpress-nginx.conf` template for nginx but please confirm manually that direct access to e.g. `yoursite/.git/config` is prevented.
 
-### PHP 5.6
+### PHP 8.5
 
-WordPress can run on an old and [long unsupported](http://php.net/eol.php) PHP 5.2. We also started with this version but eventually dropped it so that we could use the newer language features and some 3<sup>rd</sup> party libraries. We recommend using one of the [actively supported](http://php.net/supported-versions.php) PHP versions.
+VersionPress requires PHP 8.5 or newer and WordPress 7.1 or newer. WordPress enforces both when the plugin is activated.
 
-Note: VersionPress is currently not being tested on HHVM.
+### Database drop-in
+
+VersionPress tracks database changes through a [drop-in](https://developer.wordpress.org/reference/functions/require_wp_db/), `wp-content/db.php`, which makes WordPress use a VersionPress-enhanced version of its `wpdb` class. VersionPress doesn't modify WordPress core files.
+
+Only one plugin can use this drop-in. If another plugin already does (for example, Query Monitor or some caching plugins), the pre-activation check fails; remove the other drop-in first. If a different drop-in appears while VersionPress is active, VersionPress shows an admin notice and stops tracking database changes until it is removed.
 
 ### Project structure
 
@@ -117,7 +122,7 @@ Uninstallation is a standard two-step process:
 
 1. You first **deactivate** the plugin on the *Plugins* admin screen
 2. You then **delete** the plugin to get rid of all its files
-    - :warning: If you didn't deactivate the plugin via admin screens and manually removed the `wp-content/plugins/versionpress` folder (which is NOT recommended), you have to manually restore the `class-wpdb.php` file from `class-wpdb.php.original`.
+    - :warning: If you didn't deactivate the plugin via admin screens and manually removed the `wp-content/plugins/versionpress` folder (which is NOT recommended), WordPress keeps working with its standard database class but you should also delete `wp-content/db.php`.
 3. *Optional:* Manually download or delete a repository backup which was created under `wp-content/backup`.
 
 There are two important things to note:

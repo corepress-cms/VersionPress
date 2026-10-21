@@ -18,7 +18,7 @@ use VersionPress\Git\Reverter;
 use VersionPress\Git\RevertStatus;
 use VersionPress\Initialization\Initializer;
 use VersionPress\Initialization\WpConfigSplitter;
-use VersionPress\Initialization\WpdbReplacer;
+use VersionPress\Initialization\DbDropIn;
 use VersionPress\Storages\Serialization\IniSerializer;
 use VersionPress\Synchronizers\SynchronizationProcess;
 use VersionPress\Utils\FileSystem;
@@ -259,7 +259,7 @@ class VPCommand extends WP_CLI_Command
         WpConfigSplitter::ensureCommonConfigInclude($wpConfigPath);
 
         // Disable VersionPress tracking for a while
-        WpdbReplacer::restoreOriginal();
+        DbDropIn::uninstall();
         unlink(VERSIONPRESS_ACTIVATION_FILE);
 
         // Create or empty database
@@ -288,7 +288,7 @@ class VPCommand extends WP_CLI_Command
             WP_CLI::success("Database tables created");
         }
 
-        // Restores "class-wpdb.php", "class-wpdb.php.original" and ".active" - enables VP
+        // Restores the "db.php" drop-in and ".active" - enables VP
         $resetCmd = 'git reset --hard';
 
         $process = VPCommandUtils::exec($resetCmd);
@@ -297,9 +297,9 @@ class VPCommand extends WP_CLI_Command
             WP_CLI::error($process->getConsoleOutput());
         }
 
-        // Fail-safe for gitignored WordPress
-        if (!WpdbReplacer::isReplaced()) {
-            WpdbReplacer::replaceMethods();
+        // Fail-safe for a gitignored drop-in
+        if (!DbDropIn::isInstalled()) {
+            DbDropIn::install();
         }
 
         /* We need correct value in the `active_plugins` option before the synchronization run.

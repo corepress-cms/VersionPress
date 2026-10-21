@@ -1,11 +1,9 @@
 <?php
 
 // Generates wpdb API description as PhpDoc. Used by `Database`.
-// Run this file as `php wpdb-api-to-phpdoc.php`.
+// Run this file as `php wpdb-api-to-phpdoc.php` after `composer install` (it reads the WordPress stubs).
 
-$pathToWpdb = __DIR__ . '/../../../../ext-libs/wordpress/wp-includes/class-wpdb.php';
-
-require_once $pathToWpdb;
+require_once __DIR__ . '/../../vendor/php-stubs/wordpress-stubs/wordpress-stubs.php';
 
 $wpdbReflection = new ReflectionClass('wpdb');
 
@@ -15,7 +13,7 @@ foreach ($properties as $property) {
     preg_match_all('/@var (.*?)\n/s', $property->getDocComment(), $annotations);
     $type = @$annotations[1][0];
 
-    echo "@property " . ($type ? $type . ' ' : '') . $property->getName() . "\n";
+    echo "@property " . ($type ? $type . ' ' : '') . '$' . $property->getName() . "\n";
 }
 
 echo "\n";
