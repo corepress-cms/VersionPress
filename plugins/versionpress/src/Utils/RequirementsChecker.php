@@ -115,13 +115,17 @@ class RequirementsChecker
             'help' => 'VersionPress needs write access in the site root, its nested directories and the <abbr title="' . sys_get_temp_dir() . '" style="border-bottom: 1px dotted; border-color: inherit;">system temp directory</abbr>. Please update the permissions.'
         ];
 
-        $this->requirements[] = [
-            'name' => 'Access rules can be installed',
-            'level' => 'warning',
-            'fulfilled' => $this->tryAccessControlFiles(),
-            // @codingStandardsIgnoreLine
-            'help' => 'VersionPress automatically tries to secure certain locations, like `wp-content/vpdb`. You either don\'t have a supported web server or rules cannot be enforced. [Learn more](http://docs.versionpress.net/en/getting-started/installation-uninstallation#supported-web-servers).'
-        ];
+        // The check requests a protected URL, which can't be determined in a partially loaded WordPress
+        // (e.g. `wp vp restore-site` in a fresh clone).
+        if (defined('WPMU_PLUGIN_DIR')) {
+            $this->requirements[] = [
+                'name' => 'Access rules can be installed',
+                'level' => 'warning',
+                'fulfilled' => $this->tryAccessControlFiles(),
+                // @codingStandardsIgnoreLine
+                'help' => 'VersionPress automatically tries to secure certain locations, like `wp-content/vpdb`. You either don\'t have a supported web server or rules cannot be enforced. [Learn more](http://docs.versionpress.net/en/getting-started/installation-uninstallation#supported-web-servers).'
+            ];
+        }
         if ($checkScope === RequirementsChecker::SITE) {
             if (file_exists(VP_PROJECT_ROOT . '/composer.json')) {
                 $this->requirements[] = [

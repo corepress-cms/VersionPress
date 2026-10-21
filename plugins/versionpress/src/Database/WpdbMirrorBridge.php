@@ -205,7 +205,10 @@ class WpdbMirrorBridge
             $data
         );
 
-        $data['vp_id'] = $vpId;
+        // Entities with a natural VPID (e.g. options and their option_name) have no generated `vp_id`.
+        if ($this->dbSchemaInfo->getEntityInfo($entityName)->usesGeneratedVpids) {
+            $data['vp_id'] = $vpId;
+        }
         $data = $this->vpidRepository->replaceForeignKeysWithReferences($entityName, $data);
 
         if ($this->dbSchemaInfo->isChildEntity($entityName)) {

@@ -27,3 +27,26 @@ if (!function_exists('add_action')) {
         return call_user_func_array('\VersionPress\Tests\Utils\HookMock::addAction', func_get_args());
     }
 }
+
+// Request helpers used by plugin definition hooks (`.versionpress/hooks.php`), mirroring WordPress core.
+
+if (!function_exists('wp_doing_ajax')) {
+    function wp_doing_ajax()
+    {
+        return defined('DOING_AJAX') && DOING_AJAX;
+    }
+}
+
+if (!function_exists('wp_unslash')) {
+    function wp_unslash($value)
+    {
+        return is_array($value) ? array_map('wp_unslash', $value) : (is_string($value) ? stripslashes($value) : $value);
+    }
+}
+
+if (!function_exists('sanitize_key')) {
+    function sanitize_key($key)
+    {
+        return is_scalar($key) ? preg_replace('/[^a-z0-9_\-]/', '', strtolower((string)$key)) : '';
+    }
+}
