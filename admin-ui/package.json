@@ -1,0 +1,31 @@
+{
+  "name": "versionpress-admin-ui",
+  "version": "1.0.0",
+  "private": true,
+  "description": "VersionPress admin screen",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "build": "wp-scripts build --output-path=../plugins/versionpress/admin/public/build",
+    "start": "wp-scripts start --output-path=../plugins/versionpress/admin/public/build",
+    "lint": "wp-scripts lint-js src",
+    "typecheck": "tsc --noEmit",
+    "test": "wp-scripts test-unit-js"
+  },
+  "dependencies": {
+    "@wordpress/api-fetch": "^8.0.0",
+    "@wordpress/components": "^43.0.0",
+    "@wordpress/dataviews": "^21.0.0",
+    "@wordpress/date": "^6.0.0",
+    "@wordpress/element": "^10.0.0",
+    "@wordpress/i18n": "^7.0.0",
+    "@wordpress/icons": "^19.0.0",
+    "@wordpress/url": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.0",
+    "@wordpress/scripts": "^37.0.0",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.5"
+  }
+}

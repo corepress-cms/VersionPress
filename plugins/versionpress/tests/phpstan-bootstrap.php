@@ -8,8 +8,6 @@ define('VERSIONPRESS_PLUGIN_DIR', dirname(__DIR__));
 define('VERSIONPRESS_TEMP_DIR', '');
 define('VERSIONPRESS_ACTIVATION_FILE', '');
 define('VERSIONPRESS_COMMIT_MESSAGE_PREFIX', '');
-define('VERSIONPRESS_GUI', '');
-define('VERSIONPRESS_REQUIRE_API_AUTH', true);
 define('VERSIONPRESS_ACTIVATED', true);
 define('VP_PROJECT_ROOT', '');
 define('VP_VPDB_DIR', '');

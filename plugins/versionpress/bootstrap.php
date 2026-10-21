@@ -43,21 +43,7 @@ if (!defined('VP_WP_CLI_BINARY')) {
     define('VP_WP_CLI_BINARY', 'wp');
 }
 
-if (!defined('VERSIONPRESS_GUI')) {
-    /**
-     * Which GUI to use. Used mainly for testing.
-     *
-     * Possible values: 'html' (VP 1.0), 'javascript' (VP 2.0 and later; React SPA)
-     */
-    define('VERSIONPRESS_GUI', 'javascript');
-}
 
-if (!defined('VERSIONPRESS_REQUIRE_API_AUTH')) {
-    /**
-     * Enables / disables authentication in API. Useful for standalone testing of frontend (React SPA).
-     */
-    define('VERSIONPRESS_REQUIRE_API_AUTH', true);
-}
 
 if (!defined('VERSIONPRESS_COMMIT_MESSAGE_PREFIX')) {
     /**

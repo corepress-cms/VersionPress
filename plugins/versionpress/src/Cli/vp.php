@@ -1074,7 +1074,7 @@ class VPCommand extends WP_CLI_Command
         $committer = $versionPressContainer->resolve(VersionPressServices::COMMITTER);
         $committer->disableCommit();
 
-        vp_deactivate();
+        \VersionPress\Hooks\Lifecycle::deactivate();
         WP_CLI::success('Deactivated VersionPress');
 
         /** @var \Plugin_Upgrader $upgrader */
@@ -1124,7 +1124,8 @@ class VPCommand extends WP_CLI_Command
     {
         $wpdb = new \wpdb($dbUser, $dbPassword, $dbName, $dbHost);
         $wpdb->set_prefix($dbPrefix);
-        $tables = $wpdb->get_col("SHOW TABLES LIKE '{$dbPrefix}_%'");
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- a fresh connection to the clone's database
+        $tables = $wpdb->get_col($wpdb->prepare('SHOW TABLES LIKE %s', $wpdb->esc_like($dbPrefix) . '%'));
         $wpTables = array_intersect($tables, $wpdb->tables());
         return count($wpTables) > 0;
     }

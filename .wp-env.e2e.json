@@ -1,0 +1,14 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/wp-env.json",
+	"core": "https://wordpress.org/latest.zip",
+	"phpVersion": "8.5",
+	"port": 8890,
+	"testsEnvironment": false,
+	"plugins": [],
+	"mappings": {
+		"wp-content/plugins/versionpress": "./plugins/versionpress"
+	},
+	"lifecycleScripts": {
+		"afterStart": "wp-env run --config=.wp-env.e2e.json cli sh -c 'sudo apk add --no-cache --quiet git; git config --global user.name \"VersionPress E2E\"; git config --global user.email e2e@example.com; wp plugin is-active versionpress || (wp plugin activate versionpress && wp vp activate --yes)'"
+	}
+}

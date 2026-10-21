@@ -45,7 +45,7 @@ class VpAutomateCommand extends \WP_CLI_Command
      */
     public function startOver($args, $assoc_args)
     {
-        vp_admin_post_confirm_deactivation();
+        \VersionPress\Hooks\Lifecycle::deactivate();
         FileSystem::remove(ABSPATH . '.git');
         activate_plugin('versionpress/versionpress.php');
     }

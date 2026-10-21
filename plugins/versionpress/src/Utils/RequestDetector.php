@@ -2,6 +2,14 @@
 
 namespace VersionPress\Utils;
 
+/**
+ * Recognizes requests that change something WordPress has no hook for, e.g. deleting a plugin.
+ *
+ * It only reads the request to learn what WordPress is about to do; WordPress verifies the nonces
+ * of these requests itself before acting, so there is nothing to verify here.
+ *
+ * phpcs:disable WordPress.Security.NonceVerification
+ */
 class RequestDetector
 {
     private $isWpCli;
@@ -26,7 +34,7 @@ class RequestDetector
             return $this->postVariableEquals('action', 'delete-theme');
         }
 
-        return basename($_SERVER['PHP_SELF']) === 'themes.php' && $this->queryVariableEquals('action', 'delete');
+        return $this->isScreen('themes.php') && $this->queryVariableEquals('action', 'delete');
     }
 
     public function isPluginDeleteRequest()
@@ -41,7 +49,7 @@ class RequestDetector
         if ($this->isAdminAjax()) {
             return $this->postVariableEquals('action', 'delete-plugin');
         } else {
-            $isPluginAction = basename($_SERVER['PHP_SELF']) === 'plugins.php';
+            $isPluginAction = $this->isScreen('plugins.php');
             $isDeleteAction = $this->queryVariableEquals('action', 'delete-selected') || $this->postVariableEquals('action', 'delete-selected');
             $deleteIsConfirmed = isset($_REQUEST['verify-delete']);
 
@@ -70,22 +78,22 @@ class RequestDetector
 
     private function queryVariableEquals($name, $value)
     {
-        return isset($_GET[$name]) && $_GET[$name] === $value;
+        return isset($_GET[$name]) && sanitize_key(wp_unslash($_GET[$name])) === $value;
     }
 
     private function postVariableEquals($name, $value)
     {
-        return isset($_POST[$name]) && $_POST[$name] === $value;
+        return isset($_POST[$name]) && sanitize_key(wp_unslash($_POST[$name])) === $value;
     }
 
     public function getPluginNames()
     {
         if (!$this->isWpCli) {
             if ($this->isAdminAjax()) {
-                return (array) $_POST['plugin'];
+                return array_map('sanitize_text_field', wp_unslash((array)($_POST['plugin'] ?? [])));
             }
 
-            return $_REQUEST['checked'];
+            return array_map('sanitize_text_field', wp_unslash((array)($_REQUEST['checked'] ?? [])));
         }
 
         if (!function_exists('get_plugins')) {
@@ -127,10 +135,10 @@ class RequestDetector
     {
         if (!$this->isWpCli) {
             if ($this->isAdminAjax()) {
-                return (array) $_POST['slug'];
+                return array_map('sanitize_text_field', wp_unslash((array)($_POST['slug'] ?? [])));
             }
 
-            return (array) $_GET['stylesheet'];
+            return array_map('sanitize_text_field', wp_unslash((array)($_GET['stylesheet'] ?? [])));
         }
 
         return array_slice($this->wpCliArguments, 2); // theme delete <stylesheet>
@@ -138,6 +146,12 @@ class RequestDetector
 
     private function isAdminAjax()
     {
-        return basename($_SERVER['PHP_SELF']) === 'admin-ajax.php';
+        return wp_doing_ajax();
+    }
+
+    private function isScreen($file)
+    {
+        global $pagenow;
+        return $pagenow === $file;
     }
 }

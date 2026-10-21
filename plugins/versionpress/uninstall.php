@@ -2,12 +2,12 @@
 
 /**
  * Uninstallation script for VersionPress. Most things already happened in the
- * `vp_admin_post_confirm_deactivation` hook; here, we just move the .git repo.
+ * `Lifecycle::deactivate()`; here, we just move the .git repo.
  *
  * Testing tip: place exit() at the end of the script and then in the browser
  * just go back and try again.
  *
- * @see vp_admin_post_confirm_deactivation()
+ * @see \VersionPress\Hooks\Lifecycle::deactivate()
  */
 
 use VersionPress\DI\VersionPressServices;

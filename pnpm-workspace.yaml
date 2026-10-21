@@ -1,7 +1,14 @@
 packages:
-  - frontend
+  - admin-ui
+  - e2e
   - scripts
 
-# Only needed by wp-env's Playground runtime; we use the Docker runtime.
 allowBuilds:
+  # Only needed by wp-env's Playground runtime; we use the Docker runtime.
   fs-ext-extra-prebuilt: false
+  # Prebuilt native bindings ship as optional dependencies; these scripts only build/fetch fallbacks.
+  '@parcel/watcher': false
+  unrs-resolver: false
+  # Funding banners only.
+  core-js: false
+  core-js-pure: false

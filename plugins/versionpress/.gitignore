@@ -1,3 +1,6 @@
+# Build output of the admin UI (admin-ui/)
+/admin/public/build
+
 # Copied from 'frontend' by build scripts
 /admin/public/gui
 .phpunit.cache

@@ -22,7 +22,13 @@ use VersionPress\Initialization\VersionPressOptions;
 use VersionPress\Synchronizers\SynchronizationProcess;
 use VersionPress\Utils\ArrayUtils;
 use VersionPress\Utils\AutocompleteUtils;
+use VersionPress\Initialization\Initializer;
+use VersionPress\Utils\Markdown;
 use VersionPress\Utils\QueryLanguageUtils;
+use VersionPress\Utils\RequirementsChecker;
+use VersionPress\Utils\WordPressMissingFunctions;
+use VersionPress\Utils\WpConfigEditor;
+use VersionPress\VersionPress;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -37,7 +43,10 @@ class VersionPressApi
     /** @var SynchronizationProcess */
     private $synchronizationProcess;
 
-    public const NAMESPACE_VP = 'versionpress';
+    public const NAMESPACE_VP = 'versionpress/v1';
+
+    /** Page size of the history; the admin UI relies on it too. */
+    private const COMMITS_PER_PAGE = 25;
 
     /** @var CommitMessageParser */
     private $commitMessageParser;
@@ -55,73 +64,77 @@ class VersionPressApi
      */
     public function registerRoutes()
     {
+        $commitHash = [
+            'type' => 'string',
+            'pattern' => '^[0-9a-f]{4,40}$',
+        ];
+
         $this->registerRestRoute('/commits', [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'getCommits'],
             'args' => [
-                'page' => [
-                    'default' => '0'
-                ],
-                'query' => [
-                    'type' => 'string',
-                    'default' => ''
-                ]
-            ]
+                'page' => ['type' => 'integer', 'minimum' => 0, 'default' => 0],
+                'query' => ['type' => 'string', 'default' => ''],
+            ],
         ]);
 
         $this->registerRestRoute('/undo', [
-            'methods' => WP_REST_Server::READABLE,
+            'methods' => WP_REST_Server::CREATABLE,
             'callback' => [$this, 'undoCommits'],
             'args' => [
                 'commits' => [
-                    'required' => true
-                ]
-            ]
+                    'type' => 'array',
+                    'items' => $commitHash,
+                    'minItems' => 1,
+                    'required' => true,
+                ],
+            ],
         ]);
 
         $this->registerRestRoute('/rollback', [
-            'methods' => WP_REST_Server::READABLE,
+            'methods' => WP_REST_Server::CREATABLE,
             'callback' => [$this, 'rollbackToCommit'],
             'args' => [
-                'commit' => [
-                    'required' => true
-                ]
-            ]
+                'commit' => $commitHash + ['required' => true],
+            ],
         ]);
 
         $this->registerRestRoute('/can-revert', [
             'methods' => WP_REST_Server::READABLE,
-            'callback' => [$this, 'canRevert']
+            'callback' => [$this, 'canRevert'],
         ]);
 
         $this->registerRestRoute('/diff', [
             'methods' => WP_REST_Server::READABLE,
             'callback' => [$this, 'getDiff'],
             'args' => [
-                'commit' => [
-                    'default' => null
-                ]
-            ]
+                // Without a commit, the diff of the working directory is returned.
+                'commit' => $commitHash,
+            ],
         ]);
 
         $this->registerRestRoute('/display-welcome-panel', [
             'methods' => WP_REST_Server::READABLE,
-            'callback' => [$this, 'displayWelcomePanel']
+            'callback' => [$this, 'displayWelcomePanel'],
         ]);
 
         $this->registerRestRoute('/hide-welcome-panel', [
             'methods' => WP_REST_Server::CREATABLE,
-            'callback' => [$this, 'hideWelcomePanel']
+            'callback' => [$this, 'hideWelcomePanel'],
         ]);
 
         $this->registerRestRoute('/should-update', [
             'methods' => WP_REST_Server::READABLE,
-            'callback' => [$this, 'shouldUpdate']
+            'callback' => [$this, 'shouldUpdate'],
+            'args' => [
+                'latestCommit' => $commitHash + ['required' => true],
+                'query' => ['type' => 'string', 'default' => ''],
+            ],
         ]);
 
         $this->registerRestRoute('/git-status', [
             'methods' => WP_REST_Server::READABLE,
-            'callback' => [$this, 'getGitStatus']
+            'callback' => [$this, 'getGitStatus'],
         ]);
 
         $this->registerRestRoute('/commit', [
@@ -129,68 +142,46 @@ class VersionPressApi
             'callback' => [$this, 'commit'],
             'args' => [
                 'commit-message' => [
-                    'required' => true
-                ]
-            ]
+                    'type' => 'string',
+                    'minLength' => 1,
+                    'required' => true,
+                    'sanitize_callback' => 'sanitize_textarea_field',
+                ],
+            ],
         ]);
 
         $this->registerRestRoute('/discard-changes', [
             'methods' => WP_REST_Server::CREATABLE,
-            'callback' => [$this, 'discardChanges']
+            'callback' => [$this, 'discardChanges'],
         ]);
 
         $this->registerRestRoute('/autocomplete-config', [
             'methods' => WP_REST_Server::READABLE,
-            'callback' => [$this, 'getAutocompleteConfig']
+            'callback' => [$this, 'getAutocompleteConfig'],
+        ]);
+
+        $this->registerRestRoute('/requirements', [
+            'methods' => WP_REST_Server::READABLE,
+            'callback' => [$this, 'getRequirements'],
+        ]);
+
+        $this->registerRestRoute('/initialize', [
+            'methods' => WP_REST_Server::CREATABLE,
+            'callback' => [$this, 'initialize'],
+            'args' => [
+                'environment' => [
+                    'type' => 'string',
+                    'pattern' => '^[a-zA-Z0-9_-]+$',
+                    'default' => 'default',
+                ],
+            ],
         ]);
     }
 
-    private function registerRestRoute($route, $args = [], $override = false)
+    private function registerRestRoute($route, $args)
     {
-        $args['callback'] = $this->handleErrorOutput($args['callback']);
-        if (!isset($args['permission_callback'])) {
-            $args['permission_callback'] = [$this, 'checkPermissions'];
-        }
-        return register_rest_route(self::NAMESPACE_VP, $route, $args, $override);
-    }
-
-    /**
-     * Prevents unexpected output from displaying to output, adds it to the response json instead.
-     *
-     * @param callable|string $routeHandler
-     * @return \Closure
-     */
-    private function handleErrorOutput($routeHandler)
-    {
-        return function (WP_REST_Request $request) use ($routeHandler) {
-            ob_start();
-            /** @var WP_REST_Response|WP_Error $response */
-            $response = is_callable($routeHandler)
-                ? $routeHandler($request)
-                : $this->$routeHandler($request);
-
-            $data = ($response instanceof WP_Error)
-                ? $response->get_error_data()
-                : $response->get_data();
-
-            $responseArr = [
-                '__VP__' => true,
-                'data' => $data
-            ];
-
-            if (ob_get_length() > 0) {
-                $bufferContents = ob_get_clean();
-                $data['phpBuffer'] = $bufferContents;
-            }
-
-            if ($response instanceof WP_Error) {
-                $response->add_data($responseArr);
-            } else {
-                $response->set_data($responseArr);
-            }
-
-            return $response;
-        };
+        $args['permission_callback'] = [$this, 'checkPermissions'];
+        return register_rest_route(self::NAMESPACE_VP, $route, $args);
     }
 
     /**
@@ -201,19 +192,18 @@ class VersionPressApi
     {
         $gitLogPaginator = new GitLogPaginator($this->gitRepository);
 
-        $query = urldecode(stripslashes($request['query']));
-        $rules = QueryLanguageUtils::createRulesFromQueries([$query]);
-        $gitLogQuery = !empty($rules)
-            ? QueryLanguageUtils::createGitLogQueryFromRule($rules[0])
-            : '';
-        $gitLogPaginator->setQuery($gitLogQuery);
-        $gitLogPaginator->setCommitsPerPage(25);
+        $gitLogPaginator->setQuery($this->createGitLogQuery($request['query']));
+        $gitLogPaginator->setCommitsPerPage(self::COMMITS_PER_PAGE);
 
-        $page = intval($request['page']);
+        $page = $request['page'];
         $commits = $gitLogPaginator->getPage($page);
 
         if (empty($commits)) {
-            return new WP_Error('notice', 'No more commits to show.', ['status' => 404]);
+            return new WP_REST_Response([
+                'commits' => [],
+                'totalItems' => $gitLogPaginator->getNumberOfCommits(),
+                'totalPages' => $gitLogPaginator->getPageCount(),
+            ]);
         }
 
         $initialCommitHash = $this->getInitialCommitHash();
@@ -261,8 +251,9 @@ class VersionPressApi
             $isFirstCommit = false;
         }
         return new WP_REST_Response([
-            'pages' => $gitLogPaginator->getPrettySteps($page),
-            'commits' => $result
+            'commits' => $result,
+            'totalItems' => $gitLogPaginator->getNumberOfCommits(),
+            'totalPages' => $gitLogPaginator->getPageCount(),
         ]);
     }
 
@@ -272,7 +263,7 @@ class VersionPressApi
      */
     public function undoCommits(WP_REST_Request $request)
     {
-        $commitHashes = explode(',', $request['commits']);
+        $commitHashes = $request['commits'];
 
         $initialCommitHash = $this->getInitialCommitHash();
 
@@ -359,14 +350,6 @@ class VersionPressApi
     {
         $commitHash = $request['commit'];
 
-        if (!preg_match('/^[0-9a-f]*$/', $commitHash)) {
-            return new WP_Error(
-                'error',
-                'Invalid commit hash',
-                ['status' => 404]
-            );
-        }
-
         $diff = $this->gitRepository->getDiff($commitHash);
 
         if (strlen($diff) > 50 * 1024) { // 50 kB is maximum size for diff (see WP-49)
@@ -409,13 +392,7 @@ class VersionPressApi
         $repository = $versionPressContainer->resolve(VersionPressServices::GIT_REPOSITORY);
 
         $latestCommit = $request['latestCommit'];
-
-        $query = urldecode(stripslashes($request['query']));
-        $rules = QueryLanguageUtils::createRulesFromQueries([$query]);
-        $gitLogQuery = !empty($rules)
-            ? QueryLanguageUtils::createGitLogQueryFromRule($rules[0])
-            : '';
-        $repoLatestCommit = $repository->getLastCommitHash($gitLogQuery);
+        $repoLatestCommit = $repository->getLastCommitHash($this->createGitLogQuery($request['query']));
 
         return new WP_REST_Response([
             "update" => $repository->wasCreatedAfter($repoLatestCommit, $latestCommit),
@@ -592,17 +569,101 @@ class VersionPressApi
     }
 
     /**
+     * Requirements checked before VersionPress is initialized.
+     *
+     * @return WP_REST_Response
+     */
+    public function getRequirements()
+    {
+        global $versionPressContainer;
+        $requirementsChecker = new RequirementsChecker(
+            $versionPressContainer->resolve(VersionPressServices::DATABASE),
+            $versionPressContainer->resolve(VersionPressServices::DB_SCHEMA)
+        );
+
+        $requirements = array_map(function ($requirement) {
+            return [
+                'name' => $requirement['name'],
+                'level' => $requirement['level'],
+                'fulfilled' => (bool)$requirement['fulfilled'],
+                // Help texts are Markdown with links to the documentation.
+                'help' => wp_kses_post(Markdown::transform($requirement['help'])),
+            ];
+        }, $requirementsChecker->getRequirements());
+
+        return new WP_REST_Response([
+            'requirements' => $requirements,
+            'canInitialize' => $requirementsChecker->isWithoutCriticalErrors(),
+            'isVersioned' => $this->gitRepository->isVersioned(),
+            'isActive' => VersionPress::isActive(),
+        ]);
+    }
+
+    /**
+     * Initializes VersionPress: creates the repository, stores all entities and makes the initial commit.
+     * This can take long on big sites; the request fails if it exceeds the server's time limit.
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    public function initialize(WP_REST_Request $request)
+    {
+        if (VersionPress::isActive()) {
+            return new WP_Error('versionpress_active', __('VersionPress is already active.', 'versionpress'), ['status' => 409]);
+        }
+
+        global $versionPressContainer;
+        $wpConfigEditor = new WpConfigEditor(WordPressMissingFunctions::getWpConfigPath(), false);
+        $wpConfigEditor->updateConfigConstant('VP_ENVIRONMENT', $request['environment']);
+
+        /** @var Initializer $initializer */
+        $initializer = $versionPressContainer->resolve(VersionPressServices::INITIALIZER);
+        $progress = [];
+        $initializer->onProgressChanged[] = function ($message) use (&$progress) {
+            $progress[] = $message;
+        };
+
+        vp_load_hooks_files();
+        $initializer->initializeVersionPress();
+
+        if (!VersionPress::isActive()) {
+            return new WP_Error(
+                'versionpress_initialization_aborted',
+                __(
+                    'The initialization took too long and was stopped before the server terminated it. Please increase the maximal execution time (max_execution_time) and try it again.',
+                    'versionpress'
+                ),
+                ['status' => 500, 'progress' => $progress]
+            );
+        }
+
+        return new WP_REST_Response(['progress' => $progress]);
+    }
+
+    /**
+     * Converts a query in the VersionPress search syntax to `git log` arguments.
+     *
+     * @param string $query
+     * @return string
+     */
+    private function createGitLogQuery($query)
+    {
+        $rules = QueryLanguageUtils::createRulesFromQueries([$query]);
+        return !empty($rules) ? QueryLanguageUtils::createGitLogQueryFromRule($rules[0]) : '';
+    }
+
+    /**
      * @param WP_REST_Request $request
      * @return WP_Error|bool
      */
     public function checkPermissions(WP_REST_Request $request)
     {
-        return !VERSIONPRESS_REQUIRE_API_AUTH || current_user_can('manage_options')
+        return current_user_can('manage_options')
             ? true
             : new WP_Error(
-                'error',
-                'You don\'t have permission to do this.',
-                ['status' => 403]
+                'rest_forbidden',
+                __('Sorry, you are not allowed to manage VersionPress.', 'versionpress'),
+                ['status' => rest_authorization_required_code()]
             );
     }
 

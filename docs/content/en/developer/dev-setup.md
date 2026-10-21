@@ -26,7 +26,7 @@ cd versionpress
 pnpm install
 pnpm start                 # starts WordPress at http://localhost:8888
 pnpm run composer install  # installs PHP dependencies inside the environment
-pnpm run build:frontend    # builds the admin UI into the plugin
+pnpm run build:admin       # builds the admin UI into the plugin
 ```
 
 Log in at <http://localhost:8888/wp-admin> with `admin` / `password` and activate VersionPress on the _Plugins_ page, or run `pnpm run wp plugin activate versionpress`. You're now all set up! 🎉
@@ -48,7 +48,7 @@ VersionPress tracks database changes through the `wp-content/db.php` drop-in; Wo
 
 ## Plugin development
 
-VersionPress consists of PHP code implementing the core versioning logic and a React frontend. This section is about the former; the latter is described in [Frontend development](#frontend-development) below.
+VersionPress consists of PHP code implementing the core versioning logic and a React admin UI. This section is about the former; the latter is described in [Admin UI development](#admin-ui-development) below.
 
 ### Coding standards and static analysis
 
@@ -89,24 +89,13 @@ For VSCode with the [PHP Debug extension](https://marketplace.visualstudio.com/i
 }
 ```
 
-## Frontend development
+## Admin UI development
 
-VersionPress uses a JavaScript frontend implemented as a React app in the `./frontend` folder. `pnpm run build:frontend` builds it and copies the result to `plugins/versionpress/admin/public/gui`, where the plugin loads it from.
+The VersionPress admin screen is a React app in `./admin-ui`, built with [`@wordpress/scripts`](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/) on top of `@wordpress/components`, `@wordpress/dataviews` and `@wordpress/api-fetch`. It talks to the plugin through its REST API (`/wp-json/versionpress/v1`).
 
-### Running frontend separately
-
-For pure frontend development, it's more convenient to run it outside of the WordPress administration:
-
-1. Make sure the site is running and VersionPress is activated in it. `frontend/src/config/config.local.ts` (created from `config.local.sample.ts` on the first build) points the app at <http://localhost:8888>.
-2. Allow unauthenticated API access in the development site:
-
-    ```sh
-    pnpm run wp config set VERSIONPRESS_REQUIRE_API_AUTH false --raw
-    ```
-
-3. Run `pnpm --filter versionpress-frontend start`.
-
-This launches [webpack dev server](https://webpack.js.org/configuration/dev-server/) at <http://localhost:8080>; source code edits are automatically reflected in the browser.
+- `pnpm run build:admin` builds it into `plugins/versionpress/admin/public/build`, where the plugin loads it from.
+- `pnpm --filter versionpress-admin-ui start` rebuilds on every change; reload the VersionPress screen in wp-admin to see it.
+- `pnpm run lint:js` lints and type-checks it, `pnpm run test:js` runs its unit tests.
 
 ## Testing
 
@@ -122,7 +111,7 @@ The version number is based on the nearest Git tag and can also be something lik
 
 Simpler tasks are scripted directly in `package.json`; more complex ones live in the `./scripts` folder. See its README for more info.
 
-The root is a [pnpm workspace](https://pnpm.io/workspaces) containing `frontend` and `scripts`; there is a single `pnpm-lock.yaml` at the root.
+The root is a [pnpm workspace](https://pnpm.io/workspaces) containing `admin-ui`, `e2e` and `scripts`; there is a single `pnpm-lock.yaml` at the root.
 
 ### Links to older documents
 

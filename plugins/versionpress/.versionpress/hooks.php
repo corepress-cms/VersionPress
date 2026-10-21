@@ -17,16 +17,19 @@ add_filter('vp_entity_should_be_saved_post', function ($shouldBeSaved, $data, $s
     /** @var DirectoryStorage $storage */
     $isExistingEntity = $storage->entityExistedBeforeThisRequest($data);
 
+    // Only reads what kind of save WordPress performs; WordPress verifies the nonce itself.
+    // phpcs:disable WordPress.Security.NonceVerification.Missing
+    $isPreview = isset($_POST['wp-preview']) && sanitize_key(wp_unslash($_POST['wp-preview'])) === 'dopreview';
+    $isHeartbeat = wp_doing_ajax() && isset($_POST['action']) && sanitize_key(wp_unslash($_POST['action'])) === 'heartbeat';
+    // phpcs:enable
+
     // ignore saving draft on preview
-    if ($isExistingEntity && isset($_POST['wp-preview']) && $_POST['wp-preview'] === 'dopreview') {
+    if ($isExistingEntity && $isPreview) {
         return false;
     }
 
     // ignoring ajax autosaves for drafts - WP saves them using Heartbeat API
-    if (
-        $isExistingEntity && isset($data['post_status']) && ($data['post_status'] === 'draft' &&
-        defined('DOING_AJAX') && DOING_AJAX === true && $_POST['action'] === 'heartbeat')
-    ) {
+    if ($isExistingEntity && isset($data['post_status']) && $data['post_status'] === 'draft' && $isHeartbeat) {
         return false;
     }
 

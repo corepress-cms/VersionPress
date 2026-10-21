@@ -4,95 +4,38 @@ use VersionPress\Utils\SystemInfo;
 
 defined('ABSPATH') or die("Direct access not allowed");
 
-$outputFormat = isset($_GET['f']) ? $_GET['f'] : null;
-$supportedOutputFormats = [
-    've',
-    'tc'
+// Pages without a menu item get no capability check from WordPress.
+if (!current_user_can('manage_options')) {
+    wp_die(esc_html__('Sorry, you are not allowed to access this page.', 'versionpress'), 403);
+}
+
+$vpSystemInfo = SystemInfo::getAllInfo();
+$vpSections = [
+    'summary' => __('Quick summary', 'versionpress'),
+    'git-info' => __('Git', 'versionpress'),
+    'permission-info' => __('Permissions', 'versionpress'),
+    'wordpress-info' => __('WordPress', 'versionpress'),
+    'php-info' => __('Server environment / PHP', 'versionpress'),
 ];
-if (!in_array($outputFormat, $supportedOutputFormats)) {
-    $outputFormat = $supportedOutputFormats[0];
-}
-
-$systemInfo = SystemInfo::getAllInfo();
-
-function vp_display_system_info_array($array, $outputFormat)
-{
-
-    switch ($outputFormat) {
-        case 've': // var_export
-            echo '<pre><code style="language-php">';
-            echo esc_html(var_export($array, true));
-            echo '</code></pre>';
-
-            break;
-
-        case 'tc':
-            \Tracy\Debugger::dump($array);
-            break;
-    }
-}
-
 ?>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
-<script>
-    hljs.configure({languages: []}); // disable automatic language detection
-    hljs.initHighlightingOnLoad();
-</script>
+<div class="wrap vp-system-info">
+    <h1><?php esc_html_e('System info', 'versionpress'); ?></h1>
 
-<style>
-    h1 {
-        margin-top: 30px;
-    }
+    <p><?php esc_html_e('Overview of this WordPress installation for VersionPress purposes.', 'versionpress'); ?></p>
 
-    h2 {
-        margin: 30px 0 0;
-    }
+    <p>
+        <?php esc_html_e('Jump to:', 'versionpress'); ?>
+        <?php foreach ($vpSections as $vpId => $vpTitle) : ?>
+            <a href="#<?php echo esc_attr($vpId); ?>"><?php echo esc_html($vpTitle); ?></a>
+        <?php endforeach; ?>
+    </p>
 
-    .system-info-toc li {
-        margin: 0;
-    }
-
-</style>
-
-<h1>System info</h1>
-
-<p>Quick overview of this WordPress installation for VersionPress purposes.</p>
-
-
-<div>
-    Format:
-    <a href="<?php echo esc_url(admin_url('admin.php?page=versionpress/admin/system-info.php&f=ve')) ?>">var_export</a>
-    |
-    <a href="<?php echo esc_url(admin_url('admin.php?page=versionpress/admin/system-info.php&f=tc')) ?>">tracy</a>
-
-    <br/>
-
-
-    Jump to:
-    <a href="#git-info">Git info</a> |
-    <a href="#persmission-info">Permission info</a> |
-    <a href="#wordpress-info">WordPress info</a> |
-    <a href="#php-info">System / PHP info</a>
-
+    <?php foreach ($vpSections as $vpId => $vpTitle) : ?>
+        <h2 id="<?php echo esc_attr($vpId); ?>"><?php echo esc_html($vpTitle); ?></h2>
+        <pre><code><?php
+            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_var_export -- the purpose of this page
+            echo esc_html(var_export($vpSystemInfo[$vpId], true));
+        ?></code></pre>
+    <?php endforeach; ?>
 </div>
-
-
-<h2 id="summary">Quick summary</h2>
-<?php vp_display_system_info_array($systemInfo['summary'], $outputFormat); ?>
-
-
-<h2 id="git-info">Git</h2>
-<?php vp_display_system_info_array($systemInfo['git-info'], $outputFormat); ?>
-
-<h2 id="persmission-info">Permissions</h2>
-<?php vp_display_system_info_array($systemInfo['permission-info'], $outputFormat); ?>
-
-<h2 id="wordpress-info">WordPress</h2>
-<?php vp_display_system_info_array($systemInfo['wordpress-info'], $outputFormat); ?>
-
-
-<h2 id="php-info">Server environment / PHP info</h2>
-<?php vp_display_system_info_array($systemInfo['php-info'], $outputFormat); ?>
-

@@ -142,10 +142,13 @@ class Database
      */
     public function query($query)
     {
+        // A proxy; callers prepare their queries.
+        // phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
         if ($this->wpdb instanceof VersionPressWpdb) {
             return $this->wpdb->queryWithoutTracking($query);
         }
 
         return $this->wpdb->query($query);
+        // phpcs:enable
     }
 }

@@ -24,16 +24,20 @@ if (!file_exists(__DIR__ . '/vendor/autoload.php')) {
 
     function vp_disable_plugin_activation()
     {
-        wp_die('<h1>VersionPress could not be activated</h1>
-            <p>
-                It seems that your copy of VersionPress was not built correctly.
-                Please download <a href="https://github.com/versionpress/versionpress/releases">release ZIP file
-                from GitHub</a> and <a href="' . get_admin_url() . 'plugin-install.php?tab=upload">install it again</a>.
-            </p>');
+        wp_die(
+            '<h1>' . esc_html__('VersionPress could not be activated', 'versionpress') . '</h1><p>' .
+            sprintf(
+                /* translators: 1: URL of the releases page, 2: URL of the plugin upload screen */
+                wp_kses_post(__('It seems that your copy of VersionPress was not built correctly. Please download the <a href="%1$s">release ZIP file</a> and <a href="%2$s">install it again</a>.', 'versionpress')),
+                'https://github.com/versionpress/versionpress/releases',
+                esc_url(admin_url('plugin-install.php?tab=upload'))
+            ) . '</p>'
+        );
     }
 
     return;
 }
 
 require_once(__DIR__ . '/bootstrap.php');
-require_once(__DIR__ . '/setup-hooks.php');
+
+\VersionPress\Plugin::boot();

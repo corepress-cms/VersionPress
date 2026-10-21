@@ -32,6 +32,7 @@ class VersionPress
      * Returns true if VersionPress is active. Note that active != activated and being
      * active means that VersionPress is tracking changes.
      *
+     * @phpstan-impure It changes during (de)activation within the same request.
      * @return bool
      */
     public static function isActive()

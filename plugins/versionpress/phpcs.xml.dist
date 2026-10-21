@@ -8,6 +8,11 @@
     <exclude-pattern>/log/*</exclude-pattern>
     <exclude-pattern>/temp/*</exclude-pattern>
     <exclude-pattern>/admin/public/*</exclude-pattern>
+    <exclude-pattern>/dist/*</exclude-pattern>
+    <exclude-pattern>/vendor-prefixed/*</exclude-pattern>
+    <!-- Developer tools, not part of the release (see .distignore) -->
+    <exclude-pattern>/bin/*</exclude-pattern>
+    <exclude-pattern>/src/Database/wpdb-api-to-phpdoc.php</exclude-pattern>
     <exclude-pattern>/tests/*</exclude-pattern>
 
     <arg name="extensions" value="php"/>
@@ -17,8 +22,6 @@
 
     <config name="testVersion" value="8.5-"/>
     <config name="minimum_wp_version" value="7.1"/>
-    <!-- See the note on the WordPress sniffs below. -->
-    <config name="ignore_warnings_on_exit" value="1"/>
 
     <!-- Formatting -->
     <rule ref="PSR12">
@@ -36,27 +39,21 @@
         <exclude-pattern>src/Cli/vp*\.php</exclude-pattern>
     </rule>
 
-    <!--
-        WordPress security, i18n and database best practices.
-
-        These are reported as warnings while the WordPress integration layer (setup-hooks.php,
-        admin/, RequestDetector) is being rebuilt; CI fails on errors only. Remove the <type>
-        overrides once an area is cleaned up so that regressions fail the build again.
-    -->
-    <rule ref="WordPress.Security">
-        <type>warning</type>
+    <!-- WordPress security, i18n and database best practices -->
+    <rule ref="WordPress.Security"/>
+    <rule ref="WordPress.Security.EscapeOutput">
+        <!-- Terminal output of WP-CLI commands and the Git merge driver is not HTML. -->
+        <exclude-pattern>/src/Cli/*</exclude-pattern>
+        <exclude-pattern>/src/Git/merge-drivers/*</exclude-pattern>
     </rule>
     <rule ref="WordPress.WP.I18n">
-        <type>warning</type>
         <properties>
             <property name="text_domain" type="array">
                 <element value="versionpress"/>
             </property>
         </properties>
     </rule>
-    <rule ref="WordPress.DB">
-        <type>warning</type>
-    </rule>
+    <rule ref="WordPress.DB"/>
     <rule ref="WordPress.WP.DeprecatedFunctions"/>
     <rule ref="WordPress.WP.DeprecatedClasses"/>
     <rule ref="WordPress.WP.DeprecatedParameters"/>

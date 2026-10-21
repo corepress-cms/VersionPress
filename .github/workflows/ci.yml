@@ -62,8 +62,8 @@ jobs:
       - name: Run tests
         run: pnpm run test
 
-  frontend:
-    name: Frontend build & docs lint
+  admin-ui:
+    name: Admin UI & docs lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -78,8 +78,14 @@ jobs:
       - name: Install workspace dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build frontend
-        run: pnpm --filter versionpress-frontend run build
+      - name: Lint and type-check
+        run: pnpm run lint:js
+
+      - name: Unit tests
+        run: pnpm run test:js
+
+      - name: Build
+        run: pnpm run build:admin
 
       - name: Lint Markdown
         run: pnpm run lint:markdown

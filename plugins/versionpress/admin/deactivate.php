@@ -1,79 +1,65 @@
 <?php
 
+use VersionPress\Hooks\Lifecycle;
 use VersionPress\Utils\UninstallationUtil;
 
 defined('ABSPATH') or die("Direct access not allowed");
 
-/**
- * Small helper function that outputs every button in its own form. We do this
- * to be able to submit a value of a button in a hidden field so that that the make POST-handling code
- * does not depend on UI strings.
- *
- * @param string $label Label to display
- * @param string $action Action string that must match the admin_post_* hook in versionpress.php. For example,
- *                       the `cancel_deactivation` action will be mapped to `admin_post_cancel_deactivation` hook
- *                       in the main plugin file.
- * @param string $type See `submit_button()`'s $type parameter
- * @param string $cssClass Optional CSS class to be used for the button
- */
-function _vp_button($label, $action, $type = "delete", $cssClass = "")
-{
-    echo "<form action='" . esc_url(admin_url('admin-post.php')) . "' method='post' class='" . esc_attr($cssClass) . "'>";
-    echo "<input type='hidden' name='action' value='$action' />";
-    submit_button($label, $type, $action, false, $other_attributes = ["id" => $action]);
-    wp_nonce_field('deactivate-plugin_versionpress/versionpress.php');
-    echo "</form>";
+// Pages without a menu item get no capability check from WordPress.
+if (!current_user_can('activate_plugins')) {
+    wp_die(esc_html__('Sorry, you are not allowed to access this page.', 'versionpress'), 403);
 }
 
+$vpDeactivationButton = function ($label, $action, $type, $cssClass = '') {
+    ?>
+    <form action="<?php echo esc_url(admin_url('admin-post.php')); ?>" method="post" class="<?php echo esc_attr($cssClass); ?>">
+        <input type="hidden" name="action" value="<?php echo esc_attr($action); ?>" />
+        <?php
+        wp_nonce_field(Lifecycle::DEACTIVATION_NONCE);
+        submit_button($label, $type, $action, false, ['id' => $action]);
+        ?>
+    </form>
+    <?php
+};
 ?>
 
 <div class="wrap vp-deactivation">
-    <h2 class="vp-deactivation-header">VersionPress deactivation</h2>
+    <h1><?php esc_html_e('VersionPress deactivation', 'versionpress'); ?></h1>
 
-
-    <div class="error below-h2">
-        <p>You are about to deactivate VersionPress. Be aware that:</p>
+    <div class="notice notice-warning">
+        <p><?php esc_html_e('You are about to deactivate VersionPress. Be aware that:', 'versionpress'); ?></p>
 
         <ul>
-
             <li>
                 <span class="dashicons dashicons-info warning-color"></span>
-                <span class="vp-highlight-text">Later installations of VersionPress <strong>will not be able to undo or rollback changes</strong> done by this installation.</span> The changes are still technically in the repository if you want to inspect them using e.g. the command line tools etc.
-            </li>
-
-
-            <li>
-                <span class="dashicons dashicons-yes ok-color"></span>
-                Deactivation <strong>keeps the Git repository on the server</strong>. You can e.g. download the repository for local inspection.
-            </li>
-
-            <li>
-                <span class="dashicons dashicons-yes ok-color"></span>
-                You <strong>can reactivate VersionPress again</strong> and the current Git repository will not cause any trouble. The new VersionPress installation will just not be able to undo the old changes as stated above.
-            </li>
-
-            <?php
-            if (UninstallationUtil::uninstallationShouldRemoveGitRepo()) {
+                <?php
+                echo wp_kses_post(__(
+                    'Later installations of VersionPress <strong>will not be able to undo or roll back changes</strong> done by this installation. The changes are still in the repository if you want to inspect them, e.g. using Git command line tools.',
+                    'versionpress'
+                ));
                 ?>
-
+            </li>
+            <li>
+                <span class="dashicons dashicons-yes ok-color"></span>
+                <?php echo wp_kses_post(__('Deactivation <strong>keeps the Git repository on the server</strong>. You can, for example, download it for local inspection.', 'versionpress')); ?>
+            </li>
+            <li>
+                <span class="dashicons dashicons-yes ok-color"></span>
+                <?php echo wp_kses_post(__('You <strong>can activate VersionPress again</strong> and the current Git repository will not cause any trouble; the new installation just cannot undo the old changes.', 'versionpress')); ?>
+            </li>
+            <?php if (UninstallationUtil::uninstallationShouldRemoveGitRepo()) : ?>
                 <li>
                     <span class="dashicons dashicons-info warning-color"></span>
-                    If you <strong>uninstall</strong> VersionPress later (by clicking the Delete button on the Plugins page) the Git repository will be moved to the <code>wp-content/vpbackups</code> folder. The site will appear unversioned but you can always restore the repository from there should you need to.
+                    <?php echo wp_kses_post(__('If you <strong>delete</strong> VersionPress later on the Plugins screen, the Git repository is moved to the <code>wp-content/vpbackups</code> folder. The site will appear unversioned but you can restore the repository from there.', 'versionpress')); ?>
                 </li>
-
-                <?php
-            }
-            ?>
+            <?php endif; ?>
         </ul>
 
         <div class="deactivation-buttons">
-
-            <?php _vp_button("Cancel", "cancel_deactivation", "delete", "cancel-deactivation"); ?>
-            <?php _vp_button("Confirm deactivation", "confirm_deactivation", "primary"); ?>
-
+            <?php
+            $vpDeactivationButton(__('Cancel', 'versionpress'), 'cancel_deactivation', 'secondary', 'cancel-deactivation');
+            $vpDeactivationButton(__('Confirm deactivation', 'versionpress'), 'confirm_deactivation', 'primary');
+            ?>
         </div>
-
     </div>
-
-
 </div>

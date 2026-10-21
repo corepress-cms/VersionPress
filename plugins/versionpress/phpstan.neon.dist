@@ -7,7 +7,6 @@ parameters:
     paths:
         - versionpress.php
         - bootstrap.php
-        - setup-hooks.php
         - internal-functions.php
         - public-functions.php
         - uninstall.php
@@ -23,11 +22,10 @@ parameters:
     scanDirectories:
         - vendor/wp-cli/wp-cli/php
     dynamicConstantNames:
+        - WP_CLI
         - VERSIONPRESS_TEMP_DIR
         - VERSIONPRESS_ACTIVATION_FILE
         - VERSIONPRESS_COMMIT_MESSAGE_PREFIX
-        - VERSIONPRESS_GUI
-        - VERSIONPRESS_REQUIRE_API_AUTH
         - VERSIONPRESS_ACTIVATED
         - VP_PROJECT_ROOT
         - VP_VPDB_DIR

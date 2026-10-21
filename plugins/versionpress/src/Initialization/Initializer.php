@@ -604,7 +604,7 @@ class Initializer
 
     private function abortInitialization()
     {
-        touch(VERSIONPRESS_PLUGIN_DIR . '/.abort-initialization');
+        touch(VERSIONPRESS_TEMP_DIR . '/.abort-initialization');
 
         if (VersionPress::isActive()) {
             @unlink(VERSIONPRESS_ACTIVATION_FILE);

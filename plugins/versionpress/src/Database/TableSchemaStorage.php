@@ -44,6 +44,7 @@ class TableSchemaStorage
         $schemaFile = $this->getSchemaFile($table);
 
         if (!file_exists($schemaFile)) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- logged, not rendered as HTML
             throw new \Exception("Schema for table '$table' not found");
         }
 

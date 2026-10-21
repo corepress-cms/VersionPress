@@ -75,32 +75,22 @@ class GitLogPaginator
     }
 
     /**
-     * Returns a subset of pages useful for pagination.
-     * For example if there are 1000 commits, 25 per page and you are on page 10,
-     * it returns 0,7,8,9,10,11,12,13,20,29,39.
-     * The algorithm is from VisualPaginator component for Nette Framework.
+     * Number of commits matching the query of the last loaded page.
      *
-     * @param $currentPage
-     * @return array
+     * @return int
      */
-    public function getPrettySteps($currentPage)
+    public function getNumberOfCommits()
     {
-        $page = $currentPage;
-        $pageCount = ceil($this->numberOfCommits / (double)$this->commitsPerPage);
+        return (int)$this->numberOfCommits;
+    }
 
-        if ($pageCount < 2) {
-            return [];
-        }
-
-        $arr = range(max(0, $page - 3), min($pageCount - 1, $page + 3));
-        $count = 4;
-        $quotient = ($pageCount - 1) / $count;
-        for ($i = 0; $i <= $count; $i++) {
-            $arr[] = round($quotient * $i);
-        }
-        sort($arr);
-        $steps = array_values(array_unique($arr));
-
-        return $steps;
+    /**
+     * Number of pages for the query of the last loaded page.
+     *
+     * @return int
+     */
+    public function getPageCount()
+    {
+        return (int)ceil($this->numberOfCommits / $this->commitsPerPage);
     }
 }

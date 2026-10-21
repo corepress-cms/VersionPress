@@ -52,6 +52,7 @@ class DbDropIn
     public static function install(): void
     {
         if (self::isOccupiedByAnotherDropIn()) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- logged, not rendered as HTML
             throw new \RuntimeException(sprintf('%s belongs to another plugin.', self::getPath()));
         }
 

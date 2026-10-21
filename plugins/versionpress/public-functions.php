@@ -11,7 +11,7 @@ use VersionPress\Git\Committer;
  *
  * @param string $scope
  * @param string $action
- * @param string $id
+ * @param string|null $id
  * @param array $tags
  * @param array $files
  */
